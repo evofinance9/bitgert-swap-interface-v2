@@ -19,12 +19,20 @@
       "logoURI": "https://bitgertswapserver.com/api/images/0x8fff93e810a2edaafc326edee51071da9d398e83.png"
     },
     {
-      "name": "Evo Token",
+      "name": "EVO",
       "symbol": "EVO",
-      "address": "0x267Ae4bA9CE5ef3c87629812596b0D89EcBD81dD",
+      "address": "0x02c1efdc962123bdb2ca85a9cb728fcd54c3ca4c",
       "chainId": 32520,
       "decimals": 18,
       "logoURI": "https://bitgertswapserver.com/api/images/0x267ae4ba9ce5ef3c87629812596b0d89ecbd81dd.png"
+    },
+    {
+      "name": "Tether USD",
+      "symbol": "USDT",
+      "address": "0xDe14b85cf78F2ADd2E867FEE40575437D5f10c06",
+      "chainId": 32520,
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png"
     },
     {
       "name": "Sphynx Token",
