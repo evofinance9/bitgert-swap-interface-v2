@@ -34,7 +34,7 @@ const TableRowItem = styled.td`
 const ASSETS_QUERY = gql`
   {
     tokens(
-      orderBy: tradeVolume
+      orderBy: totalLiquidity
       orderDirection: desc
       where: {
         id_not_in: [
@@ -45,7 +45,23 @@ const ASSETS_QUERY = gql`
           "0xdff3eb18ac39285331521ba2316deecb082f7371"
           "0x218961247cf30b67983cbdbe4d198c8bc1e45541"
           "0x9892ffb5ec3eaa1ee980b8c14976a71c8455374b"
+          "0x08a37cd94785a9fb81d28f531de7067508a40e66"
+          "0xe47e6be89ddb3cb98f48ef9a87f0a856b0eb8990"
+          "0xd94a65198dbe7f61c3b73b5ecde9e29d32a22c4d"
+          "0xd5a3bdf651cab3eee3325cd97643ab44a40c0183"
+          "0xd10f7a05404af9d35d346ae7080394183fd5d56d"
+          "0x7c3fca84294e5dbbbdb3a22ebdb4da95fd96d4d4"
+          "0xb23d51c9862517680d61154a14383411a1555718"
+          "0x731b5a9130fc3df3e89311874803b19418a164be"
+          "0x6f2f36eda4b92c39af7005e550bf819e88f2d933"
+          "0x6af36e2f91a1f28364b035eddf682b81b5213461"
+          "0x50e8cbe506d30c2dcf773fb623011e4696f9a421"
+          "0x34f50bd38c721389daf4b67308d1bace63194037"
+          "0x267ae4ba9ce5ef3c87629812596b0d89ecbd81dd"
+          "0x2a5f6c5e40304b516075af668dcecf84e590cbc4"
+          "0x0c871a8f846c546974cc03157a4ec29a648bf0b4"
         ]
+        symbol_not_in: ["DRX", "DRS", "BSC", "XYZ", "ABC"]
       }
     ) {
       id

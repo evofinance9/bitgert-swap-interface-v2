@@ -36,7 +36,7 @@ const BodyWrapper = styled(Card)`
 
 const PAIR_QUERY = gql`
   {
-    pair(id: "0x77575200f7a35072e0c5e691b32b26286d43a973") {
+    pair(id: "0xe3277f754b8714d131bf7b5cc1719d8754fad006") {
       id
       token0 {
         id
@@ -177,7 +177,7 @@ export default function Chart() {
       first: 100,
       orderDirection: 'asc',
       where: {
-        token: '0x267ae4ba9ce5ef3c87629812596b0d89ecbd81dd',
+        token: '0x02c1efdc962123bdb2ca85a9cb728fcd54c3ca4c',
       },
     })
   }, [priceRefetch])
@@ -196,7 +196,7 @@ export default function Chart() {
                   refetch({
                     where: isAddress(e.target.value)
                       ? {
-                          id: e.target.value,
+                          id: e.target.value.toLowerCase(),
                         }
                       : {
                           symbol: e.target.value.toUpperCase(),
@@ -242,11 +242,22 @@ export default function Chart() {
                       }.png`}
                       alt={priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.symbol}
                     />
-                    <TokenLogo src={`${SWAP_API}/images/${data.token0.id}.png`} alt={data.token0.symbol} />
+                    <TokenLogo
+                      src={`${SWAP_API}/images/${
+                        priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.id ===
+                        data.token0.id
+                          ? data.token1.id
+                          : data.token0.id
+                      }.png`}
+                      alt={data.token0.symbol}
+                    />
                   </TokenLogoContainer>
                   <StyledHeading>
                     {priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.symbol}/
-                    {data.token0.symbol}
+                    {priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.symbo ===
+                    data.token1.symbol
+                      ? data.token0.symbol
+                      : data.token1.symbol}
                   </StyledHeading>
                 </HeadingContainer>
 
