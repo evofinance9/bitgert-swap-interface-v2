@@ -38,6 +38,8 @@ export const PriceHeadingContainer = styled.div`
 export const PriceHeading = styled.h1`
   text-transform: uppercase;
   font-size: 1.5rem;
+  letter-spacing: 1px;
+  color: #b8add2;
 `
 
 export const PriceSubHeading = styled.sub`
@@ -75,8 +77,65 @@ export const SearchResItem = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   padding: 0.7rem;
-
 `
 
+export const TokenInfoRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  ${({ theme }) => theme.mediaQueries.xs} {
+    flex-direction: column;
+  }
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    flex-direction: column;
+  }
+
+  ${({ theme }) => theme.mediaQueries.md} {
+    flex-direction: column;
+  }
+
+  ${({ theme }) => theme.mediaQueries.lg} {
+    flex-direction: row;
+  }
+
+  ${({ theme }) => theme.mediaQueries.xl} {
+    flex-direction: row;
+  }
+`
+export const TokenInfoCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  ${({ theme }) => theme.mediaQueries.xs} {
+    margin-bottom: 1rem;
+  }
+  ${({ theme }) => theme.mediaQueries.sm} {
+    margin-bottom: 1rem;
+  }
+  ${({ theme }) => theme.mediaQueries.md} {
+    margin-bottom: 1rem;
+  }
+`
+
+export const TokenInfoColHeading = styled.h4`
+  margin-bottom: 0.6rem;
+  text-align: center;
+  text-transform: capitalize;
+  font-size: 1.1rem;
+`
+
+export const TokenInfoColSubHeading = styled.h5`
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  color: #b8add2;
+  ${({ theme }) => theme.mediaQueries.xs} {
+    text-align: center;
+  }
+  ${({ theme }) => theme.mediaQueries.sm} {
+    text-align: center;
+  }
+  ${({ theme }) => theme.mediaQueries.md} {
+    text-align: center;
+  }
+`
 
 export default {}

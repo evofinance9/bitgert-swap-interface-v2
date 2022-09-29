@@ -17,8 +17,12 @@ import {
   TokenLogoContainer,
   PriceHeading,
   PriceSubHeading,
+  TokenInfoCol,
   PriceHeadingContainer,
   DateText,
+  TokenInfoColHeading,
+  TokenInfoColSubHeading,
+  TokenInfoRow,
   LoaderContainer,
   InputWrapper,
   SearchResContainer,
@@ -63,6 +67,8 @@ const PRICE_QUERY = gql`
       high
       low
       close
+      totalLiquidityToken
+      dailyVolumeUSD
       token {
         name
         symbol
@@ -233,43 +239,64 @@ export default function Chart() {
               </LoaderContainer>
             )}
             {!loading && data && (
-              <>
-                <HeadingContainer>
-                  <TokenLogoContainer>
-                    <TokenLogo
-                      src={`${SWAP_API}/images/${
-                        priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.id
-                      }.png`}
-                      alt={priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.symbol}
-                    />
-                    <TokenLogo
-                      src={`${SWAP_API}/images/${
-                        priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.id ===
-                        data.token0.id
-                          ? data.token1.id
-                          : data.token0.id
-                      }.png`}
-                      alt={data.token0.symbol}
-                    />
-                  </TokenLogoContainer>
-                  <StyledHeading>
-                    {priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.symbol}/
-                    {priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.symbo ===
-                    data.token1.symbol
-                      ? data.token0.symbol
-                      : data.token1.symbol}
-                  </StyledHeading>
-                </HeadingContainer>
+              <TokenInfoRow>
+                <TokenInfoCol>
+                  <HeadingContainer>
+                    <TokenLogoContainer>
+                      <TokenLogo
+                        src={`${SWAP_API}/images/${
+                          priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.id
+                        }.png`}
+                        alt={priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.symbol}
+                      />
+                      <TokenLogo
+                        src={`${SWAP_API}/images/${
+                          priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.id ===
+                          data.token0.id
+                            ? data.token1.id
+                            : data.token0.id
+                        }.png`}
+                        alt={data.token0.symbol}
+                      />
+                    </TokenLogoContainer>
+                    <StyledHeading>
+                      {priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.symbol}/
+                      {priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.token?.symbo ===
+                      data.token1.symbol
+                        ? data.token0.symbol
+                        : data.token1.symbol}
+                    </StyledHeading>
+                  </HeadingContainer>
 
-                <PriceHeadingContainer>
-                  <PriceHeading>
+                  <PriceHeadingContainer>
+                    <PriceHeading>
+                      ${' '}
+                      {parseFloat(
+                        priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.priceUSD
+                      ).toFixed(8)}
+                    </PriceHeading>
+                  </PriceHeadingContainer>
+                </TokenInfoCol>
+
+                <TokenInfoCol>
+                  <TokenInfoColHeading>Volume</TokenInfoColHeading>
+                  <TokenInfoColSubHeading>
+                    $ {parseFloat(priceGraphData?.tokenDayDatas[0]?.dailyVolumeUSD).toFixed(8)}
+                  </TokenInfoColSubHeading>
+                </TokenInfoCol>
+
+                <TokenInfoCol>
+                  <TokenInfoColHeading>Market cap</TokenInfoColHeading>
+                  <TokenInfoColSubHeading>
                     ${' '}
-                    {parseFloat(
-                      priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.priceUSD
+                    {(
+                      parseFloat(
+                        priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.totalLiquidityToken
+                      ) * parseFloat(priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.priceUSD)
                     ).toFixed(8)}
-                  </PriceHeading>
-                </PriceHeadingContainer>
-              </>
+                  </TokenInfoColSubHeading>
+                </TokenInfoCol>
+              </TokenInfoRow>
             )}
           </div>
           <ChartContainerDiv id="chartContainer" />
