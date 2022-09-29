@@ -278,7 +278,7 @@ export default function Chart() {
                   </PriceHeadingContainer>
                 </TokenInfoCol>
 
-                <TokenInfoCol>
+                {/* <TokenInfoCol>
                   <TokenInfoColHeading>Volume</TokenInfoColHeading>
                   <TokenInfoColSubHeading>
                     $ {parseFloat(priceGraphData?.tokenDayDatas[0]?.dailyVolumeUSD).toFixed(8)}
@@ -295,7 +295,7 @@ export default function Chart() {
                       ) * parseFloat(priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.priceUSD)
                     ).toFixed(8)}
                   </TokenInfoColSubHeading>
-                </TokenInfoCol>
+                </TokenInfoCol> */}
               </TokenInfoRow>
             )}
           </div>
