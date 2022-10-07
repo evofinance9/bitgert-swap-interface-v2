@@ -127,13 +127,13 @@ const Dashboard = () => {
               <IconGridSub>$ {millify(parseFloat(data?.uniswapFactory?.totalLiquidityUSD)) || `0`} </IconGridSub>
             </IconGridRowContainer>
           </IconGrid>
-          <IconGrid>
+          {/* <IconGrid>
             <FaMoneyCheckAlt fontSize="3rem" />
             <IconGridRowContainer>
               <IconGridHeader>BRISE Price</IconGridHeader>
               <IconGridSub>$ {parseFloat(data?.bundle?.ethPrice).toFixed(8) || `0`}</IconGridSub>
             </IconGridRowContainer>
-          </IconGrid>
+          </IconGrid> */}
           <IconGrid>
             <CgCircleci fontSize="3rem" />
             <IconGridRowContainer>
