@@ -67,12 +67,10 @@ const ASSETS_QUERY = gql`
       id
       name
       symbol
-      tradeVolumeUSD
-      untrackedVolumeUSD
-      totalLiquidity
-      tokenDayData(orderDirection: "desc", first: 1, orderBy: "date") {
+      tokenDayData(orderDirection: "asc", first: 1, orderBy: "date") {
         priceUSD
         totalLiquidityUSD
+        dailyVolumeUSD
       }
     }
   }
@@ -89,7 +87,7 @@ const TopTradingAssets = () => {
               <TableHeader>#</TableHeader>
               <TableHeader>Token</TableHeader>
               <TableHeader>Price</TableHeader>
-              <TableHeader>Volume</TableHeader>
+              <TableHeader>{`Volume (24H)`}</TableHeader>
               <TableHeader>Liquidity</TableHeader>
             </TableRow>
           </thead>
@@ -101,7 +99,7 @@ const TopTradingAssets = () => {
                   {token.name} ({token.symbol})
                 </TableRowItem>
                 <TableRowItem>$ {parseFloat(token?.tokenDayData[0]?.priceUSD || 0).toFixed(8)}</TableRowItem>
-                <TableRowItem>$ {parseFloat(token.untrackedVolumeUSD).toFixed(4)}</TableRowItem>
+                <TableRowItem>$ {parseFloat(token?.tokenDayData[0]?.dailyVolumeUSD).toFixed(4)}</TableRowItem>
                 <TableRowItem>$ {millify(parseFloat(token?.tokenDayData[0]?.totalLiquidityUSD || 0))}</TableRowItem>
               </TableRow>
             ))}
