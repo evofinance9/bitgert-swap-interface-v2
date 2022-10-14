@@ -87,7 +87,7 @@ const TopTradingAssets = () => {
               <TableHeader>#</TableHeader>
               <TableHeader>Token</TableHeader>
               <TableHeader>Price</TableHeader>
-              <TableHeader>{`Volume (24H)`}</TableHeader>
+              <TableHeader>Volume &#40;24H&#41;</TableHeader>
               <TableHeader>Liquidity</TableHeader>
             </TableRow>
           </thead>
