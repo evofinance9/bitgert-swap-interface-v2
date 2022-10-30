@@ -45,7 +45,7 @@ const TransactionDeadlineSetting = ({ translateString }: TransactionDeadlineSett
   return (
     <Box mb="16px">
       <Flex alignItems="center" mb="8px">
-        <Text bold>{translateString(90, 'Transaction deadline')}</Text>
+        <Text bold color="#000">{translateString(90, 'Transaction deadline')}</Text>
         <QuestionHelper
           text={translateString(188, 'Your transaction will revert if it is pending for more than this long.')}
         />

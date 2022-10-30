@@ -13,7 +13,7 @@ const config: MenuEntry[] = [
   },
   {
     label: 'Wallet',
-    icon: 'HamburgerIcon',
+    icon: 'WalletIcon',
     href: '/wallet',
   },
   {

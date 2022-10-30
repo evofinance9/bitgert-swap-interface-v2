@@ -5,21 +5,21 @@ import { ButtonMenu, ButtonMenuItem } from '@evofinance9/uikit'
 import useI18n from 'hooks/useI18n'
 
 const StyledNav = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 `
 
 function Nav({ activeIndex = 0 }: { activeIndex?: number }) {
   const TranslateString = useI18n()
   return (
     <StyledNav>
-      <ButtonMenu activeIndex={activeIndex} scale="sm" variant="subtle">
-        <ButtonMenuItem id="swap-nav-link" to="/swap" as={Link}>
+      <ButtonMenu activeIndex={activeIndex} scale="md" variant="primary">
+        <ButtonMenuItem id="swap-nav-link" to="/swap" as={Link} radius="6px" >
           {TranslateString(1142, 'Swap')}
         </ButtonMenuItem>
-        <ButtonMenuItem id="pool-nav-link" to="/pool" as={Link}>
+        <ButtonMenuItem id="pool-nav-link" to="/pool" as={Link} radius="6px">
           {TranslateString(262, 'Liquidity')}
         </ButtonMenuItem>
-        <ButtonMenuItem id="pool-nav-link" to="/reward" as={Link}>
+        <ButtonMenuItem id="pool-nav-link" to="/reward" as={Link} radius="6px">
           {TranslateString(262, 'Reward')}
         </ButtonMenuItem>
       </ButtonMenu>

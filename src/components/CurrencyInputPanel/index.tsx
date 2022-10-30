@@ -24,7 +24,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   font-size: 16px;
   font-weight: 500;
   background-color: transparent;
-  color: ${({ selected, theme }) => (selected ? theme.colors.text : '#FFFFFF')};
+  color: ${({ selected, theme }) => (selected ? theme.colors.textSubtle : '#FFFFFF')};
   border-radius: 12px;
   outline: none;
   cursor: pointer;
@@ -58,9 +58,10 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   position: relative;
-  border-radius: ${({ hideInput }) => (hideInput ? '8px' : '20px')};
+  border-radius: ${({ hideInput }) => (hideInput ? '6px' : '6px')};
   background-color: ${({ theme }) => theme.colors.background};
   z-index: 1;
+  border: 1px solid #001d6e1a;
 `
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: 16px;
@@ -113,9 +114,9 @@ export default function CurrencyInputPanel({
         {!hideInput && (
           <LabelRow>
             <RowBetween>
-              <Text fontSize="14px">{translatedLabel}</Text>
+              <Text fontSize="14px" color="textSubtle">{translatedLabel}</Text>
               {account && (
-                <Text onClick={onMax} fontSize="14px" style={{ display: 'inline', cursor: 'pointer' }}>
+                <Text onClick={onMax} fontSize="14px" style={{ display: 'inline', cursor: 'pointer' }} color="textSubtle">
                   {!hideBalance && !!currency && selectedCurrencyBalance
                     ? `Balance: ${selectedCurrencyBalance?.toSignificant(6)}`
                     : ' -'}
@@ -161,7 +162,7 @@ export default function CurrencyInputPanel({
                   {pair?.token0.symbol}:{pair?.token1.symbol}
                 </Text>
               ) : (
-                <Text id="pair">
+                <Text id="pair" color="#000">
                   {(currency && currency.symbol && currency.symbol.length > 20
                     ? `${currency.symbol.slice(0, 4)}...${currency.symbol.slice(
                         currency.symbol.length - 5,
@@ -170,7 +171,7 @@ export default function CurrencyInputPanel({
                     : currency?.symbol) || TranslateString(1196, 'Select a currency')}
                 </Text>
               )}
-              {!disableCurrencySelect && <ChevronDownIcon />}
+              {!disableCurrencySelect && <ChevronDownIcon color="#000" />}
             </Aligner>
           </CurrencySelect>
         </InputRow>

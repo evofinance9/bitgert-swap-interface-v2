@@ -54,7 +54,7 @@ const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString
       )}
       {account && chainId && sortedRecentTransactions.length === 0 && (
         <Flex justifyContent="center" flexDirection="column" alignItems="center">
-          <Text mb="8px" bold>
+          <Text mb="8px" bold color="#000">
             No recent transactions
           </Text>
           <Button variant="tertiary" scale="sm" onClick={onDismiss}>

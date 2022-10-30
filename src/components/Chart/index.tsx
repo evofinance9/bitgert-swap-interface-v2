@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 import { SWAP_API } from 'backend'
+import { Currency, Trade } from '@evofinance9/sdk'
 import { CardBody, Card, Input } from '@evofinance9/uikit'
 import { useQuery, gql } from '@apollo/client'
 import { createChart, ColorType } from 'lightweight-charts'
@@ -118,6 +119,7 @@ export default function Chart() {
     token1Price: string
     createdAtTimestamp: string
   } | null>(null)
+
 
   useEffect(() => {
     if (!priceData || priceData?.length === 0) return
