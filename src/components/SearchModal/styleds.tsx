@@ -37,9 +37,8 @@ export const SearchInput = styled.input`
   border: none;
   outline: none;
   border-radius: 20px;
-  color: ${({ theme }) => theme.colors.text};
-  border-style: solid;
-  border: 1px solid ${({ theme }) => theme.colors.tertiary};
+  color: ${({ theme }) => theme.colors.textSubtle};
+  border: 1px solid #001d6e1a;
   -webkit-appearance: none;
 
   font-size: 18px;
@@ -49,8 +48,9 @@ export const SearchInput = styled.input`
   }
   transition: border 100ms;
   :focus {
-    border: 1px solid ${({ theme }) => theme.colors.primary};
+    border: none;
     outline: none;
+    box-shadow: ${({ theme }) => theme.shadows.focus};
   }
 `
 export const Separator = styled.div`

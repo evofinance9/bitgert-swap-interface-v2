@@ -26,6 +26,7 @@ const StyledBalanceText = styled(Text)`
   overflow: hidden;
   max-width: 5rem;
   text-overflow: ellipsis;
+  color: #000;
 `
 
 const Tag = styled.div`
@@ -114,10 +115,10 @@ function CurrencyRow({
     >
       <CurrencyLogo currency={currency} size="24px" />
       <Column>
-        <Text title={currency.name}>{currency.symbol}</Text>
+        <Text title={currency.name} color="#000">{currency.symbol}</Text>
         <FadedSpan>
           {!isOnSelectedList && customAdded && !(currency instanceof WrappedTokenInfo) ? (
-            <Text>
+            <Text color="#000">
               Added by user
               <LinkStyledButton
                 onClick={(event) => {
@@ -130,7 +131,7 @@ function CurrencyRow({
             </Text>
           ) : null}
           {!isOnSelectedList && !customAdded && !(currency instanceof WrappedTokenInfo) ? (
-            <Text>
+            <Text color="#000">
               Found by address
               <LinkStyledButton
                 onClick={(event) => {
