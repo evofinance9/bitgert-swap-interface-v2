@@ -11,7 +11,7 @@ const ChartContainer = styled.div`
 
 const DAY_UPDATE_QUERY = gql`
   {
-    uniswapDayDatas {
+    uniswapDayDatas(skip: 50) {
       date
       totalLiquidityUSD
     }
@@ -32,7 +32,7 @@ const Liquidity = () => {
     const { uniswapDayDatas } = graphData
     const formattedData = uniswapDayDatas.map((uniswapDayData) => ({
       ...uniswapDayData,
-      liquidity: uniswapDayData.totalLiquidityUSD,
+      liquidity: parseFloat(uniswapDayData.totalLiquidityUSD).toFixed(4),
       date: moment.unix(uniswapDayData.date).format('DD MMM'),
     }))
     setData(formattedData)
@@ -56,7 +56,7 @@ const Liquidity = () => {
             <XAxis dataKey="date" strokeWidth={0} />
             <YAxis strokeWidth={0} />
             <Tooltip />
-            <Area type="monotone" dataKey="liquidity" stroke="#9a6aff" fill="#aa85f6" />
+            <Area type="monotone" dataKey="liquidity" stroke="#2669f5" fill="#f0f5ff" />
           </AreaChart>
         </ResponsiveContainer>
       )}

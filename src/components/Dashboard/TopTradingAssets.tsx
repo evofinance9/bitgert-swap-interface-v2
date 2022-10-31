@@ -6,13 +6,13 @@ import styled from 'styled-components'
 import Container from 'components/Container'
 
 const Column = styled.div`
-  background-color: #0e0e0e;
-  color: #fff;
+  background-color: #fff;
+  color: #000000de;
   padding: 1rem;
   margin: 0;
   width: 100%;
   height: 100%;
-  border-radius: 1rem;
+  border-radius: 6px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -20,15 +20,16 @@ const Column = styled.div`
 
 const TableHeader = styled.th`
   font-weight: 500;
-  padding: 0.7rem;
+  padding: 1rem;
+  text-align: start;
 `
 
 const TableRow = styled.tr`
-  border-bottom: 1px solid #3e3e3e;
+  border-bottom: 1px solid #e0e0e0;
 `
 
 const TableRowItem = styled.td`
-  padding: 0.7rem;
+  padding: 1rem;
 `
 
 const ASSETS_QUERY = gql`

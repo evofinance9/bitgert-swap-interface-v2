@@ -22,6 +22,7 @@ const StyledBalanceText = styled(Text)`
   overflow: hidden;
   max-width: 5rem;
   text-overflow: ellipsis;
+  color: #000;
 `
 
 function currencyKey(currency: Currency): string {
@@ -41,7 +42,7 @@ function CurrencyRow({ currency }: { currency: Currency }) {
     <MenuItem className={`token-item-${key}`}>
       <CurrencyLogo currency={currency} size="24px" />
       <Column>
-        <Text title={currency.name}>{currency.symbol}</Text>
+        <Text title={currency.name} color="#000">{currency.symbol}</Text>
       </Column>
       {/* <TokenTags currency={currency} /> */}
       <RowFixed style={{ justifySelf: 'flex-end' }}>

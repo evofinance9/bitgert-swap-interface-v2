@@ -1,87 +1,32 @@
 import React from 'react'
-import styled from 'styled-components'
 import millify from 'millify'
 import { useQuery, gql } from '@apollo/client'
+import { ChartIcon } from '@evofinance9/uikit'
 
-import { FaTractor, FaChartLine, FaMoneyCheckAlt } from 'react-icons/fa'
+import { FaChartLine } from 'react-icons/fa'
 
 import { CgCircleci } from 'react-icons/cg'
 import { IoFileTray } from 'react-icons/io5'
 
 import Banner from 'components/Banner'
-import Container from 'components/Container'
 import Liquidity from 'components/Chart/Liquidity'
 import TopTradingAssets from 'components/Dashboard/TopTradingAssets'
 
-const ContainerExtended = styled(Container)`
-  display: grid;
-  padding: 1rem;
-  grid-column-gap: 1rem;
-  grid-template-columns: 1fr 3fr;
-  grid-auto-rows: 1fr;
-  ${({ theme }) => theme.mediaQueries.xs} {
-    grid-template-columns: 1fr;
-  }
-
-  ${({ theme }) => theme.mediaQueries.md} {
-    grid-template-columns: 1fr 3fr;
-  }
-
-  ${({ theme }) => theme.mediaQueries.lg} {
-    grid-template-columns: 1fr 3fr;
-  }
-`
-
-const Column = styled.div`
-  background-color: #0e0e0e;
-  color: #fff;
-  padding: 1rem;
-  margin: 0;
-  height: 100%;
-  border-radius: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
-
-const BannerContainer = styled.div`
-  padding: 1rem;
-  margin-top: 1rem;
-`
-
-const BannerWrapper = styled.div`
-  margin: 40px 0;
-  border-radius: 5px 5px 0px 5px;
-  overflow: hidden;
-`
-
-const IconGrid = styled.div`
-  background-color: #151212;
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 1rem;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  gap: 1rem;
-`
-
-const IconGridRowContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`
-
-const IconGridHeader = styled.span`
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #fff;
-`
-const IconGridSub = styled.span`
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #f9d849;
-`
+import {
+  ContainerExtended,
+  Column,
+  BannerContainer,
+  BannerWrapper,
+  IconGrid,
+  IconGridRowContainer,
+  IconGridHeader,
+  IconGridSub,
+  IconGridContainer,
+  ChartContainer,
+  SidebarContainer,
+  IconWrapper,
+  ColumnHeader,
+} from './styleds'
 
 const FACTORY_QUERY = gql`
   {
@@ -113,47 +58,46 @@ const Dashboard = () => {
       </BannerContainer>
       <ContainerExtended>
         <Column>
-          {/* <IconGrid>
-          <FaTractor fontSize="3rem" />
-          <IconGridRowContainer>
-            <IconGridHeader>Farming APY</IconGridHeader>
-            <IconGridSub>upto NaN%</IconGridSub>
-          </IconGridRowContainer>
-        </IconGrid> */}
-          <IconGrid>
-            <FaChartLine fontSize="3rem" />
-            <IconGridRowContainer>
-              <IconGridHeader>Total Liquidity</IconGridHeader>
-              <IconGridSub>$ {millify(parseFloat(data?.uniswapFactory?.totalLiquidityUSD)) || `0`} </IconGridSub>
-            </IconGridRowContainer>
-          </IconGrid>
-          {/* <IconGrid>
-            <FaMoneyCheckAlt fontSize="3rem" />
-            <IconGridRowContainer>
-              <IconGridHeader>BRISE Price</IconGridHeader>
-              <IconGridSub>$ {parseFloat(data?.bundle?.ethPrice).toFixed(8) || `0`}</IconGridSub>
-            </IconGridRowContainer>
-          </IconGrid> */}
-          <IconGrid>
-            <CgCircleci fontSize="3rem" />
-            <IconGridRowContainer>
-              <IconGridHeader>Total Volume</IconGridHeader>
-              <IconGridSub>{millify(parseFloat(data?.uniswapFactory?.totalVolumeETH)) || `0`} BRISE</IconGridSub>
-            </IconGridRowContainer>
-          </IconGrid>
-          <IconGrid>
-            <IoFileTray fontSize="3rem" />
-            <IconGridRowContainer>
-              <IconGridHeader>Circulating Supply</IconGridHeader>
-              <IconGridSub>{millify(parseFloat(data?.token?.totalLiquidity)) || `0`} BTS</IconGridSub>
-            </IconGridRowContainer>
-          </IconGrid>
+          <SidebarContainer />
         </Column>
 
         <Column>
-          <IconGridHeader>Liquidity</IconGridHeader>
+          <IconGridContainer>
+            <IconGrid>
+              <IconWrapper>
+                <ChartIcon />
+              </IconWrapper>
+              <IconGridRowContainer>
+                <IconGridHeader>Total Liquidity</IconGridHeader>
+                <IconGridSub>$ {millify(parseFloat(data?.uniswapFactory?.totalLiquidityUSD)) || `0`} </IconGridSub>
+              </IconGridRowContainer>
+            </IconGrid>
 
-          <Liquidity />
+            <IconGrid>
+              <IconWrapper>
+                <ChartIcon />
+              </IconWrapper>
+              <IconGridRowContainer>
+                <IconGridHeader>Total Volume</IconGridHeader>
+                <IconGridSub>{millify(parseFloat(data?.uniswapFactory?.totalVolumeETH)) || `0`} BRISE</IconGridSub>
+              </IconGridRowContainer>
+            </IconGrid>
+            <IconGrid>
+              <IconWrapper>
+                <ChartIcon />
+              </IconWrapper>
+              <IconGridRowContainer>
+                <IconGridHeader>Circulating Supply</IconGridHeader>
+                <IconGridSub>{millify(parseFloat(data?.token?.totalLiquidity)) || `0`} BTS</IconGridSub>
+              </IconGridRowContainer>
+            </IconGrid>
+          </IconGridContainer>
+
+          <ChartContainer>
+            <ColumnHeader>Liquidity</ColumnHeader>
+
+            <Liquidity />
+          </ChartContainer>
         </Column>
       </ContainerExtended>
 

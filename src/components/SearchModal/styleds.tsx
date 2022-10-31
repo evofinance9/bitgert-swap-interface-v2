@@ -36,7 +36,7 @@ export const SearchInput = styled.input`
   background: none;
   border: none;
   outline: none;
-  border-radius: 20px;
+  border-radius: 6px;
   color: ${({ theme }) => theme.colors.textSubtle};
   border: 1px solid #001d6e1a;
   -webkit-appearance: none;
