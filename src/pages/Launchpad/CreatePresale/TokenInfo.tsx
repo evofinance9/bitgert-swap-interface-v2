@@ -1,8 +1,10 @@
 /* eslint-disable */
 import React, { useEffect } from 'react'
-import { CardBody, Input } from '@evofinance9/uikit'
+import { CardBody } from '@evofinance9/uikit'
 
 import { useToken } from 'hooks/Tokens'
+
+import { InputExtended } from './styleds'
 
 interface FormComponentProps {
   handleChange: (params: any) => any
@@ -26,30 +28,31 @@ export default function TokenInfo({ handleChange, data, handleChangeWithoutEvent
 
   return (
     <CardBody>
-      <Input
+      <InputExtended
         placeholder="Token Address"
         className="mt-3"
         value={token_address}
         scale="lg"
         onChange={handleChange('token_address')}
       />
-      <Input
+      <InputExtended
         placeholder="Token Name"
         scale="lg"
         className="mt-3"
         value={token_name}
         onChange={handleChange('token_name')}
       />
-      <Input
+      <InputExtended
         placeholder="Token Symbol"
         scale="lg"
         className="mt-3"
         value={token_symbol}
         onChange={handleChange('token_symbol')}
       />
-      <Input
+      <InputExtended
         placeholder="Token Decimal"
         className="mt-3"
+        type="number"
         scale="lg"
         value={token_decimal}
         onChange={handleChange('token_decimal')}

@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React from 'react'
-import { CardBody, Input } from '@evofinance9/uikit'
+import { CardBody } from '@evofinance9/uikit'
+import { InputExtended, Flex } from './styleds'
 
 interface FormComponentProps {
   handleChange: (params: any) => any
@@ -20,77 +21,50 @@ export default function PresaleRate({ handleChange, data }: FormComponentProps) 
 
   return (
     <CardBody>
-      <div className="row">
-        <div className="col-md-6 mb-3">
-          <Input
-            placeholder="Soft Cap *(BRISE)"
-            className="mt-3"
-            scale="lg"
-            value={soft_cap}
-            onChange={handleChange('soft_cap')}
-          />
-        </div>
+      <Flex>
+        <InputExtended
+          placeholder="Soft Cap *(BRISE)"
+          scale="lg"
+          type="number"
+          value={soft_cap}
+          onChange={handleChange('soft_cap')}
+        />
 
-        <div className="col-md-6 mb-3">
-          <Input
-            placeholder="Hard Cap *(BRISE)"
-            className="mt-3"
-            scale="lg"
-            value={hard_cap}
-            onChange={handleChange('hard_cap')}
-          />
-        </div>
+        <InputExtended
+          placeholder="Hard Cap *(BRISE)"
+          className="mt-3"
+          scale="lg"
+          type="number"
+          value={hard_cap}
+          onChange={handleChange('hard_cap')}
+        />
+      </Flex>
 
-        <div className="col-md-6 mb-3">
-          <Input
-            placeholder="Tier 1 *(Per BRISE)"
-            className="mt-3"
-            scale="lg"
-            value={tier1}
-            onChange={handleChange('tier1')}
-          />
-        </div>
+      <Flex>
+        <InputExtended type="number" placeholder="Tier 1 *(Per BRISE)" scale="lg" value={tier1} onChange={handleChange('tier1')} />
 
-        <div className="col-md-6 mb-3">
-          <Input
-            placeholder="Tier 2 *(Per BRISE)"
-            className="mt-3"
-            scale="lg"
-            value={tier2}
-            onChange={handleChange('tier2')}
-          />
-        </div>
+        <InputExtended type="number" placeholder="Tier 2 *(Per BRISE)" scale="lg" value={tier2} onChange={handleChange('tier2')} />
 
-        <div className="col-md-12 mb-3">
-          <Input
-            placeholder="Public *(Per BRISE)"
-            className="mt-3"
-            scale="lg"
-            value={tier3}
-            onChange={handleChange('tier3')}
-          />
-        </div>
+        <InputExtended type="number" placeholder="Public *(Per BRISE)" scale="lg" value={tier3} onChange={handleChange('tier3')} />
+      </Flex>
 
-        <div className="col-md-6 mb-3">
-          <Input
-            placeholder="Min Buy *(Per BRISE)"
-            className="mt-3"
-            scale="lg"
-            value={min_buy}
-            onChange={handleChange('min_buy')}
-          />
-        </div>
+      <Flex>
+        <InputExtended
+          placeholder="Min Buy *(Per BRISE)"
+          scale="lg"
+          type="number"
+          value={min_buy}
+          onChange={handleChange('min_buy')}
+        />
 
-        <div className="col-md-6 mb-3">
-          <Input
-            placeholder="Max Buy *(Per BRISE)"
-            className="mt-3"
-            scale="lg"
-            value={max_buy}
-            onChange={handleChange('max_buy')}
-          />
-        </div>
-      </div>
+        <InputExtended
+          placeholder="Max Buy *(Per BRISE)"
+          scale="lg"
+          type="number"
+          value={max_buy}
+          onChange={handleChange('max_buy')}
+        />
+      </Flex>
     </CardBody>
   )
 }

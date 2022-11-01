@@ -6,7 +6,7 @@ import Stepper from 'react-stepper-horizontal'
 import { ethers } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { Button, CardHeader, CardBody } from '@evofinance9/uikit'
+import { Button, CardHeader, CardBody, Flex } from '@evofinance9/uikit'
 import { TransactionResponse } from '@ethersproject/providers'
 import Container from 'components/Container'
 
@@ -21,21 +21,20 @@ import addPresale from './apicalls'
 import { ROUTER_ADDRESS } from 'constants/index'
 import Tooltip from 'components/Tooltip'
 import { useActiveWeb3React } from 'hooks'
-import { usePresaleContract, useDateTimeContract } from 'hooks/useContract'
+import { usePresaleContract } from 'hooks/useContract'
 import { getPresaleContract } from 'utils'
-import getUnixTimestamp from 'utils/getUnixTimestamp'
 
 import './style.css'
 import { AppBodyExtended } from 'pages/AppBody'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { FaInfoCircle } from 'react-icons/fa'
 
+import { Heading, ButtonContainer } from './styleds'
+
 export default function CreatePresale() {
   const { account, chainId, library } = useActiveWeb3React()
   const presaleContract = usePresaleContract(true)
-  const dateTimeContract = useDateTimeContract()
 
-  const [currentSaleId, setCurrentSaleId] = useState(0)
   const [txHash, setTxHash] = useState<string>('')
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
@@ -364,12 +363,14 @@ export default function CreatePresale() {
     <>
       <Container>
         <AppBodyExtended>
-          <CardHeader className="d-flex justify-content-between">
-            <span>Create Presale</span>
+          <CardHeader>
+            <Flex alignItems={'center'} justifyContent={'space-between'}>
+              <Heading>Create Presale</Heading>
 
-            <Tooltip show={feeTooltip} placement="right" text="Fee: 20000000 BRISE">
-              <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
-            </Tooltip>
+              <Tooltip show={feeTooltip} placement="right" text="Fee: 20000000 BRISE">
+                <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
+              </Tooltip>
+            </Flex>
           </CardHeader>
           <CardBody>
             {txHash && (
@@ -385,14 +386,15 @@ export default function CreatePresale() {
             <Stepper
               steps={steps}
               activeStep={currentStep}
-              completeTitleColor="#fff"
-              activeTitleColor="#fff"
-              completeColor="#F9D849"
-              activeColor="#F9D849"
-              completeBarColor="#F9D849"
+              completeTitleColor="#000"
+              activeTitleColor="#000"
+              completeColor="#2669f5"
+              activeColor="#2669f5"
+              completeBarColor="#2669f5"
+              titleFontSize="14px"
             />
 
-            <div className=" text-white mb-5  ">
+            <div>
               <form>
                 {currentStep === 0 && (
                   <TokenInfo
@@ -407,8 +409,8 @@ export default function CreatePresale() {
                 {currentStep === 4 && <Timing data={formData} handleChange={handleDateChange} />}
               </form>
 
-              <div className="d-flex justify-content-center gap-3 mt-3">
-                <Button variant="subtle" className="mx-2" onClick={onClickPrev}>
+              <ButtonContainer>
+                <Button variant="tertiary" onClick={onClickPrev}>
                   Prev
                 </Button>
 
@@ -417,7 +419,7 @@ export default function CreatePresale() {
                 ) : (
                   <Button onClick={onClickNext}>Next</Button>
                 )}
-              </div>
+              </ButtonContainer>
             </div>
           </CardBody>
         </AppBodyExtended>

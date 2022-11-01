@@ -1,12 +1,10 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import swal from 'sweetalert'
-import { Button, CardBody, Input, CardHeader } from '@evofinance9/uikit'
+import { Button, CardBody, CardHeader, Flex } from '@evofinance9/uikit'
 import { ethers } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { DateTimePicker } from '@material-ui/pickers'
-import { TextField, withStyles } from '@material-ui/core'
 import { TransactionResponse } from '@ethersproject/providers'
 
 import { FaInfoCircle } from 'react-icons/fa'
@@ -15,7 +13,6 @@ import addAirdrop from './apicalls'
 
 import { useAirdropContract, useDateTimeContract } from 'hooks/useContract'
 import { getAirdropContract, getTokenContract } from 'utils'
-import getUnixTimestamp from 'utils/getUnixTimestamp'
 
 import './style.css'
 import { AppBodyExtended } from 'pages/AppBody'
@@ -26,38 +23,11 @@ import Container from 'components/Container'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import Tooltip from 'components/Tooltip'
 
-const CssTextField = withStyles({
-  root: {
-    '&': {
-      border: 'red',
-      borderRadius: '16px',
-    },
-    '& label.Mui-focused': {
-      color: '#aaa',
-    },
-
-    '& .MuiInputBase-input': {
-      color: '#F4EEFF',
-      backgroundColor: '#18191A',
-      borderRadius: '16px',
-      boxShadow: 'inset 0px 2px 2px -1px rgb(74 74 104 / 10%)',
-      display: 'block',
-      fontSize: '16px',
-      height: '48px',
-      outline: '0',
-      padding: '0 16px',
-    },
-    '& .MuiInputBase-input:focus': {
-      boxShadow: '0px 0px 0px 1px #7645D9,0px 0px 0px 4pxrgba(118,69,217,0.6)',
-    },
-  },
-})(TextField)
+import { InputExtended, Heading, InputExtension, Flex as FlexExtended, TextArea, ButtonContainer } from './styleds'
 
 export default function Airdrop() {
   const { account, chainId, library } = useActiveWeb3React()
   const airdropContract = useAirdropContract(true)
-
-  const dateTimeContract = useDateTimeContract()
 
   const [txHash, setTxHash] = useState<string>('')
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
@@ -239,214 +209,159 @@ export default function Airdrop() {
               pendingText={''}
             />
           )}
-          <CardHeader className="d-flex justify-content-between">
-            Create Airdrop
-            <Tooltip show={feeTooltip} placement="right" text="Fee: 2000000 BRISE">
-              <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
-            </Tooltip>
+          <CardHeader>
+            <Flex alignItems={'center'} justifyContent={'space-between'}>
+              <Heading>Create Airdrop</Heading>
+
+              <Tooltip show={feeTooltip} placement="right" text="Fee: 2000000 BRISE">
+                <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
+              </Tooltip>
+            </Flex>
           </CardHeader>
           <CardBody>
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Address"
-                  className="mt-3"
-                  scale="lg"
-                  value={token_address}
-                  onChange={handleChange('token_address')}
-                />
-              </div>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Token Address"
+                scale="lg"
+                value={token_address}
+                onChange={handleChange('token_address')}
+              />
+              <InputExtended
+                placeholder="Token Name"
+                scale="lg"
+                value={token_name}
+                onChange={handleChange('token_name')}
+              />
+            </FlexExtended>
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Name"
-                  scale="lg"
-                  className="mt-3"
-                  value={token_name}
-                  onChange={handleChange('token_name')}
-                />
-              </div>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Token Symbol"
+                scale="lg"
+                value={token_symbol}
+                onChange={handleChange('token_symbol')}
+              />
+              <InputExtended
+                placeholder="Token Decimal"
+                scale="lg"
+                value={token_decimal}
+                onChange={handleChange('token_decimal')}
+              />
+            </FlexExtended>
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Symbol"
-                  scale="lg"
-                  className="mt-3"
-                  value={token_symbol}
-                  onChange={handleChange('token_symbol')}
-                />
-              </div>
+            <InputExtended placeholder="Airdrop Title" scale="lg" value={title} onChange={handleChange('title')} />
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Decimal"
-                  className="mt-3"
-                  scale="lg"
-                  value={token_decimal}
-                  onChange={handleChange('token_decimal')}
-                />
-              </div>
+            <Flex alignItems="center">
+              <InputExtended
+                placeholder="Airdrop Addresses"
+                scale="lg"
+                value={addresses_to}
+                onChange={handleChange('addresses_to')}
+              />
+              <InputExtension>
+                <Tooltip
+                  show={allowcationTooltip}
+                  placement="right"
+                  text="Allocation addresses must be comma-separated"
+                >
+                  <FaInfoCircle
+                    onMouseEnter={() => setAllowcationTooltip(true)}
+                    onMouseLeave={() => setAllowcationTooltip(false)}
+                  />
+                </Tooltip>
+              </InputExtension>
+            </Flex>
 
-              <div className="col-md-12 mb-3">
-                <Input
-                  placeholder="Airdrop Title"
-                  className="mt-3"
-                  scale="lg"
-                  value={title}
-                  onChange={handleChange('title')}
-                />
-              </div>
+            <Flex alignItems="center">
+              <InputExtended
+                placeholder="Airdrop Amounts"
+                scale="lg"
+                value={amounts_to}
+                onChange={handleChange('amounts_to')}
+              />
+              <InputExtension>
+                <Tooltip
+                  show={allowcationAmountTooltip}
+                  placement="right"
+                  text="Allocation amounts must be comma-separated"
+                >
+                  <FaInfoCircle
+                    onMouseEnter={() => setAllowcationAmountTooltip(true)}
+                    onMouseLeave={() => setAllowcationAmountTooltip(false)}
+                  />
+                </Tooltip>
+              </InputExtension>
+            </Flex>
 
-              <div className="col-md-12 mb-3">
-                <div className="row">
-                  <div className="col-md-11">
-                    <Input
-                      placeholder="Airdrop Addresses"
-                      className="mt-3"
-                      scale="lg"
-                      value={addresses_to}
-                      onChange={handleChange('addresses_to')}
-                    />
-                  </div>
-                  <div className="col-md-1 d-flex align-items-center justify-content-center">
-                    <Tooltip
-                      show={allowcationTooltip}
-                      placement="right"
-                      text="Allocation addresses must be comma-separated"
-                    >
-                      <FaInfoCircle
-                        onMouseEnter={() => setAllowcationTooltip(true)}
-                        onMouseLeave={() => setAllowcationTooltip(false)}
-                      />
-                    </Tooltip>
-                  </div>
-                </div>
-              </div>
+            <FlexExtended>
+              <InputExtended placeholder="Logo URL" scale="lg" value={logo_url} onChange={handleChange('logo_url')} />
 
-              <div className="col-md-12 mb-3">
-                <div className="row">
-                  <div className="col-md-11">
-                    <Input
-                      placeholder="Airdrop Amounts"
-                      className="mt-3"
-                      scale="lg"
-                      value={amounts_to}
-                      onChange={handleChange('amounts_to')}
-                    />
-                  </div>
-                  <div className="col-md-1 d-flex align-items-center justify-content-center">
-                    <Tooltip
-                      show={allowcationAmountTooltip}
-                      placement="right"
-                      text="Allocation amounts must be comma-separated"
-                    >
-                      <FaInfoCircle
-                        onMouseEnter={() => setAllowcationAmountTooltip(true)}
-                        onMouseLeave={() => setAllowcationAmountTooltip(false)}
-                      />
-                    </Tooltip>
-                  </div>
-                </div>
-              </div>
+              <InputExtended
+                placeholder="Website"
+                scale="lg"
+                value={website_url}
+                onChange={handleChange('website_url')}
+              />
+            </FlexExtended>
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Logo URL"
-                  scale="lg"
-                  className="mt-3"
-                  value={logo_url}
-                  onChange={handleChange('logo_url')}
-                />
-              </div>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Twiiter URL"
+                scale="lg"
+                value={twitter_url}
+                onChange={handleChange('twitter_url')}
+              />
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Website"
-                  className="mt-3"
-                  scale="lg"
-                  value={website_url}
-                  onChange={handleChange('website_url')}
-                />
-              </div>
+              <InputExtended
+                placeholder="Instagram URL"
+                scale="lg"
+                value={instagram_url}
+                onChange={handleChange('instagram_url')}
+              />
+            </FlexExtended>
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Twiiter URL"
-                  className="mt-3"
-                  scale="lg"
-                  value={twitter_url}
-                  onChange={handleChange('twitter_url')}
-                />
-              </div>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Telegram URL"
+                scale="lg"
+                value={telegram_url}
+                onChange={handleChange('telegram_url')}
+              />
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Instagram URL"
-                  className="mt-3"
-                  scale="lg"
-                  value={instagram_url}
-                  onChange={handleChange('instagram_url')}
-                />
-              </div>
+              <InputExtended
+                placeholder="Discord URL"
+                scale="lg"
+                value={discord_url}
+                onChange={handleChange('discord_url')}
+              />
+            </FlexExtended>
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Telegram URL"
-                  className="mt-3"
-                  scale="lg"
-                  value={telegram_url}
-                  onChange={handleChange('telegram_url')}
-                />
-              </div>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Reddit URL"
+                scale="lg"
+                value={reddit_url}
+                onChange={handleChange('reddit_url')}
+              />
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Discord URL"
-                  className="mt-3"
-                  scale="lg"
-                  value={discord_url}
-                  onChange={handleChange('discord_url')}
-                />
-              </div>
+              <InputExtended
+                placeholder="Github URL"
+                scale="lg"
+                value={github_url}
+                onChange={handleChange('github_url')}
+              />
+            </FlexExtended>
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Reddit URL"
-                  className="mt-3"
-                  scale="lg"
-                  value={reddit_url}
-                  onChange={handleChange('reddit_url')}
-                />
-              </div>
+            <FlexExtended></FlexExtended>
 
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Github URL"
-                  className="mt-3"
-                  scale="lg"
-                  value={github_url}
-                  onChange={handleChange('github_url')}
-                />
-              </div>
-
-              <div className="col-md-12 mb-3">
-                <Input
-                  placeholder="Description"
-                  className="mt-3"
-                  scale="lg"
-                  value={description}
-                  onChange={handleChange('description')}
-                />
-              </div>
-            </div>
+            <TextArea placeholder="Description" rows={5} value={description} onChange={handleChange('description')} />
           </CardBody>
 
-          <div className="d-flex justify-content-center  mb-5">
+          <ButtonContainer>
             <Button onClick={handleSubmit}>Submit</Button>
-          </div>
+          </ButtonContainer>
         </AppBodyExtended>
       </Container>
-      <div className="mt-5"> </div>
     </>
   )
 }

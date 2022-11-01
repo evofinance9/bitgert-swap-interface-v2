@@ -1,11 +1,9 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
-import swal from 'sweetalert'
-import styled from 'styled-components'
 import { ethers, BigNumber as BN } from 'ethers'
 import { TransactionResponse } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Button, CardHeader, CardBody, Input } from '@evofinance9/uikit'
+import { Button, CardHeader, CardBody, Flex } from '@evofinance9/uikit'
 
 import { useActiveWeb3React } from 'hooks'
 import { getTokenCreatorContract, bnMultiplyByDecimal } from 'utils'
@@ -17,14 +15,7 @@ import Tooltip from 'components/Tooltip'
 
 import { AppBodyExtended } from 'pages/AppBody'
 
-const List = styled.div`
-  margin: 0;
-  padding: 1rem;
-`
-
-const ListItem = styled.p`
-  padding: 0.5rem;
-`
+import { InputExtended, Heading, ButtonContainer, List, ListItem } from './styleds'
 
 const CreateToken = () => {
   const { account, chainId, library } = useActiveWeb3React()
@@ -114,22 +105,25 @@ const CreateToken = () => {
             hash={txHash}
             content={() => (
               <>
-                <p>Token Address 0xEb274651Af1Bffb1539d700DAF0BC5035062Fd8B</p>
+                <p>Token Address </p>
               </>
             )}
             pendingText={''}
           />
         )}
         <AppBodyExtended>
-          <CardHeader className="d-flex justify-content-between">
-            Create BRC20 Token
-            <Tooltip show={feeTooltip} placement="right" text="Fee: 200000000 BRISE">
-              <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
-            </Tooltip>
+          <CardHeader>
+            <Flex alignItems={'center'} justifyContent={'space-between'}>
+              <Heading>Create BRC20 Token</Heading>
+              <Tooltip show={feeTooltip} placement="right" text="Fee: 200000000 BRISE">
+                <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
+              </Tooltip>
+            </Flex>
           </CardHeader>
+
           <CardBody>
             {success ? (
-              <div className="row">
+              <div>
                 <div className="col-md-6 mb-3">
                   <List>
                     <ListItem>Token: {tokenAddress}</ListItem>
@@ -141,56 +135,47 @@ const CreateToken = () => {
                 </div>
               </div>
             ) : (
-              <div className="row">
-                <div className="col-md-12 mb-3">
-                  <Input
-                    placeholder="Name"
-                    className="mt-3"
-                    scale="lg"
-                    value={token_name}
-                    onChange={handleChange('token_name')}
-                  />
-                </div>
+              <>
+                <InputExtended
+                  placeholder="Name"
+                  className="mt-3"
+                  scale="lg"
+                  value={token_name}
+                  onChange={handleChange('token_name')}
+                />
 
-                <div className="col-md-12 mb-3">
-                  <Input
-                    placeholder="Symbol"
-                    className="mt-3"
-                    scale="lg"
-                    value={token_symbol}
-                    onChange={handleChange('token_symbol')}
-                  />
-                </div>
+                <InputExtended
+                  placeholder="Symbol"
+                  className="mt-3"
+                  scale="lg"
+                  value={token_symbol}
+                  onChange={handleChange('token_symbol')}
+                />
 
-                <div className="col-md-12 mb-3">
-                  <Input
-                    placeholder="Decimals"
-                    className="mt-3"
-                    scale="lg"
-                    value={token_decimal}
-                    onChange={handleChange('token_decimal')}
-                  />
-                </div>
+                <InputExtended
+                  placeholder="Decimals"
+                  className="mt-3"
+                  scale="lg"
+                  value={token_decimal}
+                  onChange={handleChange('token_decimal')}
+                />
 
-                <div className="col-md-12 mb-3">
-                  <Input
-                    placeholder="Total supply"
-                    className="mt-3"
-                    scale="lg"
-                    value={total_supply}
-                    onChange={handleChange('total_supply')}
-                  />
-                </div>
+                <InputExtended
+                  placeholder="Total supply"
+                  className="mt-3"
+                  scale="lg"
+                  value={total_supply}
+                  onChange={handleChange('total_supply')}
+                />
 
-                <div className="col-md-12 p-2 mb-3 d-flex justify-content-center">
+                <ButtonContainer>
                   <Button onClick={createToken}>Create Token</Button>
-                </div>
-              </div>
+                </ButtonContainer>
+              </>
             )}
           </CardBody>
         </AppBodyExtended>
       </Container>
-      <div className="mt-5" />
     </>
   )
 }
