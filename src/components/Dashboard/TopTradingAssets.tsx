@@ -68,7 +68,7 @@ const ASSETS_QUERY = gql`
       id
       name
       symbol
-      tokenDayData(orderDirection: "asc", first: 1, orderBy: "date") {
+      tokenDayData(orderDirection: "desc", first: 1, orderBy: "date") {
         priceUSD
         totalLiquidityUSD
         dailyVolumeUSD

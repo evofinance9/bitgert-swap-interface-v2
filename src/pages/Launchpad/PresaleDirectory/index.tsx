@@ -43,12 +43,12 @@ export default function PresaleDirectory() {
             <Oval
               height={80}
               width={80}
-              color="#f9d849"
+              color="#2669f5"
               wrapperStyle={{}}
               wrapperClass=""
               visible={true}
               ariaLabel="oval-loading"
-              secondaryColor="#f4d85b"
+              secondaryColor="#4a81f8"
               strokeWidth={2}
               strokeWidthSecondary={2}
             />
@@ -56,7 +56,12 @@ export default function PresaleDirectory() {
         )}
         <StyledCardContainer>
           {presales.map((presale) => (
+            <>
             <PresaleCard data={presale} key={presale._id} />
+            <PresaleCard data={presale} key={presale._id} />
+            <PresaleCard data={presale} key={presale._id} />
+            <PresaleCard data={presale} key={presale._id} />
+            </>
           ))}
         </StyledCardContainer>
       </Container>

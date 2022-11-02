@@ -14,6 +14,7 @@ import { SwapShowAcceptChanges } from './styleds'
 const PriceInfoText = styled(Text)`
   font-style: italic;
   line-height: 1.3;
+  color: #000;
 
   span {
     color: ${({ theme }) => theme.colors.primary};

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import swal from 'sweetalert'
-import { Button, CardHeader, CardBody, Input } from '@evofinance9/uikit'
+import { Button, CardHeader, CardBody, Checkbox as CheckboxUI } from '@evofinance9/uikit'
 import { DateTimePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
 import { Checkbox, useCheckboxState } from 'pretty-checkbox-react'
@@ -10,14 +10,12 @@ import moment from 'moment'
 
 import { ethers } from 'ethers'
 
-import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 
 import addBitgertLock from './apicalls'
 
-import { useBitgertLockContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
+import { useBitgertLockContract, useDateTimeContract } from 'hooks/useContract'
 import { getBitgertLockContract, getTokenContract } from 'utils'
-import getUnixTimestamp from 'utils/getUnixTimestamp'
 
 import './style.css'
 
@@ -29,29 +27,34 @@ import TransactionConfirmationModal from 'components/TransactionConfirmationModa
 import { AppBodyExtended } from 'pages/AppBody'
 import { LOCK_ADDRESS } from 'constants/abis/lock'
 
+import { InputExtended, Heading, CheckboxContainer, Flex, ButtonContainer, TextArea } from './styleds'
+
 const CssTextField = withStyles({
   root: {
     '&': {
-      border: 'red',
-      borderRadius: '16px',
+      borderRadius: '6px',
+      margin: '1rem 0',
     },
     '& label.Mui-focused': {
       color: '#aaa',
     },
+    '& label': {
+      color: '#000',
+    },
 
     '& .MuiInputBase-input': {
-      color: '#F4EEFF',
-      backgroundColor: '#18191A',
-      borderRadius: '16px',
-      boxShadow: 'inset 0px 2px 2px -1px rgb(74 74 104 / 10%)',
+      color: '#000',
+      backgroundColor: '#fff',
+      borderRadius: '6px',
       display: 'block',
       fontSize: '16px',
       height: '48px',
       outline: '0',
+      borderColor: '#2669f5',
       padding: '0 16px',
     },
-    '& .MuiInputBase-input:focus': {
-      boxShadow: '0px 0px 0px 1px #7645D9,0px 0px 0px 4pxrgba(118,69,217,0.6)',
+    '& .MuiInputBase-input:active': {
+      border: '0',
     },
   },
 })(TextField)
@@ -319,7 +322,9 @@ export default function Locker() {
     <>
       <Container>
         <AppBodyExtended>
-          <CardHeader>Lock Your Token</CardHeader>
+          <CardHeader>
+            <Heading>Lock Your Token</Heading>
+          </CardHeader>
           {txHash && (
             <TransactionConfirmationModal
               isOpen={true}
@@ -331,228 +336,157 @@ export default function Locker() {
             />
           )}
 
-          <div className=" text-white mb-5  ">
-            <CardBody>
-              <div className="row">
-                <div className="col-md-12 mb-3">
-                  <Input
-                    placeholder="Token or LP Token address"
-                    className="mt-3"
+          <CardBody>
+            <InputExtended
+              placeholder="Token or LP Token address"
+              scale="lg"
+              type="text"
+              value={token_address}
+              onChange={handleChange('token_address')}
+            />
+
+            <Flex>
+              <InputExtended
+                placeholder="Token Name"
+                scale="lg"
+                type="text"
+                value={token_name}
+                onChange={handleChange('token_name')}
+              />
+
+              <InputExtended
+                placeholder="Token Symbol"
+                scale="lg"
+                type="text"
+                value={token_symbol}
+                onChange={handleChange('token_symbol')}
+              />
+            </Flex>
+
+            <Flex>
+              <InputExtended
+                placeholder="Token Decimal"
+                scale="lg"
+                type="number"
+                value={token_decimal}
+                onChange={handleChange('token_decimal')}
+              />
+            </Flex>
+
+            <Flex>
+              <CheckboxContainer>
+                <CheckboxUI
+                  id="isLPToken_checbox"
+                  scale="sm"
+                  checked={isLPToken}
+                  onChange={handleChange('isLPToken')}
+                />
+
+                <label htmlFor="isLPToken_checbox">use LP token?</label>
+              </CheckboxContainer>
+
+              <CheckboxContainer>
+                <CheckboxUI
+                  id="is_another_checbox"
+                  scale="sm"
+                  checked={is_another}
+                  onChange={handleChange('is_another')}
+                />
+
+                <label htmlFor="is_another_checbox">use another owner?</label>
+              </CheckboxContainer>
+            </Flex>
+
+            {is_another && (
+              <InputExtended
+                placeholder="Owner Address"
+                scale="lg"
+                value={owner_address}
+                onChange={handleChange('owner_address')}
+              />
+            )}
+
+            <InputExtended placeholder="Lock Title" scale="lg" value={title} onChange={handleChange('title')} />
+
+            <CheckboxContainer>
+              <CheckboxUI
+                id="is_vesting_checbox"
+                scale="sm"
+                checked={is_vesting}
+                onChange={handleChange('is_vesting')}
+              />
+
+              <label htmlFor="is_vesting_checbox">use vesting?</label>
+            </CheckboxContainer>
+
+            {!is_vesting && (
+              <DateTimePicker
+                size="small"
+                color="primary"
+                label="Lock until (UTC time)"
+                fullWidth
+                inputVariant="outlined"
+                value={release_date}
+                onChange={(date) => {
+                  handleDateChange('release_date', date)
+                }}
+                TextFieldComponent={(params) => {
+                  return <CssTextField {...params} />
+                }}
+              />
+            )}
+
+            {is_vesting && (
+              <>
+                <DateTimePicker
+                  size="small"
+                  color="primary"
+                  label="TGE Date (UTC time)"
+                  fullWidth
+                  inputVariant="outlined"
+                  value={tge_date}
+                  onChange={(date) => {
+                    handleDateChange('tge_date', date)
+                  }}
+                  TextFieldComponent={(params) => {
+                    return <CssTextField {...params} />
+                  }}
+                />
+                <Flex>
+                  <InputExtended
+                    placeholder="TGE Percent"
                     scale="lg"
-                    value={token_address}
-                    onChange={handleChange('token_address')}
+                    value={tge_percent}
+                    onChange={handleChange('tge_percent')}
                   />
-                </div>
-
-                <div className="col-md-12 mb-3">
-                  <Checkbox
-                    checked={isLPToken}
-                    onChange={handleChange('isLPToken')}
-                    color="warning"
-                    bigger
-                    shape="curve"
-                    animation="smooth"
-                    icon={<i className="fas fa-check" />}
-                  >
-                    <span className="ml-2">LP token?</span>
-                  </Checkbox>
-                </div>
-
-                <div className="col-md-12 mb-3">
-                  <Checkbox
-                    checked={is_another}
-                    onChange={handleChange('is_another')}
-                    color="warning"
-                    bigger
-                    shape="curve"
-                    animation="smooth"
-                    icon={<i className="fas fa-check" />}
-                  >
-                    <span className="ml-2">use another owner?</span>
-                  </Checkbox>
-                </div>
-
-                {is_another && (
-                  <div className="col-md-12 mb-3">
-                    <Input
-                      placeholder="Owner Address"
-                      className="mt-3"
-                      scale="lg"
-                      value={owner_address}
-                      onChange={handleChange('owner_address')}
-                    />
-                  </div>
-                )}
-
-                <div className="col-md-12 mb-3">
-                  <Input
-                    placeholder="Lock Title"
-                    className="mt-3"
+                  <InputExtended
+                    placeholder="Cycle (minutes)"
                     scale="lg"
-                    value={title}
-                    onChange={handleChange('title')}
+                    value={release_cycle}
+                    onChange={handleChange('release_cycle')}
                   />
-                </div>
-
-                <div className="col-md-6 mb-3">
-                  <Input
-                    placeholder="Token Name"
+                  <InputExtended
+                    placeholder="Cycle Release Percent"
                     scale="lg"
-                    className="mt-3"
-                    value={token_name}
-                    onChange={handleChange('token_name')}
+                    value={release_percent}
+                    onChange={handleChange('release_percent')}
                   />
-                </div>
+                </Flex>
+              </>
+            )}
 
-                <div className="col-md-6 mb-3">
-                  <Input
-                    placeholder="Token Symbol"
-                    scale="lg"
-                    className="mt-3"
-                    value={token_symbol}
-                    onChange={handleChange('token_symbol')}
-                  />
-                </div>
+            <InputExtended placeholder="Amount" scale="lg" value={amount} onChange={handleChange('amount')} />
 
-                <div className="col-md-6 mb-3">
-                  <Input
-                    placeholder="Token Decimal"
-                    className="mt-3"
-                    scale="lg"
-                    value={token_decimal}
-                    onChange={handleChange('token_decimal')}
-                  />
-                </div>
+            <TextArea rows={5} placeholder="Description" value={description} onChange={handleChange('description')} />
+          </CardBody>
 
-                <div className="col-md-12 mb-4 mt-2">
-                  <Checkbox
-                    checked={is_vesting}
-                    onChange={handleChange('is_vesting')}
-                    color="warning"
-                    bigger
-                    shape="curve"
-                    animation="smooth"
-                    icon={<i className="fas fa-check" />}
-                  >
-                    <span className="ml-2">use vesting?</span>
-                  </Checkbox>
-                </div>
+          <ButtonContainer>
+            {!approveSuccess && <Button onClick={handleAllowance}>Approve</Button>}
 
-                {!is_vesting && (
-                  <div className="col-md-12 mb-3">
-                    <label htmlFor="inputTokenAddress" className="form-label mb-3 mt-2">
-                      Lock until (UTC time)
-                    </label>{' '}
-                    <br />
-                    <DateTimePicker
-                      size="small"
-                      color="primary"
-                      fullWidth
-                      inputVariant="outlined"
-                      value={release_date}
-                      onChange={(date) => {
-                        handleDateChange('release_date', date)
-                      }}
-                      TextFieldComponent={(params) => {
-                        return <CssTextField {...params} />
-                      }}
-                    />
-                  </div>
-                )}
-
-                {is_vesting && (
-                  <>
-                    <div className="col-md-6 mb-3">
-                      <label htmlFor="inputTokenAddress" className="form-label mb-2 mx-1">
-                        TGE Date (UTC time)
-                      </label>{' '}
-                      <br />
-                      <DateTimePicker
-                        size="small"
-                        color="primary"
-                        fullWidth
-                        inputVariant="outlined"
-                        value={tge_date}
-                        onChange={(date) => {
-                          handleDateChange('tge_date', date)
-                        }}
-                        TextFieldComponent={(params) => {
-                          return <CssTextField {...params} />
-                        }}
-                      />
-                    </div>
-
-                    <div className="col-md-6 mb-3">
-                      <Input
-                        placeholder="TGE Percent"
-                        className="mt-3"
-                        scale="lg"
-                        value={tge_percent}
-                        onChange={handleChange('tge_percent')}
-                      />
-                    </div>
-
-                    <div className="col-md-6 mb-3">
-                      <Input
-                        placeholder="Cycle (minutes)"
-                        className="mt-3"
-                        scale="lg"
-                        value={release_cycle}
-                        onChange={handleChange('release_cycle')}
-                      />
-                    </div>
-
-                    <div className="col-md-6 mb-3">
-                      <Input
-                        placeholder="Cycle Release Percent"
-                        className="mt-3"
-                        scale="lg"
-                        value={release_percent}
-                        onChange={handleChange('release_percent')}
-                      />
-                    </div>
-                  </>
-                )}
-
-                <div className="col-md-12 mb-3">
-                  <Input
-                    placeholder="Amount"
-                    className="mt-3"
-                    scale="lg"
-                    value={amount}
-                    onChange={handleChange('amount')}
-                  />
-                </div>
-
-                <div className="col-md-12 mb-3">
-                  <Input
-                    placeholder="Description"
-                    className="mt-3"
-                    scale="lg"
-                    value={description}
-                    onChange={handleChange('description')}
-                  />
-                </div>
-              </div>
-            </CardBody>
-
-            <div className="d-flex justify-content-center gap-1 mt-3">
-              {!approveSuccess && (
-                <Button onClick={handleAllowance}>
-                  Approve
-                </Button>
-              )}
-
-              {approveSuccess && (
-                <Button className=" ml-3" onClick={handleSubmit}>
-                  Submit
-                </Button>
-              )}
-            </div>
-          </div>
+            {approveSuccess && <Button onClick={handleSubmit}>Submit</Button>}
+          </ButtonContainer>
         </AppBodyExtended>
       </Container>
-      <div className="mt-5"> </div>
     </>
   )
 }

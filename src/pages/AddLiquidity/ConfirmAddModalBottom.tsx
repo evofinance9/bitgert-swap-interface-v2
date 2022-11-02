@@ -23,37 +23,37 @@ export function ConfirmAddModalBottom({
   return (
     <>
       <RowBetween>
-        <Text>{currencies[Field.CURRENCY_A]?.symbol} Deposited</Text>
+        <Text color="#000">{currencies[Field.CURRENCY_A]?.symbol} Deposited</Text>
         <RowFixed>
           <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} />
-          <Text>{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</Text>
+          <Text color="#000">{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</Text>
         </RowFixed>
       </RowBetween>
       <RowBetween>
-        <Text>{currencies[Field.CURRENCY_B]?.symbol} Deposited</Text>
+        <Text color="#000">{currencies[Field.CURRENCY_B]?.symbol} Deposited</Text>
         <RowFixed>
           <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} />
-          <Text>{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</Text>
+          <Text color="#000">{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</Text>
         </RowFixed>
       </RowBetween>
       <RowBetween>
-        <Text>Rates</Text>
-        <Text>
+        <Text color="#000">Rates</Text>
+        <Text color="#000">
           {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
             currencies[Field.CURRENCY_B]?.symbol
           }`}
         </Text>
       </RowBetween>
       <RowBetween style={{ justifyContent: 'flex-end' }}>
-        <Text>
+        <Text color="#000">
           {`1 ${currencies[Field.CURRENCY_B]?.symbol} = ${price?.invert().toSignificant(4)} ${
             currencies[Field.CURRENCY_A]?.symbol
           }`}
         </Text>
       </RowBetween>
       <RowBetween>
-        <Text>Share of Pool:</Text>
-        <Text>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</Text>
+        <Text color="#000">Share of Pool:</Text>
+        <Text color="#000">{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</Text>
       </RowBetween>
       <Button mt="20px" onClick={onAdd}>
         {noLiquidity ? 'Create Pool & Supply' : 'Confirm Supply'}

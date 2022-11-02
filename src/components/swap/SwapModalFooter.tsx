@@ -45,7 +45,7 @@ export default function SwapModalFooter({
     <>
       <AutoColumn gap="0px">
         <RowBetween align="center">
-          <Text fontSize="14px">Price</Text>
+          <Text fontSize="14px" color="#000">Price</Text>
           <Text
             fontSize="14px"
             style={{
@@ -55,6 +55,7 @@ export default function SwapModalFooter({
               textAlign: 'right',
               paddingLeft: '8px',
               fontWeight: 500,
+              color: "#000",
             }}
           >
             {formatExecutionPrice(trade, showInverted)}
@@ -66,7 +67,7 @@ export default function SwapModalFooter({
 
         <RowBetween>
           <RowFixed>
-            <Text fontSize="14px">
+            <Text fontSize="14px" color="#000">
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? TranslateString(1210, 'Minimum received')
                 : TranslateString(220, 'Maximum sold')}
@@ -79,12 +80,12 @@ export default function SwapModalFooter({
             />
           </RowFixed>
           <RowFixed>
-            <Text fontSize="14px">
+            <Text fontSize="14px" color="#000">
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) ?? '-'
                 : slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) ?? '-'}
             </Text>
-            <Text fontSize="14px" marginLeft="4px">
+            <Text fontSize="14px" marginLeft="4px" color="#000">
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? trade.outputAmount.currency.symbol
                 : trade.inputAmount.currency.symbol}
@@ -93,7 +94,7 @@ export default function SwapModalFooter({
         </RowBetween>
         <RowBetween>
           <RowFixed>
-            <Text fontSize="14px">{TranslateString(226, 'Price Impact')}</Text>
+            <Text fontSize="14px" color="#000">{TranslateString(226, 'Price Impact')}</Text>
             <QuestionHelper
               text={TranslateString(224, 'The difference between the market price and your price due to trade size.')}
             />
@@ -102,7 +103,7 @@ export default function SwapModalFooter({
         </RowBetween>
         <RowBetween>
           <RowFixed>
-            <Text fontSize="14px">{TranslateString(228, 'Liquidity Provider Fee')}</Text>
+            <Text fontSize="14px" color="#000">{TranslateString(228, 'Liquidity Provider Fee')}</Text>
             <QuestionHelper
               text={TranslateString(
                 999,
@@ -110,7 +111,7 @@ export default function SwapModalFooter({
               )}
             />
           </RowFixed>
-          <Text fontSize="14px">
+          <Text fontSize="14px" color="#000">
             {realizedLPFee ? `${realizedLPFee?.toSignificant(6)} ${trade.inputAmount.currency.symbol}` : '-'}
           </Text>
         </RowBetween>

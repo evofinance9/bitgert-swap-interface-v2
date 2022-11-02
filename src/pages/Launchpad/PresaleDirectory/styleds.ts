@@ -88,11 +88,13 @@ export const InfoTable = styled.table`
 `
 
 export const StyledCard = styled.div`
-  background-color: #151212 !important;
+  background-color: #fff !important;
   font-family: 'Poppins', sans-serif;
-  color: #fff;
+  color: #000;
   height: 25rem;
-  border-radius: 24px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,29,110,.1);
+  box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1);
 `
 
 export const StyledCardBody = styled.div`
@@ -105,7 +107,7 @@ export const StyledCardBody = styled.div`
 `
 
 export const StyledCardContainer = styled.div`
-  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   display: grid;
   gap: 3rem;
