@@ -3,6 +3,48 @@ import Container from 'components/Container'
 
 export const ContainerExtended = styled(Container)``
 
+export const Row = styled.div`
+  display: flex;
+  margin-top: 1rem;
+  ${({ theme }) => theme.mediaQueries.xs} {
+    flex-direction: column;
+  }
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    flex-direction: column;
+  }
+
+  ${({ theme }) => theme.mediaQueries.md} {
+    flex-direction: column;
+  }
+
+  ${({ theme }) => theme.mediaQueries.lg} {
+    flex-direction: row;
+  }
+
+  ${({ theme }) => theme.mediaQueries.xl} {
+    flex-direction: row;
+  }
+`
+
+interface ColProps {
+  size: string
+}
+
+export const Col = styled.div<ColProps>`
+  flex: ${props => props.size};
+`
+
+export const Grid = styled.div`
+  margin-top: 1rem;
+`
+
+export const PresaleCard = styled.div`
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 6px;
+`
+
 export const CardWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -34,6 +76,14 @@ export const CardWrapper = styled.div`
   }
 `
 
+export const PresaleLogoWrapper = styled.div`
+  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 6px;
+  }
+`
+
 export const PresaleHeader = styled.h3<{ fontSize: string }>`
   font-size: ${(params) => params.fontSize};
   line-height: 1.5;
@@ -59,6 +109,7 @@ export const PresaleSubHeaderExtended = styled.p<{ fontSize: string }>`
 
 export const PresaleInfoContainer = styled.div`
   max-width: 700px;
+  margin: 1rem 0;
 `
 
 export const PresaleInfoHeader = styled.div`
@@ -73,11 +124,11 @@ export const PresaleInfoSubHeader = styled.div`
   line-height: 1.5;
   font-family: 'Poppins', sans-serif;
   font-weight: 100;
-  color: #f9d849;
+  color:  #56595c;
 `
 
 export const CustomTextColor = styled.span`
-  color: #cacaca;
+  color: #56595c;
   font-family: 'Poppins', sans-serif;
 `
 
@@ -93,7 +144,7 @@ export const StyledCard = styled.div`
   color: #000;
   height: 25rem;
   border-radius: 6px;
-  border: 1px solid rgba(0,29,110,.1);
+  border: 1px solid rgba(0, 29, 110, 0.1);
   box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1);
 `
 
@@ -139,6 +190,51 @@ export const LoaderWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 6rem 0;
+`
+
+// new compoents
+
+interface BadeProps {
+  bg?: string
+}
+
+export const Badge = styled.span<BadeProps>`
+  background: ${(props) => (props.bg ? props.theme.colors[props.bg] : '')};
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 17px;
+  padding: 8px 20px;
+  text-transform: capitalize;
+`
+
+export const LogoContainer = styled.div`
+  img {
+    width: 3rem;
+    height: 33px;
+    width: auto;
+    border-radius: 6px;
+  }
+`
+
+export const CardHeader = styled.h4`
+  color: #343434;
+  flex: 1 1;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 29px;
+`
+
+export const CardSubHeader = styled.h6`
+  color: #56595c;
+  font-size: 16px;
+  font-weight: 100;
+  line-height: 24px;
+`
+
+export const CardInfoText = styled.span`
+  color: #343434;
 `
 
 export default {}

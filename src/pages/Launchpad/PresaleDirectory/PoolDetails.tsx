@@ -1,40 +1,37 @@
 /* eslint-disable */
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { Card, Badge, Button as BSButton, ProgressBar } from 'react-bootstrap'
-import { BigintIsh } from '@evofinance9/sdk'
-import { Oval } from 'react-loader-spinner'
-import swal from 'sweetalert'
-import { Button, CardBody, Input } from '@evofinance9/uikit'
-import { DateTimePicker } from '@material-ui/pickers'
-import { TextField, withStyles } from '@material-ui/core'
-import { Checkbox, useCheckboxState } from 'pretty-checkbox-react'
-import '@djthoms/pretty-checkbox'
-import { Link } from 'react-router-dom'
-import moment from 'moment'
-import { TelegramIcon, TwitterIcon, WWWIcon } from '../../../assets/images'
-
+import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
-
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
+import { BigintIsh } from '@evofinance9/sdk'
+import { Button, Input, Flex } from '@evofinance9/uikit'
+import swal from 'sweetalert'
+import moment from 'moment'
+
+import { Card } from 'react-bootstrap'
+import { Oval } from 'react-loader-spinner'
+
+import '@djthoms/pretty-checkbox'
+
 import { SocialIcon } from 'react-social-icons'
 
 import { useActiveWeb3React } from 'hooks'
 import { usePresaleContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { formatTokenAmount, getPresaleContract, getTokenContract } from 'utils'
+
 import getUnixTimestamp from 'utils/getUnixTimestamp'
 import CountDownTimer from '../CountDownTimer'
 import DepositButton from './DepositButton'
 
 import './style.css'
-import { AppBodyExtended } from 'pages/AppBody'
-import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
-import { RouteComponentProps } from 'react-router-dom'
+
 import { getPresaleById } from './apicalls'
 
 import {
   ContainerExtended,
+  PresaleCard,
   CardWrapper,
+  PresaleLogoWrapper,
   PresaleHeader,
   PresaleSubHeader,
   PresaleInfoHeader,
@@ -43,7 +40,10 @@ import {
   CustomTextColor,
   InfoTable,
   LoaderWrapper,
-  PresaleSubHeaderExtended
+  PresaleSubHeaderExtended,
+  Grid,
+  Col,
+  Row,
 } from './styleds'
 
 interface FormComponentProps {
@@ -51,8 +51,6 @@ interface FormComponentProps {
     params: { saleId }
   }
 }
-
-const currentTimeInitialState = async () => {}
 
 export default function PoolDetails({
   match: {
@@ -125,12 +123,6 @@ export default function PoolDetails({
           setIsDeposited(isDepositedRes)
           const depositAmountRes = await presale?.callStatic.getDepositAmount(BigInt(saleId).toString())
           const endTimeRes = await presale?.callStatic.endTime(BigInt(saleId).toString())
-          // console.log(depositAmountRes)
-          // console.log(moment(response.end_time).format("MM/DD/YYYY H:mm"))
-          // console.log(moment.unix(endTimeRes.toNumber()).format("MM/DD/YYYY H:mm"))
-          // console.log(endTimeRes.toNumber())
-          // console.log(moment.unix(endTimeRes.toNumber()).format("X"))
-          // console.log(moment(response.end_time).format("X"))
           setDepositAmount(depositAmountRes)
           // get token details
           const CurrentToken = getTokenContract(response.token_address, library, account)
@@ -335,14 +327,14 @@ export default function PoolDetails({
       {loading && (
         <LoaderWrapper>
           <Oval
-            height={80}
-            width={80}
-            color="#f9d849"
+            height={100}
+            width={100}
+            color="#2669f5"
             wrapperStyle={{}}
             wrapperClass=""
             visible={true}
             ariaLabel="oval-loading"
-            secondaryColor="#f4d85b"
+            secondaryColor="#4a81f8"
             strokeWidth={2}
             strokeWidthSecondary={2}
           />
@@ -350,154 +342,168 @@ export default function PoolDetails({
       )}
       {!loading && (
         <CardWrapper>
-          <Card className="presale__card p-3" text="light">
-            <Card.Body>
-              <div className="d-flex justify-content-center">
-                <div className="presale__logo">
+          <PresaleCard>
+            <section>
+              <Flex justifyContent="center">
+                <PresaleLogoWrapper>
                   <img src={presale.logo_link} alt="Presale Logo" className="rounded" />
-                </div>
-              </div>
+                </PresaleLogoWrapper>
+              </Flex>
 
-              <div className="my-3 d-flex flex-column justify-content-center align-items-center">
-                <PresaleHeader fontSize="2rem">{presale.token_name}</PresaleHeader>
-                <PresaleSubHeaderExtended fontSize="1.2rem">{presale.project_dec}</PresaleSubHeaderExtended>
-              </div>
+              <Grid>
+                <Flex justifyContent="center" flexDirection="column" alignItems="center">
+                  <PresaleHeader fontSize="1.5rem">{presale.token_name}</PresaleHeader>
+                  <PresaleSubHeaderExtended fontSize="0.9rem">{presale.project_dec}</PresaleSubHeaderExtended>
+                </Flex>
+              </Grid>
 
-              <div>
+              <Grid>
                 <PresaleSubHeader fontSize="0.9rem">
-                  Presale Address : <CustomTextColor>{presale.token_address}</CustomTextColor>
+                  Token Address : <CustomTextColor>{presale.token_address}</CustomTextColor>
                 </PresaleSubHeader>
-              </div>
 
-              <PresaleInfoContainer className="row">
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Sale ID</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{saleId}</PresaleInfoSubHeader>
-                </div>
+                <PresaleSubHeader fontSize="0.9rem">
+                  Presale Address : <CustomTextColor>0x55A3612A72d5E4f0BFed7ea6185f9Ec05E62B992</CustomTextColor>
+                </PresaleSubHeader>
+              </Grid>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Token Address</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{presale.token_address}</PresaleInfoSubHeader>
-                </div>
+              <PresaleInfoContainer>
+                <Row>
+                  <Col size="1">
+                    <PresaleInfoHeader>Sale ID</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{saleId}</PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Total Supply</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>
-                    {totalSupply !== null
-                      ? formatTokenAmount(totalSupply.toString(), parseInt(presale?.token_decimal || 18))
-                      : 0}{' '}
-                    {presale.token_symbol}
-                  </PresaleInfoSubHeader>
-                </div>
+                  <Col size="1">
+                    <PresaleInfoHeader>Total Supply</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>
+                      {totalSupply !== null
+                        ? formatTokenAmount(totalSupply.toString(), parseInt(presale?.token_decimal || 18))
+                        : 0}{' '}
+                      {presale.token_symbol}
+                    </PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Tokens For Presale</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>
-                    {ethers.utils.formatUnits(
-                      ethers.BigNumber.from(depositAmount || 0),
-                      parseInt(presale.token_decimal || 0)
-                    )}{' '}
-                    {presale.token_symbol}
-                  </PresaleInfoSubHeader>
-                </div>
-
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Tokens For Liquidity</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>
-                    {parseFloat(
-                      ethers.utils.formatUnits(
+                  <Col size="1">
+                    <PresaleInfoHeader>Tokens For Presale</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>
+                      {ethers.utils.formatUnits(
                         ethers.BigNumber.from(depositAmount || 0),
                         parseInt(presale.token_decimal || 0)
-                      )
-                    ) *
-                      (parseInt(presale?.router_rate || 70) / 100)}{' '}
-                    {presale.token_symbol}
-                  </PresaleInfoSubHeader>
-                </div>
+                      )}{' '}
+                      {presale.token_symbol}
+                    </PresaleInfoSubHeader>
+                  </Col>
+                </Row>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Soft Cap </PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{presale.soft_cap} BRISE</PresaleInfoSubHeader>
-                </div>
+                <Row>
+                  <Col size="1">
+                    <PresaleInfoHeader>Tokens For Liquidity</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>
+                      {parseFloat(
+                        ethers.utils.formatUnits(
+                          ethers.BigNumber.from(depositAmount || 0),
+                          parseInt(presale.token_decimal || 0)
+                        )
+                      ) *
+                        (parseInt(presale?.router_rate || 70) / 100)}{' '}
+                      {presale.token_symbol}
+                    </PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Hard Cap </PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{presale.hard_cap} BRISE</PresaleInfoSubHeader>
-                </div>
+                  <Col size="1">
+                    <PresaleInfoHeader>Soft Cap </PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{presale.soft_cap} BRISE</PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Presale Rate(tier1)</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>
-                    {presale.tier1 !== null ? presale.tier1 : 0} {presale.token_symbol} per BRISE
-                  </PresaleInfoSubHeader>
-                </div>
+                  <Col size="1">
+                    <PresaleInfoHeader>Hard Cap </PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{presale.hard_cap} BRISE</PresaleInfoSubHeader>
+                  </Col>
+                </Row>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Presale Rate(tier2) </PresaleInfoHeader>
-                  <PresaleInfoSubHeader>
-                    {presale.tier2 !== null ? presale.tier2 : 0} {presale.token_symbol} per BRISE
-                  </PresaleInfoSubHeader>
-                </div>
+                <Row>
+                  <Col size="1">
+                    <PresaleInfoHeader>Presale Rate(tier1)</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>
+                      {presale.tier1 !== null ? presale.tier1 : 0} {presale.token_symbol} per BRISE
+                    </PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Presale Rate </PresaleInfoHeader>
-                  <PresaleInfoSubHeader>
-                    {presale.tier3 !== null ? presale.tier3 : 0} {presale.token_symbol} per BRISE
-                  </PresaleInfoSubHeader>
-                </div>
+                  <Col size="1">
+                    <PresaleInfoHeader>Presale Rate(tier2) </PresaleInfoHeader>
+                    <PresaleInfoSubHeader>
+                      {presale.tier2 !== null ? presale.tier2 : 0} {presale.token_symbol} per BRISE
+                    </PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>BriseSwap Liquidity</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{presale?.router_rate || 0} %</PresaleInfoSubHeader>
-                </div>
+                  <Col size="1">
+                    <PresaleInfoHeader>Presale Rate </PresaleInfoHeader>
+                    <PresaleInfoSubHeader>
+                      {presale.tier3 !== null ? presale.tier3 : 0} {presale.token_symbol} per BRISE
+                    </PresaleInfoSubHeader>
+                  </Col>
+                </Row>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Min Contribution</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{presale?.min_buy || 0} BRISE</PresaleInfoSubHeader>
-                </div>
+                <Row>
+                  <Col size="1">
+                    <PresaleInfoHeader>BriseSwap Liquidity</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{presale?.router_rate || 0} %</PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Max Contribution</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{presale?.max_buy || 0} BRISE</PresaleInfoSubHeader>
-                </div>
+                  <Col size="1">
+                    <PresaleInfoHeader>Min Contribution</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{presale?.min_buy || 0} BRISE</PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Presale Start Time</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{moment(presale.start_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
-                </div>
+                  <Col size="1">
+                    <PresaleInfoHeader>Max Contribution</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{presale?.max_buy || 0} BRISE</PresaleInfoSubHeader>
+                  </Col>
+                </Row>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Tier1 End Time</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{moment(presale.start_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
-                </div>
+                <Row>
+                  <Col size="1">
+                    <PresaleInfoHeader>Presale Start Time</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{moment(presale.start_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Tier2 End Time</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{moment(presale.tier2_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
-                </div>
+                  <Col size="1">
+                    <PresaleInfoHeader>Tier1 End Time</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{moment(presale.start_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
+                  </Col>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Presale End Time</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{moment(presale.end_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
-                </div>
+                  <Col size="1">
+                    <PresaleInfoHeader>Tier2 End Time</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{moment(presale.tier2_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
+                  </Col>
+                </Row>
 
-                <div className="col-md-4 mt-2">
-                  <PresaleInfoHeader>Liquidity Unlock</PresaleInfoHeader>
-                  <PresaleInfoSubHeader>{moment(presale.lock_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
-                </div>
+                <Row>
+                  <Col size="1">
+                    <PresaleInfoHeader>Presale End Time</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{moment(presale.end_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
+                  </Col>
+
+                  <Col size="1">
+                    <PresaleInfoHeader>Liquidity Unlock</PresaleInfoHeader>
+                    <PresaleInfoSubHeader>{moment(presale.lock_time).format('YYYY-MM-DD H:mm')}</PresaleInfoSubHeader>
+                  </Col>
+
+                  <Col size="1"></Col>
+                </Row>
               </PresaleInfoContainer>
-            </Card.Body>
-          </Card>
+            </section>
+          </PresaleCard>
 
-          <Card className="presale__card row-cols-0 p-3" text="light">
+          <PresaleCard>
             <Card.Body>
-              <div className="">
                 {end_time > current_time && (
-                  <div className="">
-                    <div className="d-flex flex-column align-items-center mb-4">
+                  <div>
+                    <Flex justifyContent="center" flexDirection="column" alignItems="center">
                       <h1>Presale Timer</h1>
                       <CountDownTimer endtime={finalTime} currTime={currentTime} />
-                    </div>
+                    </Flex>
 
                     <div className="d-flex justify-content-between p-3">
                       <SocialIcon
@@ -675,9 +681,8 @@ export default function PoolDetails({
                     </div>
                   </div>
                 )}
-              </div>
             </Card.Body>
-          </Card>
+          </PresaleCard>
         </CardWrapper>
       )}
     </ContainerExtended>

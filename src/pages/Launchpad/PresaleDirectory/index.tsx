@@ -41,8 +41,8 @@ export default function PresaleDirectory() {
         {loading && (
           <LoaderWrapper>
             <Oval
-              height={80}
-              width={80}
+              height={100}
+              width={100}
               color="#2669f5"
               wrapperStyle={{}}
               wrapperClass=""
@@ -56,12 +56,7 @@ export default function PresaleDirectory() {
         )}
         <StyledCardContainer>
           {presales.map((presale) => (
-            <>
             <PresaleCard data={presale} key={presale._id} />
-            <PresaleCard data={presale} key={presale._id} />
-            <PresaleCard data={presale} key={presale._id} />
-            <PresaleCard data={presale} key={presale._id} />
-            </>
           ))}
         </StyledCardContainer>
       </Container>

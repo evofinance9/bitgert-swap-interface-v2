@@ -1,22 +1,15 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Card, Badge } from 'react-bootstrap'
-import { Button } from '@evofinance9/uikit'
-
+import React from 'react'
 import moment from 'moment'
-import { SocialIcon } from 'react-social-icons'
+import { Link } from 'react-router-dom'
+import { Button, Flex } from '@evofinance9/uikit'
 
-import { useDateTimeContract } from 'hooks/useContract'
-import getUnixTimestamp from 'utils/getUnixTimestamp'
-import { getAllPresale } from './apicalls'
+import { AiOutlineClockCircle } from 'react-icons/ai'
+import { BiLockAlt } from 'react-icons/bi'
+import { FaReddit, FaTwitter, FaLink, FaTelegram, FaGithub } from 'react-icons/fa'
+import { MdOutlineLockClock } from 'react-icons/md'
 
-import { FaLock, FaClock, FaArrowRight } from 'react-icons/fa'
-import { MdLockClock } from 'react-icons/md'
-
-import './style.css'
-import { StyledCard, StyledCardBody } from './styleds'
-
+import { StyledCard, StyledCardBody, Badge, LogoContainer, CardHeader, CardSubHeader, CardInfoText } from './styleds'
 
 interface PresaleCardProps {
   data: {
@@ -88,37 +81,43 @@ export default function PresaleCard({ data }: PresaleCardProps) {
   return (
     <StyledCard>
       <StyledCardBody>
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="presale__logo">
-            <img src={logo_link} alt={token_name} className="rounded" />
-          </div>
+        <div>
+          <Flex justifyContent="space-between" alignItems="center" style={{ gap: '1rem' }}>
+            <LogoContainer>
+              <img src={logo_link} alt={token_name} />
+            </LogoContainer>
 
-          <div className="p-2">
-            <div className="d-flex justify-content-between align-items-center">
-              <Card.Title className="mb-2 token__symbol">{token_symbol}</Card.Title>
+            {moment(end_time).format('X') < moment().format('X') ? (
+              <Badge bg="failure">Ended</Badge>
+            ) : (
+              <Badge bg="success">Live</Badge>
+            )}
+          </Flex>
 
-              <p>
-                {moment(end_time).format('X') < moment().format('X') ? (
-                  <Badge pill bg="danger" className="custom-font">
-                    Ended
-                  </Badge>
-                ) : (
-                  <Badge pill bg="success" className="custom-font">
-                    Live
-                  </Badge>
-                )}
-              </p>
+          <Flex justifyContent="space-between" alignItems="center" style={{ gap: '1rem', margin: '0.8rem 0' }}>
+            <div>
+              <CardHeader>{token_symbol}</CardHeader>
+              <CardSubHeader>{token_name}</CardSubHeader>
             </div>
 
-            <Card.Title className="mb-2 token__name">{token_name}</Card.Title>
-            <div className="social__icons__container ">
-              <SocialIcon url={twitter_link} network="twitter" fgColor="#fff" style={{ height: 25, width: 25 }} />
-              <SocialIcon url={reddit_link} network="reddit" fgColor="#fff" style={{ height: 25, width: 25 }} />
-              <SocialIcon url={github_link} network="github" fgColor="#fff" style={{ height: 25, width: 25 }} />
-              <SocialIcon url={telegram_link} network="telegram" fgColor="#fff" style={{ height: 25, width: 25 }} />
-              <SocialIcon url={website_link} network="dribbble" fgColor="#fff" style={{ height: 25, width: 25 }} />
-            </div>
-          </div>
+            <Flex justifyContent="center" alignItems="center" style={{ gap: '7px' }}>
+              <a href={twitter_link} target="_blank" rel="noopener noreferrer">
+                <FaTwitter fontSize="1.2rem" />
+              </a>
+              <a href={reddit_link} target="_blank" rel="noopener noreferrer">
+                <FaReddit fontSize="1.2rem" />
+              </a>
+              <a href={github_link} target="_blank" rel="noopener noreferrer">
+                <FaGithub fontSize="1.2rem" />
+              </a>
+              <a href={telegram_link} target="_blank" rel="noopener noreferrer">
+                <FaTelegram fontSize="1.2rem" />
+              </a>
+              <a href={website_link} target="_blank" rel="noopener noreferrer">
+                <FaLink fontSize="1.2rem" />
+              </a>
+            </Flex>
+          </Flex>
         </div>
 
         {/* check this */}
@@ -128,35 +127,33 @@ export default function PresaleCard({ data }: PresaleCardProps) {
           </div> */}
 
         <div>
-          <div className="d-flex justify-content-between">
-            <Card.Text className="mb-2 d-flex align-items-center custom-gap-2">
-              <FaLock fontSize="1rem" /> <span className="custom-font ml-1">Liquidity Lock :</span>
-            </Card.Text>
-            <Card.Text className="mb-2 custom-font">{router_rate || 0}% </Card.Text>
-          </div>
+          <Flex justifyContent="space-between" alignItems="center" style={{ margin: '0 0 0.5rem 0' }}>
+            <Flex alignItems="center" style={{ gap: '7px' }}>
+              <BiLockAlt fontSize="1.3rem" /> <CardInfoText>Liquidity Lock :</CardInfoText>
+            </Flex>
+            <CardInfoText className="mb-2 custom-font">{router_rate || 0}% </CardInfoText>
+          </Flex>
 
-          <div className="d-flex justify-content-between">
-            <Card.Text className="mb-2 d-flex align-items-center custom-gap-2">
-              <MdLockClock fontSize="1.3rem" /> <span className="custom-font">Lock Time:</span>
-            </Card.Text>
-            <Card.Text className="mb-2 custom-font">{moment(lock_time).format('YYYY-MM-DD H:mm')}</Card.Text>
-          </div>
+          <Flex justifyContent="space-between" alignItems="center" style={{ margin: '0.5rem 0' }}>
+            <Flex alignItems="center" style={{ gap: '7px' }}>
+              <MdOutlineLockClock fontSize="1.3rem" /> <CardInfoText>Lock Time:</CardInfoText>
+            </Flex>
+            <CardInfoText>{moment(lock_time).format('YYYY-MM-DD H:mm')}</CardInfoText>
+          </Flex>
 
-          <div className="d-flex justify-content-between">
-            <Card.Text className="mb-2 d-flex align-items-center custom-gap-2">
-              <FaClock fontSize="1rem" /> <span className="custom-font ml-1">Sale Starts On:</span>
-            </Card.Text>
-            <Card.Text className="mb-2 custom-font">{moment(start_time).format('YYYY-MM-DD H:mm')}</Card.Text>
-          </div>
+          <Flex justifyContent="space-between" alignItems="center" style={{ margin: '0.5rem 0 0 0' }}>
+            <Flex alignItems="center" style={{ gap: '7px' }}>
+              <AiOutlineClockCircle fontSize="1.3rem" /> <CardInfoText>Sale Starts On:</CardInfoText>
+            </Flex>
+            <CardInfoText>{moment(start_time).format('YYYY-MM-DD H:mm')}</CardInfoText>
+          </Flex>
         </div>
 
-        <div className=" mt-3">
-          <Link to={`/presale/${sale_id}`}>
-            <Button scale="md" variant="secondary" width="100%">
-              View Pool <FaArrowRight className="ml-2" fontSize="0.8rem" />
-            </Button>
-          </Link>
-        </div>
+        <Link to={`/presale/${sale_id}`}>
+          <Button scale="md" width="100%">
+            View Pool
+          </Button>
+        </Link>
 
         {/* <div className="d-flex justify-content-between mt-3">
             <div className="d-flex flex-column">
