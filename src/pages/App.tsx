@@ -24,6 +24,21 @@ import PresaleDirectory from './Launchpad/PresaleDirectory'
 import PoolDetails from './Launchpad/PresaleDirectory/PoolDetails'
 import TokenDetails from './Launchpad/LockDirectory/TokenDetails'
 import LockDetails from './Launchpad/LockDirectory/LockDetails'
+import CreateFarms from './Farms/CreateFarms'
+import CreateFarmByOwner from './Farms/CreateFarms/FarmByOwner'
+import CreateFarmByUser from './Farms/CreateFarms/FarmByUser'
+import FarmsDirectory from './Farms/FarmsDirectory'
+import FarmUserDetails from './Farms/FarmsDirectory/FarmUserDetails'
+import FarmsCreatedDirectory from './Farms/FarmsCreatedDirectory'
+import FarmsApprovedDirectory from './Farms/FarmsApprovedDirectory'
+// import FarmOwnerDetails from './Farms/FarmsCreatedDirectory/FarmOwnerDetails'
+import CreateStakes from './Stakes/CreateStakes'
+import CreateStakeByOwner from './Stakes/CreateStakes/StakeByOwner'
+import CreateStakeByUser from './Stakes/CreateStakes/StakeByUser'
+import StakesDirectory from './Stakes/StakesDirectory'
+import StakeUserDetails from './Stakes/StakesDirectory/StakeUserDetails'
+import StakesCreatedDirectory from './Stakes/StakesCreatedDirectory'
+import StakesApprovedDirectory from './Stakes/StakesApprovedDirectory'
 import AirdropDetails from './Launchpad/AirdropDirectory/AirdropDetails'
 import AirdropDirectory from './Launchpad/AirdropDirectory'
 import { RedirectPathToSwapOnly } from './Swap/redirects'
@@ -116,6 +131,21 @@ export default function App() {
                     <Route exact strict path="/create-token" component={CreateToken} />
                     <Route exact strict path="/lock" component={LockDirectory} />
                     <Route exact strict path="/lock/:lockId" component={LockDetails} />
+                    <Route exact strict path="/create-farms" component={CreateFarms} />
+                    <Route exact strict path="/create-farms/user" component={CreateFarmByUser} />
+                    <Route exact strict path="/create-farms/owner" component={CreateFarmByOwner} />
+                    <Route exact strict path="/farm" component={FarmsDirectory} />
+                    <Route exact strict path="/farm/:farmId" component={FarmUserDetails} />
+                    <Route exact strict path="/farmCreated" component={FarmsCreatedDirectory} />
+                    <Route exact strict path="/farmApproved" component={FarmsApprovedDirectory} />
+                    {/* <Route exact strict path="/farmCreated/:farmId" component={FarmOwnerDetails} /> */}
+                    <Route exact strict path="/create-stakes" component={CreateStakes} />
+                    <Route exact strict path="/create-stakes/user" component={CreateStakeByUser} />
+                    <Route exact strict path="/create-stakes/owner" component={CreateStakeByOwner} />
+                    <Route exact strict path="/stake" component={StakesDirectory} />
+                    <Route exact strict path="/stake/:stakeId" component={StakeUserDetails} />
+                    <Route exact strict path="/stakeCreated" component={StakesCreatedDirectory} />
+                    <Route exact strict path="/stakeApproved" component={StakesApprovedDirectory} />
                     <Route exact strict path="/locks/:tokenId" component={TokenDetails} />
                     <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
 

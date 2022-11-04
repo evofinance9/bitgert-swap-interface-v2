@@ -49,6 +49,14 @@ const config: MenuEntry[] = [
         label: 'Create Token',
         href: '/create-token',
       },
+      {
+        label: 'Farms',
+        href: '/create-farms',
+      },
+      {
+        label: 'Stakes',
+        href: '/create-stakes',
+      },
     ],
   },
 ]

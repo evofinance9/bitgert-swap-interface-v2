@@ -5,6 +5,8 @@ import { useMemo } from 'react'
 import { REWARD_ABI, REWARD_ADDRESS } from 'constants/abis/reward'
 import { PRESALE_ABI, PRESALE_ADDRESS, DATETIME_ABI, DATETIME_ADDRESS } from 'constants/abis/presale'
 import { AIRDROP_ABI, AIRDROP_ADDRESS } from '../constants/abis/airdrop'
+import { FARM_ABI, FARM_ADDRESS } from '../constants/abis/farm'
+import { STAKE_ABI, STAKE_ADDRESS } from '../constants/abis/stake'
 import { LOCK_ABI, LOCK_ADDRESS } from '../constants/abis/lock'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
@@ -82,6 +84,14 @@ export function useDateTimeContract(withSignerIfPossible?: boolean): Contract | 
 
 export function useAirdropContract(withSignerIfPossible?: boolean): Contract | null {
   return useContract(AIRDROP_ADDRESS, AIRDROP_ABI, withSignerIfPossible)
+}
+
+export function useFarmContract(withSignerIfPossible?: boolean): Contract | null {
+  return useContract(FARM_ADDRESS, FARM_ABI, withSignerIfPossible)
+}
+
+export function useStakeContract(withSignerIfPossible?: boolean): Contract | null {
+  return useContract(STAKE_ADDRESS, STAKE_ABI, withSignerIfPossible)
 }
 
 export function useBitgertLockContract(withSignerIfPossible?: boolean): Contract | null {

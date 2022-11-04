@@ -1,0 +1,51 @@
+.dot {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+}
+
+.farm__logo img {
+  max-width: 70px;
+  max-height: 70px;
+}
+
+.links__logo img {
+  max-width: 55px;
+  max-height: 40px;
+}
+
+.farm__progress {
+  height: 8px;
+}
+
+.farm__card {
+  background-color: #151212 !important;
+}
+
+
+.social__icons__container {
+  display: flex;
+  justify-content: center;
+  gap: 10px
+}
+
+.token__name {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 300 !important;
+  font-size: 1rem !important;
+}
+
+.token__symbol {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+}
+
+.custom-gap-2 {
+  gap: 5px;
+}
+
+.custom-font {
+  font-family: 'Poppins', sans-serif !important;
+
+}

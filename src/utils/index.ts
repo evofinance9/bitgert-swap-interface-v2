@@ -9,6 +9,9 @@ import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '
 import { REWARD_ABI, REWARD_ADDRESS } from 'constants/abis/reward'
 import { PRESALE_ABI, PRESALE_ADDRESS } from 'constants/abis/presale'
 import { AIRDROP_ABI, AIRDROP_ADDRESS } from 'constants/abis/airdrop'
+import { FARM_ABI, FARM_ADDRESS } from 'constants/abis/farm'
+import { STAKE_ABI, STAKE_ADDRESS } from 'constants/abis/stake'
+import { SIGCHECK_ABI, SIGCHECK_ADDRESS } from 'constants/abis/sigCheck'
 import { TOKEN_CREATOR_ABI, TOKEN_CREATOR_ADDRESS } from 'constants/abis/erc20'
 import { LOCK_ABI, LOCK_ADDRESS } from 'constants/abis/lock'
 import ERC20_ABI from 'constants/abis/erc20.json'
@@ -109,6 +112,18 @@ export function getPresaleContract(_: number, library: Web3Provider, account?: s
 
 export function getAirdropContract(_: number, library: Web3Provider, account?: string): Contract {
   return getContract(AIRDROP_ADDRESS, AIRDROP_ABI, library, account)
+}
+
+export function getFarmContract(_: number, library: Web3Provider, account?: string): Contract {
+  return getContract(FARM_ADDRESS, FARM_ABI, library, account)
+}
+
+export function getStakeContract(_: number, library: Web3Provider, account?: string): Contract {
+  return getContract(STAKE_ADDRESS, STAKE_ABI, library, account)
+}
+
+export function getSigCheckContract(_: number, library: Web3Provider, account?: string): Contract {
+  return getContract(SIGCHECK_ADDRESS, SIGCHECK_ABI, library, account)
 }
 
 export function getTokenCreatorContract(_: number, library: Web3Provider, account?: string): Contract {
