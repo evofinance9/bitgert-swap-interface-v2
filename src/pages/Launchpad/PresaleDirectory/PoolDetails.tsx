@@ -40,6 +40,7 @@ import {
   CustomTextColor,
   InfoTable,
   LoaderWrapper,
+  PresalseTimerContainer,
   PresaleSubHeaderExtended,
   Grid,
   Col,
@@ -498,189 +499,188 @@ export default function PoolDetails({
 
           <PresaleCard>
             <Card.Body>
-                {end_time > current_time && (
-                  <div>
-                    <Flex justifyContent="center" flexDirection="column" alignItems="center">
-                      <h1>Presale Timer</h1>
-                      <CountDownTimer endtime={finalTime} currTime={currentTime} />
-                    </Flex>
+              {end_time > current_time && (
+                <div>
+                  <Flex justifyContent="center" flexDirection="column" alignItems="center">
+                    <h1>Presale Timer</h1>
+                    <CountDownTimer endtime={finalTime} currTime={currentTime} />
+                  </Flex>
 
-                    <div className="d-flex justify-content-between p-3">
-                      <SocialIcon
-                        url={presale.twitter_link}
-                        network="twitter"
-                        fgColor="#fff"
-                        style={{ height: 40, width: 40 }}
-                      />
-                      <SocialIcon
-                        url={presale.reddit_link}
-                        network="reddit"
-                        fgColor="#fff"
-                        style={{ height: 40, width: 40 }}
-                      />
-                      <SocialIcon
-                        url={presale.github_link}
-                        network="github"
-                        fgColor="#fff"
-                        style={{ height: 40, width: 40 }}
-                      />
-                      <SocialIcon
-                        url={presale.telegram_link}
-                        network="telegram"
-                        fgColor="#fff"
-                        style={{ height: 40, width: 40 }}
-                      />
-                      <SocialIcon
-                        url={presale.website_link}
-                        network="dribbble"
-                        fgColor="#fff"
-                        style={{ height: 40, width: 40 }}
-                      />
-                    </div>
+                  <div className="d-flex justify-content-between p-3">
+                    <SocialIcon
+                      url={presale.twitter_link}
+                      network="twitter"
+                      fgColor="#fff"
+                      style={{ height: 40, width: 40 }}
+                    />
+                    <SocialIcon
+                      url={presale.reddit_link}
+                      network="reddit"
+                      fgColor="#fff"
+                      style={{ height: 40, width: 40 }}
+                    />
+                    <SocialIcon
+                      url={presale.github_link}
+                      network="github"
+                      fgColor="#fff"
+                      style={{ height: 40, width: 40 }}
+                    />
+                    <SocialIcon
+                      url={presale.telegram_link}
+                      network="telegram"
+                      fgColor="#fff"
+                      style={{ height: 40, width: 40 }}
+                    />
+                    <SocialIcon
+                      url={presale.website_link}
+                      network="dribbble"
+                      fgColor="#fff"
+                      style={{ height: 40, width: 40 }}
+                    />
+                  </div>
+
+                  {presale.owner_address !== account && (
+                    <>
+                      <div className=" d-flex justify-content-center align-items-center mt-4 mb-4">
+                        <Input
+                          placeholder="Amount"
+                          className="d-flex justify-content-center text-align-center"
+                          scale="lg"
+                          value={amount}
+                          onChange={handleChange('amount')}
+                        />
+                        <Button onClick={fetchBalanceFromAccount} scale="md" variant="text">
+                          Max
+                        </Button>
+                      </div>
+                      <div className="d-flex justify-content-center ">
+                        <Button scale="md" variant="secondary" onClick={handleContribute}>
+                          Contribute
+                        </Button>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="d-flex justify-content-center mt-4 mb-4">
+                    <InfoTable>
+                      <tbody>
+                        <tr>
+                          <td>1 BRISE:</td>
+                          <td>
+                            {presale.listing_rate} {presale.token_symbol}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>Your Contributed Account:</td>
+                          <td>{ethers.utils.formatUnits(ethers.BigNumber.from(userContributionBRISE || 0))} BRISE</td>
+                        </tr>
+
+                        <tr>
+                          <td>Your Reserved Tokens:</td>
+                          <td>
+                            {ethers.utils.formatUnits(
+                              ethers.BigNumber.from(userContributionToken || 0),
+                              parseInt(presale.token_decimal || 0)
+                            )}{' '}
+                            {presale.token_symbol}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </InfoTable>
+                  </div>
+
+                  <div>
+                    {presale.owner_address !== account && (
+                      <div className=" d-flex justify-content-center">
+                        <Button scale="md" variant="secondary" onClick={handleWithdraw}>
+                          Withdraw
+                        </Button>
+                      </div>
+                    )}
+                    {presale.owner_address === account && !isDeposited && (
+                      <div className=" d-flex justify-content-center ">
+                        {depositAmount && (
+                          <DepositButton
+                            tokenAddress={presale.token_address}
+                            depositAmount={depositAmount}
+                            depositeToken={depositeToken}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {end_time <= current_time && (
+                <div style={{ border: '1px solid red' }}>
+                  <PresalseTimerContainer>
+                    <h4 >Presale Timer:</h4>
+                    <h6 >00 Days 00 Hours 00 Minutes 00 Seconds</h6>
+                  </PresalseTimerContainer>
+
+                  <div className=" mb-3">
+                    <h1>This presale has ended. Go back to the dashboard to view others!</h1>
 
                     {presale.owner_address !== account && (
                       <>
-                        <div className=" d-flex justify-content-center align-items-center mt-4 mb-4">
-                          <Input
-                            placeholder="Amount"
-                            className="d-flex justify-content-center text-align-center"
-                            scale="lg"
-                            value={amount}
-                            onChange={handleChange('amount')}
-                          />
-                          <Button onClick={fetchBalanceFromAccount} scale="md" variant="text">
-                            Max
-                          </Button>
-                        </div>
-                        <div className="d-flex justify-content-center ">
-                          <Button scale="md" variant="secondary" onClick={handleContribute}>
-                            Contribute
+                        <h1>If you participated in the presale click the claim button below to claim your tokens!</h1>
+                        <div className=" d-flex justify-content-center my-4">
+                          <Button scale="md" variant="secondary" onClick={handleClaim}>
+                            Claim
                           </Button>
                         </div>
                       </>
                     )}
 
-                    <div className="d-flex justify-content-center mt-4 mb-4">
-                      <InfoTable>
-                        <tbody>
-                          <tr>
-                            <td>1 BRISE:</td>
-                            <td>
-                              {presale.listing_rate} {presale.token_symbol}
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <td>Your Contributed Account:</td>
-                            <td>{ethers.utils.formatUnits(ethers.BigNumber.from(userContributionBRISE || 0))} BRISE</td>
-                          </tr>
-
-                          <tr>
-                            <td>Your Reserved Tokens:</td>
-                            <td>
-                              {ethers.utils.formatUnits(
-                                ethers.BigNumber.from(userContributionToken || 0),
-                                parseInt(presale.token_decimal || 0)
-                              )}{' '}
-                              {presale.token_symbol}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </InfoTable>
-                    </div>
-
-                    <div>
-                      {presale.owner_address !== account && (
-                        <div className=" d-flex justify-content-center">
-                          <Button scale="md" variant="secondary" onClick={handleWithdraw}>
-                            Withdraw
+                    {presale.owner_address === account && (
+                      <div className=" mt-3 mb-3">
+                        <h1 className="mb-3">Finalize the presale for others to claim there tokens!</h1>
+                        <div className="d-flex justify-content-center my-4">
+                          <Button scale="md" variant="secondary" onClick={handleFinalize}>
+                            Finalize
                           </Button>
                         </div>
-                      )}
-                      {presale.owner_address === account && !isDeposited && (
-                        <div className=" d-flex justify-content-center ">
-                          {depositAmount && (
-                            <DepositButton
-                              tokenAddress={presale.token_address}
-                              depositAmount={depositAmount}
-                              depositeToken={depositeToken}
-                            />
-                          )}
-                        </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                  <div className="d-flex justify-content-center mt-4 mb-4">
+                    <InfoTable>
+                      <tbody>
+                        <tr>
+                          <td>1 BRISE:</td>
+                          <td>
+                            {presale.listing_rate} {presale.token_symbol}
+                          </td>
+                        </tr>
 
-                {end_time <= current_time && (
-                  <div className="">
-                    <div className=" d-flex justify-content-center mt-4 mb-2">
-                      <h1>Presale Timer:</h1>
-                    </div>
-                    <div className=" d-flex justify-content-center mb-4">
-                      <h1>00 Days 00 Hours 00 Minutes 00 Seconds</h1>
-                    </div>
-                    <div className=" mb-3">
-                      <h1>This presale has ended. Go back to the dashboard to view others!</h1>
+                        {presale.owner_address !== account && (
+                          <>
+                            <tr>
+                              <td>Your Contributed Account:</td>
+                              <td>
+                                {ethers.utils.formatUnits(ethers.BigNumber.from(userContributionBRISE || 0))} BRISE
+                              </td>
+                            </tr>
 
-                      {presale.owner_address !== account && (
-                        <>
-                          <h1>If you participated in the presale click the claim button below to claim your tokens!</h1>
-                          <div className=" d-flex justify-content-center my-4">
-                            <Button scale="md" variant="secondary" onClick={handleClaim}>
-                              Claim
-                            </Button>
-                          </div>
-                        </>
-                      )}
-
-                      {presale.owner_address === account && (
-                        <div className=" mt-3 mb-3">
-                          <h1 className="mb-3">Finalize the presale for others to claim there tokens!</h1>
-                          <div className="d-flex justify-content-center my-4">
-                            <Button scale="md" variant="secondary" onClick={handleFinalize}>
-                              Finalize
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="d-flex justify-content-center mt-4 mb-4">
-                      <InfoTable>
-                        <tbody>
-                          <tr>
-                            <td>1 BRISE:</td>
-                            <td>
-                              {presale.listing_rate} {presale.token_symbol}
-                            </td>
-                          </tr>
-
-                          {presale.owner_address !== account && (
-                            <>
-                              <tr>
-                                <td>Your Contributed Account:</td>
-                                <td>
-                                  {ethers.utils.formatUnits(ethers.BigNumber.from(userContributionBRISE || 0))} BRISE
-                                </td>
-                              </tr>
-
-                              <tr>
-                                <td>Your Reserved Tokens:</td>
-                                <td>
-                                  {ethers.utils.formatUnits(
-                                    ethers.BigNumber.from(userContributionToken || 0),
-                                    parseInt(presale.token_decimal || 0)
-                                  )}{' '}
-                                  {presale.token_symbol}
-                                </td>
-                              </tr>
-                            </>
-                          )}
-                        </tbody>
-                      </InfoTable>
-                    </div>
+                            <tr>
+                              <td>Your Reserved Tokens:</td>
+                              <td>
+                                {ethers.utils.formatUnits(
+                                  ethers.BigNumber.from(userContributionToken || 0),
+                                  parseInt(presale.token_decimal || 0)
+                                )}{' '}
+                                {presale.token_symbol}
+                              </td>
+                            </tr>
+                          </>
+                        )}
+                      </tbody>
+                    </InfoTable>
                   </div>
-                )}
+                </div>
+              )}
             </Card.Body>
           </PresaleCard>
         </CardWrapper>

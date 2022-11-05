@@ -32,7 +32,7 @@ interface ColProps {
 }
 
 export const Col = styled.div<ColProps>`
-  flex: ${props => props.size};
+  flex: ${(props) => props.size};
 `
 
 export const Grid = styled.div`
@@ -124,7 +124,7 @@ export const PresaleInfoSubHeader = styled.div`
   line-height: 1.5;
   font-family: 'Poppins', sans-serif;
   font-weight: 100;
-  color:  #56595c;
+  color: #56595c;
 `
 
 export const CustomTextColor = styled.span`
@@ -235,6 +235,19 @@ export const CardSubHeader = styled.h6`
 
 export const CardInfoText = styled.span`
   color: #343434;
+`
+
+export const PresalseTimerContainer = styled.div`
+  margin: 1rem 0;
+  h4 {
+    text-align: center;
+    font-size: 1.5rem;
+  }
+
+  h6 {
+    text-align: center;
+    font-size: 1rem;
+  }
 `
 
 export default {}
