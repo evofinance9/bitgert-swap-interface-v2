@@ -1,3 +1,4 @@
+
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
@@ -45,6 +46,7 @@ import {
   Grid,
   Col,
   Row,
+  InputExtended,
 } from './styleds'
 
 interface FormComponentProps {
@@ -506,7 +508,8 @@ export default function PoolDetails({
                     <CountDownTimer endtime={finalTime} currTime={currentTime} />
                   </Flex>
 
-                  <div className="d-flex justify-content-between p-3">
+                  {/* <div className="d-flex justify-content-between p-3"> */}
+                  <Flex justifyContent="space-between" style={{padding: "16px"}}>
                     <SocialIcon
                       url={presale.twitter_link}
                       network="twitter"
@@ -537,31 +540,35 @@ export default function PoolDetails({
                       fgColor="#fff"
                       style={{ height: 40, width: 40 }}
                     />
-                  </div>
+                  </Flex>
 
                   {presale.owner_address !== account && (
                     <>
-                      <div className=" d-flex justify-content-center align-items-center mt-4 mb-4">
-                        <Input
+                      {/* <div className=" d-flex justify-content-center align-items-center mt-4 mb-4"> */}
+                      <Flex justifyContent="center" flexDirection="column" alignItems="center" style={{margin: "24px"}}>
+                        <InputExtended
                           placeholder="Amount"
-                          className="d-flex justify-content-center text-align-center"
+                          // className="d-flex justify-content-center text-align-center"
                           scale="lg"
+                          type="number"
                           value={amount}
                           onChange={handleChange('amount')}
                         />
                         <Button onClick={fetchBalanceFromAccount} scale="md" variant="text">
                           Max
                         </Button>
-                      </div>
-                      <div className="d-flex justify-content-center ">
+                      </Flex>
+                      {/* <div className="d-flex justify-content-center "> */}
+                      <Flex justifyContent="center" flexDirection="column" alignItems="center">
                         <Button scale="md" variant="secondary" onClick={handleContribute}>
                           Contribute
                         </Button>
-                      </div>
+                      </Flex>
                     </>
                   )}
 
-                  <div className="d-flex justify-content-center mt-4 mb-4">
+                  {/* <div className="d-flex justify-content-center mt-4 mb-4"> */}
+                  <Flex justifyContent="center" style={{margin: "24px"}}>
                     <InfoTable>
                       <tbody>
                         <tr>
@@ -588,18 +595,20 @@ export default function PoolDetails({
                         </tr>
                       </tbody>
                     </InfoTable>
-                  </div>
+                  </Flex>
 
                   <div>
                     {presale.owner_address !== account && (
-                      <div className=" d-flex justify-content-center">
+                      // <div className=" d-flex justify-content-center">
+                      <Flex justifyContent="center" flexDirection="column" alignItems="center">
                         <Button scale="md" variant="secondary" onClick={handleWithdraw}>
                           Withdraw
                         </Button>
-                      </div>
+                      </Flex>
                     )}
                     {presale.owner_address === account && !isDeposited && (
-                      <div className=" d-flex justify-content-center ">
+                      // <div className=" d-flex justify-content-center ">
+                      <Flex justifyContent="center" flexDirection="column" alignItems="center">
                         {depositAmount && (
                           <DepositButton
                             tokenAddress={presale.token_address}
@@ -607,7 +616,7 @@ export default function PoolDetails({
                             depositeToken={depositeToken}
                           />
                         )}
-                      </div>
+                      </Flex>
                     )}
                   </div>
                 </div>
@@ -626,26 +635,29 @@ export default function PoolDetails({
                     {presale.owner_address !== account && (
                       <>
                         <h1>If you participated in the presale click the claim button below to claim your tokens!</h1>
-                        <div className=" d-flex justify-content-center my-4">
+                        {/* <div className=" d-flex justify-content-center my-4"> */}
+                        <Flex justifyContent="center" style={{margin: "24px"}}>
                           <Button scale="md" variant="secondary" onClick={handleClaim}>
                             Claim
                           </Button>
-                        </div>
+                        </Flex>
                       </>
                     )}
 
                     {presale.owner_address === account && (
                       <div className=" mt-3 mb-3">
                         <h1 className="mb-3">Finalize the presale for others to claim there tokens!</h1>
-                        <div className="d-flex justify-content-center my-4">
+                        {/* <div className="d-flex justify-content-center my-4"> */}
+                        <Flex justifyContent="center" style={{margin: "24px"}}>
                           <Button scale="md" variant="secondary" onClick={handleFinalize}>
                             Finalize
                           </Button>
-                        </div>
+                        </Flex>
                       </div>
                     )}
                   </div>
-                  <div className="d-flex justify-content-center mt-4 mb-4">
+                  {/* <div className="d-flex justify-content-center mt-4 mb-4"> */}
+                  <Flex justifyContent="center" style={{margin: "24px"}}>
                     <InfoTable>
                       <tbody>
                         <tr>
@@ -678,7 +690,7 @@ export default function PoolDetails({
                         )}
                       </tbody>
                     </InfoTable>
-                  </div>
+                  </Flex>
                 </div>
               )}
             </Card.Body>

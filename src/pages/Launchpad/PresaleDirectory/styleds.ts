@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import Container from 'components/Container'
+import { Input } from '@evofinance9/uikit'
 
 export const ContainerExtended = styled(Container)``
 
@@ -135,6 +136,18 @@ export const CustomTextColor = styled.span`
 export const InfoTable = styled.table`
   td {
     padding: 0.5rem;
+  }
+`
+
+export const InputExtended = styled(Input)`
+  margin: 1rem 0;
+
+  ::placeholder,
+  ::-webkit-input-placeholder {
+    color: #757575;
+  }
+  :-ms-input-placeholder {
+    color: #757575;
   }
 `
 
