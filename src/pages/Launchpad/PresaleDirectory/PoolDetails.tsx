@@ -1,4 +1,3 @@
-
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
@@ -503,13 +502,12 @@ export default function PoolDetails({
             <Card.Body>
               {end_time > current_time && (
                 <div>
-                  <Flex justifyContent="center" flexDirection="column" alignItems="center">
-                    <h1>Presale Timer</h1>
+                  <PresalseTimerContainer>
+                    <h4>Presale Timer</h4>
                     <CountDownTimer endtime={finalTime} currTime={currentTime} />
-                  </Flex>
+                  </PresalseTimerContainer>
 
-                  {/* <div className="d-flex justify-content-between p-3"> */}
-                  <Flex justifyContent="space-between" style={{padding: "16px"}}>
+                  <Flex justifyContent="center" style={{ gap: '10px' }}>
                     <SocialIcon
                       url={presale.twitter_link}
                       network="twitter"
@@ -544,31 +542,23 @@ export default function PoolDetails({
 
                   {presale.owner_address !== account && (
                     <>
-                      {/* <div className=" d-flex justify-content-center align-items-center mt-4 mb-4"> */}
-                      <Flex justifyContent="center" flexDirection="column" alignItems="center" style={{margin: "24px"}}>
+                      <Flex justifyContent="center" alignItems="center" style={{ gap: '10px', margin: '1.5rem 0' }}>
                         <InputExtended
                           placeholder="Amount"
-                          // className="d-flex justify-content-center text-align-center"
                           scale="lg"
                           type="number"
                           value={amount}
                           onChange={handleChange('amount')}
                         />
-                        <Button onClick={fetchBalanceFromAccount} scale="md" variant="text">
-                          Max
-                        </Button>
-                      </Flex>
-                      {/* <div className="d-flex justify-content-center "> */}
-                      <Flex justifyContent="center" flexDirection="column" alignItems="center">
-                        <Button scale="md" variant="secondary" onClick={handleContribute}>
+                        <Button scale="md" onClick={handleContribute}>
                           Contribute
                         </Button>
                       </Flex>
+                      <Flex justifyContent="center" flexDirection="column" alignItems="center"></Flex>
                     </>
                   )}
 
-                  {/* <div className="d-flex justify-content-center mt-4 mb-4"> */}
-                  <Flex justifyContent="center" style={{margin: "24px"}}>
+                  <Flex justifyContent="center" style={{ margin: '24px' }}>
                     <InfoTable>
                       <tbody>
                         <tr>
@@ -599,15 +589,13 @@ export default function PoolDetails({
 
                   <div>
                     {presale.owner_address !== account && (
-                      // <div className=" d-flex justify-content-center">
                       <Flex justifyContent="center" flexDirection="column" alignItems="center">
-                        <Button scale="md" variant="secondary" onClick={handleWithdraw}>
+                        <Button scale="md" onClick={handleWithdraw}>
                           Withdraw
                         </Button>
                       </Flex>
                     )}
                     {presale.owner_address === account && !isDeposited && (
-                      // <div className=" d-flex justify-content-center ">
                       <Flex justifyContent="center" flexDirection="column" alignItems="center">
                         {depositAmount && (
                           <DepositButton
@@ -623,41 +611,36 @@ export default function PoolDetails({
               )}
 
               {end_time <= current_time && (
-                <div style={{ border: '1px solid red' }}>
+                <>
                   <PresalseTimerContainer>
-                    <h4 >Presale Timer:</h4>
-                    <h6 >00 Days 00 Hours 00 Minutes 00 Seconds</h6>
+                    <h4>Presale Timer</h4>
+                    <span>00 Days 00 Hours 00 Minutes 00 Seconds</span>
+                    <span>This presale has ended. Go back to the dashboard to view others!</span>
                   </PresalseTimerContainer>
 
-                  <div className=" mb-3">
-                    <h1>This presale has ended. Go back to the dashboard to view others!</h1>
+                  {presale.owner_address !== account && (
+                    <Flex
+                      justifyContent="center"
+                      flexDirection="column"
+                      alignItems="center"
+                      style={{ margin: '24px', gap: '10px' }}
+                    >
+                      <span>If you participated in the presale click the claim button below to claim your tokens!</span>
+                      <Button scale="md" onClick={handleClaim}>
+                        Claim
+                      </Button>
+                    </Flex>
+                  )}
+                  {presale.owner_address === account && (
+                    <Flex alignItems="center" flexDirection="column" style={{ margin: '24px', gap: '10px' }}>
+                      <h5>Finalize the presale for others to claim there tokens!</h5>
+                      <Button scale="md" onClick={handleFinalize}>
+                        Finalize
+                      </Button>
+                    </Flex>
+                  )}
 
-                    {presale.owner_address !== account && (
-                      <>
-                        <h1>If you participated in the presale click the claim button below to claim your tokens!</h1>
-                        {/* <div className=" d-flex justify-content-center my-4"> */}
-                        <Flex justifyContent="center" style={{margin: "24px"}}>
-                          <Button scale="md" variant="secondary" onClick={handleClaim}>
-                            Claim
-                          </Button>
-                        </Flex>
-                      </>
-                    )}
-
-                    {presale.owner_address === account && (
-                      <div className=" mt-3 mb-3">
-                        <h1 className="mb-3">Finalize the presale for others to claim there tokens!</h1>
-                        {/* <div className="d-flex justify-content-center my-4"> */}
-                        <Flex justifyContent="center" style={{margin: "24px"}}>
-                          <Button scale="md" variant="secondary" onClick={handleFinalize}>
-                            Finalize
-                          </Button>
-                        </Flex>
-                      </div>
-                    )}
-                  </div>
-                  {/* <div className="d-flex justify-content-center mt-4 mb-4"> */}
-                  <Flex justifyContent="center" style={{margin: "24px"}}>
+                  <Flex justifyContent="center" style={{ margin: '24px' }}>
                     <InfoTable>
                       <tbody>
                         <tr>
@@ -691,7 +674,7 @@ export default function PoolDetails({
                       </tbody>
                     </InfoTable>
                   </Flex>
-                </div>
+                </>
               )}
             </Card.Body>
           </PresaleCard>

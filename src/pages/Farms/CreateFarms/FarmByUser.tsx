@@ -1,77 +1,66 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import swal from 'sweetalert'
-import { Button, CardBody, Input, CardHeader } from '@evofinance9/uikit'
+import { Button, CardBody, CardHeader } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 
-// import { BigNumber } from '@ethersproject/bignumber'
-import { DateTimePicker, DatePicker } from '@material-ui/pickers'
+import { DatePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
-// import { TransactionResponse } from '@ethersproject/providers'
 
 import { FaInfoCircle } from 'react-icons/fa'
 
 import addFarmUser from './apicalls'
 
-import { useFarmContract, useDateTimeContract } from 'hooks/useContract'
-import { getFarmContract, getTokenContract, getSigCheckContract } from 'utils'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
+import { getTokenContract, getSigCheckContract } from 'utils'
 
 import './style.css'
-import { Checkbox, useCheckboxState } from 'pretty-checkbox-react'
 import { AppBodyExtended } from 'pages/AppBody'
 
 import { useActiveWeb3React } from 'hooks'
 
-import styled from 'styled-components'
-import { Heading, FlexH1, Flex } from './styleds'
-
 import Container from 'components/Container'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import Tooltip from 'components/Tooltip'
+import { Heading, Flex, Text, InputExtended } from './styleds'
 
 const CssTextField = withStyles({
   root: {
     '&': {
-      border: 'red',
-      borderRadius: '16px',
+      borderRadius: '6px',
+      margin: '1rem 0',
     },
     '& label.Mui-focused': {
       color: '#aaa',
     },
+    '& label': {
+      color: '#000',
+    },
 
     '& .MuiInputBase-input': {
-      color: '#F4EEFF',
-      backgroundColor: '#18191A',
-      borderRadius: '16px',
-      boxShadow: 'inset 0px 2px 2px -1px rgb(74 74 104 / 10%)',
+      color: '#000',
+      backgroundColor: '#fff',
+      borderRadius: '6px',
       display: 'block',
       fontSize: '16px',
       height: '48px',
       outline: '0',
+      borderColor: '#2669f5',
       padding: '0 16px',
     },
-    '& .MuiInputBase-input:focus': {
-      boxShadow: '0px 0px 0px 1px #7645D9,0px 0px 0px 4pxrgba(118,69,217,0.6)',
+    '& .MuiInputBase-input:active': {
+      border: '0',
     },
   },
 })(TextField)
 
 export default function Farm() {
   const { account, chainId, library } = useActiveWeb3React()
-  // const farmContract = useFarmContract(true)
-
-  // const dateTimeContract = useDateTimeContract()
-
-  const checkbox = useCheckboxState({ state: [] })
   const [txHash, setTxHash] = useState<string>('')
   const [owner, setOwner] = useState<string>('')
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  // const [allowcationTooltip, setAllowcationTooltip] = useState<boolean>(false)
-  // const [allowcationAmountTooltip, setAllowcationAmountTooltip] = useState<boolean>(false)
   const [feeTooltip, setFeeTooltip] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
@@ -142,15 +131,13 @@ export default function Farm() {
     setIsOpen(true)
 
     // opens up metamask extension and connects Web2 to Web3
-    await (window as any).ethereum.send('eth_requestAccounts') 
-    
+    await (window as any).ethereum.send('eth_requestAccounts')
+
     //create provider
-    const provider = new ethers.providers.Web3Provider(
-      (window as any).ethereum
-    ) 
-    
+    const provider = new ethers.providers.Web3Provider((window as any).ethereum)
+
     const signer = provider.getSigner()
-          
+
     let amount = 5
     const etherAmount = ethers.utils.parseUnits(amount.toString(), 'ether')
 
@@ -162,36 +149,36 @@ export default function Farm() {
     await tx.wait()
     setAttemptingTxn(false)
 
-      addFarmUser({
-        ...formData,
-        owner_address: account,
+    addFarmUser({
+      ...formData,
+      owner_address: account,
+    })
+      .then((data) => {
+        if (data.error) {
+          swal('Oops', 'Something went wrong!', 'error')
+        } else {
+          setFormData({
+            ...formData,
+            chain_id: '32520',
+            owner_address: '',
+            token_address: '',
+            token_name: '',
+            token_symbol: '',
+            token_decimal: '',
+            project_name: '',
+            start_date: new Date(),
+            email_id: '',
+            telegram_id: '',
+            logo_url: '',
+          })
+          swal('Congratulations!', 'Farm is added!', 'success')
+        }
       })
-        .then((data) => {
-          if (data.error) {
-            swal('Oops', 'Something went wrong!', 'error')
-          } else {
-            setFormData({
-              ...formData,
-              chain_id: '32520',
-              owner_address: '',
-              token_address: '',
-              token_name: '',
-              token_symbol: '',
-              token_decimal: '',
-              project_name: '',
-              start_date: new Date(),
-              email_id: '',
-              telegram_id: '',
-              logo_url: '',
-            })
-            swal('Congratulations!', 'Farm is added!', 'success')
-          }
-        })
-        .catch((err) => console.log('Error in signup' + err))
+      .catch((err) => console.log('Error in signup' + err))
       .catch((e) => {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
@@ -212,91 +199,75 @@ export default function Farm() {
   return (
     <>
       <Container>
+        <TransactionConfirmationModal
+          isOpen={isOpen}
+          onDismiss={handleDismissConfirmation}
+          attemptingTxn={attemptingTxn}
+          hash={txHash}
+          content={() => <></>}
+          pendingText="Please wait..."
+        />
         <AppBodyExtended>
-          <TransactionConfirmationModal
-            isOpen={isOpen}
-            onDismiss={handleDismissConfirmation}
-            attemptingTxn={attemptingTxn}
-            hash={txHash}
-            content={() => <></>}
-            pendingText="Please wait..."
-          />
-          {/* <CardHeader className="d-flex justify-content-between"> */}
-          <Heading>
-            Create Farm
-            <Tooltip show={feeTooltip} placement="right" text="Create using LP Token Address">
-              <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
-            </Tooltip> 
-          </Heading>
+          <CardHeader>
+            <Flex alignItems={'center'} justifyContent={'space-between'}>
+              <Heading>Create Farm</Heading>
+              <Tooltip show={feeTooltip} placement="right" text="Create using LP Token Address">
+                <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
+              </Tooltip>
+            </Flex>
+          </CardHeader>
+
           <CardBody>
-            {/* <h1 className="d-flex justify-content-center">Bitgert will be creating the pool for investors to stake or Farm!</h1>
-            <h1 className="d-flex justify-content-center">Please log the details below and submit!! </h1>
-            <h1 className="d-flex justify-content-center mb-3">Kindly expect the response within 1 week.</h1>
-            <h1 className="d-flex justify-content-center mb-3">To submit your stake creation request, you must pay 5 BRISE.</h1> */}
+            <Flex direction="column" alignItems="start">
+              <Text>Bitgert will be creating the pool for investors to stake or Farm!</Text>
+              <Text>Please log the details below and submit!!</Text>
+              <Text>Kindly expect the response within 1 week.</Text>
+              <Text>To submit your stake creation request, you must pay 5 BRISE.</Text>
+            </Flex>
 
-            <FlexH1 justifyContent="center" margin="0rem">Bitgert will be creating the pool for investors to stake or Farm!</FlexH1>
-            <FlexH1 justifyContent="center" margin="0rem">Please log the details below and submit!! </FlexH1>
-            <FlexH1 justifyContent="center" margin="1rem">Kindly expect the response within 1 week.</FlexH1>
-            <FlexH1 justifyContent="center" margin="1rem">To submit your stake creation request, you must pay 5 BRISE.</FlexH1>
+            <Flex>
+              <InputExtended
+                placeholder="Token Address"
+                className="mt-3"
+                scale="lg"
+                value={token_address}
+                onChange={handleChange('token_address')}
+              />
+              <InputExtended
+                placeholder="Token Name"
+                scale="lg"
+                className="mt-3"
+                value={token_name}
+                onChange={handleChange('token_name')}
+              />
+            </Flex>
 
+            <Flex>
+              <InputExtended
+                placeholder="Token Symbol"
+                scale="lg"
+                className="mt-3"
+                value={token_symbol}
+                onChange={handleChange('token_symbol')}
+              />
+              <InputExtended
+                placeholder="Token Decimal"
+                className="mt-3"
+                scale="lg"
+                value={token_decimal}
+                onChange={handleChange('token_decimal')}
+              />
+            </Flex>
 
-            <h1>Token Details</h1>
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Address"
-                  className="mt-3"
-                  scale="lg"
-                  value={token_address}
-                  onChange={handleChange('token_address')}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Name"
-                  scale="lg"
-                  className="mt-3"
-                  value={token_name}
-                  onChange={handleChange('token_name')}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Symbol"
-                  scale="lg"
-                  className="mt-3"
-                  value={token_symbol}
-                  onChange={handleChange('token_symbol')}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Decimal"
-                  className="mt-3"
-                  scale="lg"
-                  value={token_decimal}
-                  onChange={handleChange('token_decimal')}
-                />
-              </div>
-            </div>
-
-            <h1> Project Name </h1>
-            <div className="mt-2 mb-3">
-              <Input
+            <Flex>
+              <InputExtended
                 placeholder="Project Name"
                 className="mt-3"
                 scale="lg"
                 value={project_name}
                 onChange={handleChange('project_name')}
               />
-            </div>
 
-            <h1> Date Of Launch </h1>
-            {/* <div className=" d-flex justify-content-center my-4"> */}
-            <Flex justifyContent="center" margin="1.5rem">
               <DatePicker
                 size="small"
                 color="primary"
@@ -312,55 +283,44 @@ export default function Farm() {
               />
             </Flex>
 
-              
-
-            <h1> Email to contact </h1>
-            <div className="mb-3">
-              <Input
+            <Flex>
+              <InputExtended
                 placeholder="Email ID"
                 className="mt-3"
                 scale="lg"
                 value={email_id}
                 onChange={handleChange('email_id')}
               />
-            </div>
 
-            <h1> Telegram </h1>
-            <div className="mb-3">
-              <Input
+              <InputExtended
                 placeholder="Telegram ID"
                 className="mt-3"
                 scale="lg"
                 value={telegram_id}
                 onChange={handleChange('telegram_id')}
               />
-            </div>
+            </Flex>
 
-            <h1> Project Logo </h1>
-            <div className="mb-3">
-              <Input
+            <Flex>
+              <InputExtended
                 placeholder="Logo Url"
                 className="mt-3"
                 scale="lg"
                 value={logo_url}
                 onChange={handleChange('logo_url')}
               />
-            </div>
-          </CardBody> 
+            </Flex>
 
-          {/* <div className="d-flex justify-content-center mb-5"> */}
-          <Flex justifyContent="center" margin="3rem">
-            <Button className="mx-2" onClick={handleSubmit}>Submit</Button>
-            <Link to={`/create-farms`}>
-              <Button>
-                Back
-              </Button>
-            </Link>  
-          </Flex>
-          
+            <Flex justifyContent="center">
+              <Link to={`/create-farms`}>
+                <Button>Back</Button>
+              </Link>
+              <Button onClick={handleSubmit}>Submit</Button>
+            </Flex>
+          </CardBody>
         </AppBodyExtended>
+        <div style={{ padding: '3rem', margin: '2rem' }} />
       </Container>
-      <div className="mt-5"> </div>
     </>
   )
 }
