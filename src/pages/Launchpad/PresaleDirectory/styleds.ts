@@ -251,15 +251,18 @@ export const CardInfoText = styled.span`
 `
 
 export const PresalseTimerContainer = styled.div`
-  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1.5rem 0;
   h4 {
-    text-align: center;
     font-size: 1.5rem;
+    margin-bottom: 0.5rem;
   }
-
-  h6 {
-    text-align: center;
+  
+  span {
     font-size: 1rem;
+    margin-bottom: 0.5rem;
   }
 `
 
