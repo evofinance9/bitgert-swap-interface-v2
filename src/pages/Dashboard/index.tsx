@@ -8,6 +8,7 @@ import { FaChartLine } from 'react-icons/fa'
 import { CgCircleci } from 'react-icons/cg'
 import { IoFileTray } from 'react-icons/io5'
 
+import Chart from 'components/Chart'
 import Banner from 'components/Banner'
 import Liquidity from 'components/Chart/Liquidity'
 import TopTradingAssets from 'components/Dashboard/TopTradingAssets'
@@ -58,7 +59,10 @@ const Dashboard = () => {
       </BannerContainer>
       <ContainerExtended>
         <Column>
-          <SidebarContainer />
+          <SidebarContainer>
+            <ColumnHeader>Liquidity</ColumnHeader>
+            <Liquidity />
+          </SidebarContainer>
         </Column>
 
         <Column>
@@ -93,10 +97,9 @@ const Dashboard = () => {
             </IconGrid>
           </IconGridContainer>
 
+          {/* Price Charts */}
           <ChartContainer>
-            <ColumnHeader>Liquidity</ColumnHeader>
-
-            <Liquidity />
+            <Chart />
           </ChartContainer>
         </Column>
       </ContainerExtended>

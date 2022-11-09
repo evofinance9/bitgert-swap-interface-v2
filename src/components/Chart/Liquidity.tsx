@@ -6,7 +6,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 
 const ChartContainer = styled.div`
   height: 400px;
-  margin-top: 1rem;
+  margin-top: 3rem;
 `
 
 const DAY_UPDATE_QUERY = gql`
@@ -43,18 +43,10 @@ const Liquidity = () => {
       {data && (
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
-            width={500}
-            height={400}
             data={data}
-            margin={{
-              top: 10,
-              right: 30,
-              left: 0,
-              bottom: 0,
-            }}
           >
-            <XAxis dataKey="date" strokeWidth={0} />
-            <YAxis strokeWidth={0} />
+            <XAxis strokeWidth={0} dataKey="date" tick={false} />
+            <YAxis strokeWidth={0} domain={[0, 400000]} />
             <Tooltip />
             <Area type="monotone" dataKey="liquidity" stroke="#2669f5" fill="#f0f5ff" />
           </AreaChart>
