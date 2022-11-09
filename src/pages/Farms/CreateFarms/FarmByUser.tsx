@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import swal from 'sweetalert'
-import { Button, CardBody, Input, CardHeader } from '@evofinance9/uikit'
+import { Button, CardBody, Input, CardHeader, Flex } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 
@@ -25,7 +25,8 @@ import { AppBodyExtended } from 'pages/AppBody'
 import { useActiveWeb3React } from 'hooks'
 
 import styled from 'styled-components'
-import { Heading, FlexH1, Flex } from './styleds'
+import { Heading, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
+// import { Heading, FlexH1, Flex } from './styleds'
 
 import Container from 'components/Container'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
@@ -221,82 +222,96 @@ export default function Farm() {
             content={() => <></>}
             pendingText="Please wait..."
           />
-          {/* <CardHeader className="d-flex justify-content-between"> */}
-          <Heading>
-            Create Farm
+          <CardHeader>
+          <Flex alignItems={'center'} justifyContent={'space-between'}>
+
+            <Heading>
+              Create Farm
+            </Heading>
+
             <Tooltip show={feeTooltip} placement="right" text="Create using LP Token Address">
               <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
-            </Tooltip> 
-          </Heading>
+            </Tooltip>
+          </Flex>
+          </CardHeader>
           <CardBody>
             {/* <h1 className="d-flex justify-content-center">Bitgert will be creating the pool for investors to stake or Farm!</h1>
             <h1 className="d-flex justify-content-center">Please log the details below and submit!! </h1>
             <h1 className="d-flex justify-content-center mb-3">Kindly expect the response within 1 week.</h1>
             <h1 className="d-flex justify-content-center mb-3">To submit your stake creation request, you must pay 5 BRISE.</h1> */}
 
-            <FlexH1 justifyContent="center" margin="0rem">Bitgert will be creating the pool for investors to stake or Farm!</FlexH1>
-            <FlexH1 justifyContent="center" margin="0rem">Please log the details below and submit!! </FlexH1>
-            <FlexH1 justifyContent="center" margin="1rem">Kindly expect the response within 1 week.</FlexH1>
-            <FlexH1 justifyContent="center" margin="1rem">To submit your stake creation request, you must pay 5 BRISE.</FlexH1>
+            <Flex justifyContent="center" margin="0rem">Bitgert will be creating the pool for investors to stake or Farm!</Flex>
+            <Flex justifyContent="center" margin="0rem">Please log the details below and submit!! </Flex>
+            <Flex justifyContent="center" margin="1rem">Kindly expect the response within 1 week.</Flex>
+            <Flex justifyContent="center" margin="1rem">To submit your stake creation request, you must pay 5 BRISE.</Flex>
 
 
             <h1>Token Details</h1>
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <Input
+
+            {/* <div className="row">
+              <div className="col-md-6 mb-3"> */}
+              <FlexExtended>
+              <InputExtended
                   placeholder="Token Address"
                   className="mt-3"
                   scale="lg"
                   value={token_address}
                   onChange={handleChange('token_address')}
                 />
-              </div>
+                {/* </FlexExtended> */}
+              {/* </div>
 
-              <div className="col-md-6 mb-3">
-                <Input
+              <div className="col-md-6 mb-3"> */}
+              <InputExtended
                   placeholder="Token Name"
                   scale="lg"
                   className="mt-3"
                   value={token_name}
                   onChange={handleChange('token_name')}
                 />
-              </div>
 
-              <div className="col-md-6 mb-3">
-                <Input
+
+              {/* <div className="col-md-6 mb-3"> */}
+              <InputExtended
                   placeholder="Token Symbol"
                   scale="lg"
                   className="mt-3"
                   value={token_symbol}
                   onChange={handleChange('token_symbol')}
                 />
-              </div>
+              {/* </div>
 
-              <div className="col-md-6 mb-3">
-                <Input
+              <div className="col-md-6 mb-3"> */}
+                <InputExtended
                   placeholder="Token Decimal"
                   className="mt-3"
                   scale="lg"
                   value={token_decimal}
                   onChange={handleChange('token_decimal')}
                 />
-              </div>
-            </div>
+              {/* </div> */}
+            </FlexExtended>
 
             <h1> Project Name </h1>
-            <div className="mt-2 mb-3">
-              <Input
+
+            {/* <div className="mt-2 mb-3"> */}
+            <FlexExtended>
+              <InputExtended
                 placeholder="Project Name"
                 className="mt-3"
                 scale="lg"
                 value={project_name}
                 onChange={handleChange('project_name')}
               />
-            </div>
+            {/* </div> */}
+            </FlexExtended>
 
             <h1> Date Of Launch </h1>
+
             {/* <div className=" d-flex justify-content-center my-4"> */}
-            <Flex justifyContent="center" margin="1.5rem">
+            {/* <Flex justifyContent="center" margin="1.5rem"> */}
+            <FlexExtended>
+
               <DatePicker
                 size="small"
                 color="primary"
@@ -309,13 +324,17 @@ export default function Farm() {
                 TextFieldComponent={(params) => {
                   return <CssTextField {...params} />
                 }}
-              />
-            </Flex>
+                />
+                </FlexExtended>
 
               
 
+            <FlexExtended>
             <h1> Email to contact </h1>
-            <div className="mb-3">
+
+
+            {/* <div className="mb-3"> */}
+
               <Input
                 placeholder="Email ID"
                 className="mt-3"
@@ -323,10 +342,10 @@ export default function Farm() {
                 value={email_id}
                 onChange={handleChange('email_id')}
               />
-            </div>
+            {/* </div> */}
 
             <h1> Telegram </h1>
-            <div className="mb-3">
+            {/* <div className="mb-3"> */}
               <Input
                 placeholder="Telegram ID"
                 className="mt-3"
@@ -334,10 +353,13 @@ export default function Farm() {
                 value={telegram_id}
                 onChange={handleChange('telegram_id')}
               />
-            </div>
+            {/* </div> */}
+            </FlexExtended>
 
+            <FlexExtended>
+            
             <h1> Project Logo </h1>
-            <div className="mb-3">
+            {/* <div className="mb-3"> */}
               <Input
                 placeholder="Logo Url"
                 className="mt-3"
@@ -345,18 +367,24 @@ export default function Farm() {
                 value={logo_url}
                 onChange={handleChange('logo_url')}
               />
-            </div>
+            {/* </div> */}
+            </FlexExtended>
+
           </CardBody> 
 
           {/* <div className="d-flex justify-content-center mb-5"> */}
-          <Flex justifyContent="center" margin="3rem">
+          {/* <Flex justifyContent="center" margin="3rem"> */}
+          <ButtonContainer>
+
             <Button className="mx-2" onClick={handleSubmit}>Submit</Button>
             <Link to={`/create-farms`}>
               <Button>
                 Back
               </Button>
-            </Link>  
-          </Flex>
+            </Link> 
+          </ButtonContainer>
+
+          {/* </Flex> */}
           
         </AppBodyExtended>
       </Container>

@@ -1,17 +1,12 @@
 import styled from 'styled-components'
 import { Input } from '@evofinance9/uikit'
 
-interface FlexProps {
-  justifyContent: any;
-  margin: any;
-}
 
 export const Heading = styled.h3`
   font-size: 1.3rem;
   line-height: 1.1;
   font-weight: 500;
   margin-right: 10px;
-  justify-content: space-between;
 `
 
 export const InputExtended = styled(Input)`
@@ -34,19 +29,10 @@ export const ButtonContainer = styled.div`
   margin-bottom: 1rem;
 `
 
-export const Flex = styled.div<FlexProps>`
+export const Flex = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${props => props.justifyContent};
-  margin: ${props => props.margin};
-  gap: 1rem;
-`
-
-export const FlexH1 = styled.h1<FlexProps>`
-  display: flex;
-  align-items: center;
-  justify-content: ${props => props.justifyContent};;
-  margin: ${props => props.margin};
+  justify-content: center;
   gap: 1rem;
 `
 

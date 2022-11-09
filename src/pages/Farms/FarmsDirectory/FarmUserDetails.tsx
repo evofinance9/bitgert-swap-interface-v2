@@ -48,7 +48,9 @@ import {
   IconsWrapper,
   LoaderWrapper,
   Heading, 
-  Flex,
+  Flex as FlexExtended, 
+  InputExtended, 
+  ButtonContainer 
 } from './styleds'
 import { addFarmOwner } from '../CreateFarms/apicalls'
 
@@ -342,18 +344,19 @@ export default function FarmUserDetails({
                   />
                 </div>
                 {/* <div className=" d-flex justify-content-around my-4"> */}
-                <Flex justifyContent="space-around" margin="1.5rem">
-                  <div>
+                {/* <Flex justifyContent="space-around" margin="1.5rem"> */}
+                  <FlexExtended>
+                  <ButtonContainer>
                     <Button scale="md" variant="secondary" onClick={handleCreate}>
                       Create
                     </Button>
-                  </div>
-                  <div >
+                  </ButtonContainer>
+                  <ButtonContainer >
                     <Link to={`/farm`}>
                       <Button scale="md" variant="secondary">Back</Button>
                     </Link>
-                  </div>
-                </Flex>
+                  </ButtonContainer>
+                  </FlexExtended>
                 </>
                 )}
               </FarmCardBody>

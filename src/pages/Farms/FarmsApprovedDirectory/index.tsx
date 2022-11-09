@@ -8,7 +8,7 @@ import './style.css'
 
 import Container from 'components/Container'
 import FarmUser from 'components/FarmUser'
-import { Button, CardBody, Input } from '@evofinance9/uikit'
+import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
 import { FaCopy, FaInfoCircle } from 'react-icons/fa'
 import Tooltip from 'components/Tooltip'
 
@@ -27,11 +27,11 @@ import { FARM_ADDRESS } from 'constants/abis/farm'
 
 import { getAllFarmOwner } from './apicalls'
 // import getAllFarmUser from './apicalls'
-import { TableWrapper, Table, LoaderWrapper, StyledText, Flex } from './styleds'
+import { TableWrapper, Table, LoaderWrapper, StyledText, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
 
-const InputExtended = styled(Input)`
-  width: 100px;
-`
+// const InputExtended = styled(Input)`
+//   width: 100px;
+// `
 
 export default function FarmsCreatedDirectory() {
   const { account, chainId, library } = useActiveWeb3React()
@@ -538,60 +538,72 @@ export default function FarmsCreatedDirectory() {
           {isOwner && (
             <>
             {/* <div className="d-flex justify-content-around my-5"> */}
-            <Flex justifyContent="space-around" margin="3rem">
-              <div className="mb-3 mr-4">
+            {/* <Flex justifyContent="space-around" margin="3rem">
+              <div className="mb-3 mr-4"> */}
+            <FlexExtended>
 
                 { (parseFloat(allowance) < DepositRewardAmount || parseFloat(allowance) === 0) &&
+                <ButtonContainer>
                   <Button scale="sm" className="mx-2" variant="tertiary" onClick={handleAllowanceApprove}>
                     Approve
                   </Button>
+                </ButtonContainer>
                 }
-                
-                <Button scale="sm" variant="tertiary" onClick={handleAllowanceDeposit}>
-                  Deposit Reward Tokens
-                </Button>
-                <Tooltip show={feeTooltip1} placement="top" text={`Total Rewards present: ${rewardBalance} `}>
-                <FaInfoCircle
-                  className="mx-2" color='grey'
-                  onMouseEnter={() => setFeeTooltip1(true)}
-                  onMouseLeave={() => setFeeTooltip1(false)}
-                />
-                </Tooltip>
+
+                <ButtonContainer>
+                  <Button  variant="tertiary" onClick={handleAllowanceDeposit}>
+                    Deposit Reward Tokens
+                  </Button>
+                  <Tooltip show={feeTooltip1} placement="top" text={`Total Rewards present: ${rewardBalance} `}>
+                  <FaInfoCircle
+                    className="mx-2" color='grey'
+                    onMouseEnter={() => setFeeTooltip1(true)}
+                    onMouseLeave={() => setFeeTooltip1(false)}
+                  />
+                  </Tooltip>
                 <br />
-                <div className="mt-2">
+                {/* <div className="mt-2"> */}
                   <InputExtended
                     placeholder="Deposit"
                     className="mt-3"
                     scale="sm"
                     value={DepositRewardAmount}
                     onChange={handleChange('DepositRewardAmount')}
-                  />
-                </div>
-              </div>
-              <div className="mb-3 mr-4">
-                <Button scale="sm" variant="tertiary" onClick={handleEmergencyRewardWithdraw}>
+                    />
+                </ButtonContainer>
+                {/* </div> */}
+              {/* </div> */}
+              {/* <div className="mb-3 mr-4"> */}
+              <ButtonContainer>
+                <Button variant="tertiary" onClick={handleEmergencyRewardWithdraw}>
                   Withdraw Reward Tokens
                 </Button>
                 <br />
-                <div className="mt-2">
+                {/* <div className="mt-2"> */}
                   <InputExtended
                     placeholder="Withdraw"
                     className="mt-3"
                     scale="sm"
                     value={WithdrawAmount}
                     onChange={handleChange('WithdrawAmount')}
-                  />
-                </div>
-              </div>
-            </Flex>
+                    />
+                    </ButtonContainer>
+                {/* </div>
+              </div> */}
+            </FlexExtended>
             {/* <div className="d-flex justify-content-around my-5"> */}
-            <Flex justifyContent="space-around" margin="3rem">
-              <Button scale="sm" variant="secondary" onClick={handlePause}>
+
+            {/* <Flex justifyContent="space-around" margin="3rem"> */}
+            <FlexExtended>
+              <ButtonContainer>
+              <Button  variant="secondary" onClick={handlePause}>
                 {`${pause ? 'Unpause' : 'Pause'} it`}
               </Button>
+              </ButtonContainer>
 
-              <div className="mb-3 mr-4">
-                <Button scale="sm" variant="secondary" onClick={handleBitgertToken}>
+              {/* <div className="mb-3 mr-4"> */}
+              <ButtonContainer>
+                <Button  variant="secondary" onClick={handleBitgertToken}>
                   {`Change Reward Token`}
                 </Button>
                 <Tooltip show={feeTooltip2} placement="top" text={`Bitgert Reward Token is : ${bitgertToken} `}>
@@ -602,27 +614,32 @@ export default function FarmsCreatedDirectory() {
                   />
                 </Tooltip>
                 <br />
-                <div className="mt-2">
+                <br />
+                {/* <div className="mt-2"> */}
                   <InputExtended
                     placeholder="Update"
                     className="mt-3"
                     scale="sm"
                     value={RewardToken}
                     onChange={handleChange('RewardToken')}
-                  />
-                </div>
-              </div>
-
+                    />
+                    </ButtonContainer>
+                {/* </div>
+              </div> */}
+              <ButtonContainer>
               <Button scale="sm" variant="secondary" onClick={handleIsMint}>
                 {`${isMint ? 'stop Mint' : 'Start Mint'}`}
               </Button>
+              </ButtonContainer>
 
-            </Flex>
+              </FlexExtended>
 
-            <Flex justifyContent="space-between" margin="0rem">
+            {/* <Flex justifyContent="space-between" margin="0rem"> */}
 
-              <div className="mb-3 mr-4">  
-                <Button scale="sm" variant="secondary" onClick={handleMultiplier}>
+              {/* <div className="mb-3 mr-4"> */}
+              <FlexExtended>
+              <ButtonContainer>  
+                <Button variant="secondary" onClick={handleMultiplier}>
                   Update Multiplier
                 </Button>
                 <Tooltip show={feeTooltip3} placement="top" text={`Current Multiplier is : ${multiplier} `}>
@@ -633,18 +650,20 @@ export default function FarmsCreatedDirectory() {
                 />
                 </Tooltip>
                 <br />
-                <div className="mt-2">
+                {/* <div className="mt-2"> */}
                   <InputExtended
                     placeholder="Update"
                     className="mt-3"
                     scale="sm"
                     value={Multiplier}
                     onChange={handleChange('Multiplier')}
-                  />
-                </div>
+                    />
+                    </ButtonContainer>
+                {/* </div>
               </div>
-              <div className="mb-3 mr-4">  
-                  <Button scale="sm" variant="secondary" onClick={handleEmissionRate}>
+              <div className="mb-3 mr-4">   */}
+              <ButtonContainer>
+                  <Button  variant="secondary" onClick={handleEmissionRate}>
                     Update Emission Rate
                   </Button>
                   <Tooltip show={feeTooltip4} placement="top" text={`Bitgert per block is : ${bitgertPerBlock} `}>
@@ -655,19 +674,21 @@ export default function FarmsCreatedDirectory() {
                     />
                     </Tooltip>
                     <br />
-                    <div className="mt-2">
+                    {/* <div className="mt-2"> */}
                       <InputExtended
                         placeholder="Update"
                         className="mt-3"
                         scale="sm"
                         value={EmissionRate}
                         onChange={handleChange('EmissionRate')}
-                      />
-                    </div>
-                </div>
-                <div className="mb-3 mr-4">  
+                        />
+                        </ButtonContainer>
+                    {/* </div>
+                </div> */}
+                {/* <div className="mb-3 mr-4">   */}
 
-                    <Button scale="sm" variant="secondary" onClick={handlechangeToBurn}>
+                <ButtonContainer>
+                    <Button variant="secondary" onClick={handlechangeToBurn}>
                       Update ToBurn
                     </Button>
                     <Tooltip show={feeTooltip5} placement="top" text={`to burn value is : ${toBurn} `}>
@@ -678,17 +699,18 @@ export default function FarmsCreatedDirectory() {
                     />
                     </Tooltip>
                     <br />
-                    <div className="mt-2">
+                    {/* <div className="mt-2"> */}
                       <InputExtended
                         placeholder="Update"
                         className="mt-3"
                         scale="sm"
                         value={ChangeToBurn}
                         onChange={handleChange('ChangeToBurn')}
-                      />
-                    </div>
-                </div>
-            </Flex>
+                        />
+                        </ButtonContainer>
+                    {/* </div>
+                </div> */}
+                </FlexExtended>
           </>
           )}
 

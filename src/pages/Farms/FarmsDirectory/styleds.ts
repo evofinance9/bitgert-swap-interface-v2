@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import { Input } from '@evofinance9/uikit'
+
 
 interface FlexProps {
   justifyContent: any;
@@ -29,13 +31,33 @@ export const StyledText = styled.h3`
   margin: auto;
 `
 
-export const Flex = styled.div<FlexProps>`
+export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${props => props.justifyContent};
-  margin: ${props => props.margin};
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+`
+
+export const Flex = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 1rem;
 `
+
+export const InputExtended = styled(Input)`
+  margin: 1rem 0;
+
+  ::placeholder,
+  ::-webkit-input-placeholder {
+    color: #757575;
+  }
+  :-ms-input-placeholder {
+    color: #757575;
+  }
+`
+
 
 export const Heading = styled.h3`
   font-size: 1.3rem;

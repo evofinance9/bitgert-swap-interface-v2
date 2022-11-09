@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import swal from 'sweetalert'
-import { Button, CardBody, Input, CardHeader } from '@evofinance9/uikit'
+import { Button, CardBody, Input, CardHeader, Flex} from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 // import { ethers } from 'ethers'
 
@@ -22,7 +22,7 @@ import './style.css'
 import { AppBodyExtended } from 'pages/AppBody'
 
 import { useActiveWeb3React } from 'hooks'
-import { Heading, Flex } from './styleds'
+import { Heading, Flex as FlexExtended } from './styleds'
 
 import Container from 'components/Container'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
@@ -219,11 +219,13 @@ export default function Farm() {
             content={() => <></>}
             pendingText="Please wait..."
           />
-          {/* <CardHeader className="d-flex justify-content-between"> */}
-          <Heading>
-            Farms
-          </Heading>
-          {/* </CardHeader> */}
+          <CardHeader>
+            <Flex alignItems={'center'} justifyContent={'space-between'}>
+              <Heading>
+                Farms
+              </Heading>
+            </Flex>
+          </CardHeader>
 
           {account && (owner===account || ownerFlag) && (
           <>

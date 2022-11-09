@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import swal from 'sweetalert'
-import { Button, CardBody, Input, CardHeader } from '@evofinance9/uikit'
+import { Button, CardBody, Input, CardHeader, Flex } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 
@@ -24,7 +24,7 @@ import { AppBodyExtended } from 'pages/AppBody'
 
 import { useActiveWeb3React } from 'hooks'
 import styled from 'styled-components'
-import { Heading, Flex } from './styleds'
+import { Heading, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
 
 import Container from 'components/Container'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
@@ -260,77 +260,86 @@ export default function Farm() {
             content={() => <></>}
             pendingText="Please wait..."
           />
-          {/* <CardHeader className="d-flex justify-content-between"> */}
-          <Heading>
-            Create Farm
+          <CardHeader>
+          <Flex alignItems={'center'} justifyContent={'space-between'}>
+            <Heading>
+              Create Farm 
+            </Heading>
+
             <Tooltip show={feeTooltip} placement="right" text="Make a pair token eligible for farming!">
               <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
-            </Tooltip> 
-          </Heading>
-          {/* </CardHeader> */}
+            </Tooltip>
+            </Flex>
+          </CardHeader>
           <CardBody>
 
-
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <Input
+            <FlexExtended>
+            {/* <div className="row">
+              <div className="col-md-6 mb-3"> */}
+                <InputExtended
                   placeholder="Token Address"
                   className="mt-3"
                   scale="lg"
                   value={token_address}
                   onChange={handleChange('token_address')}
                 />
-              </div>
+              {/* </div> */}
 
-              <div className="col-md-6 mb-3">
-                <Input
+              {/* <div className="col-md-6 mb-3"> */}
+                <InputExtended
                   placeholder="Token Name"
                   scale="lg"
                   className="mt-3"
                   value={token_name}
                   onChange={handleChange('token_name')}
                 />
-              </div>
+            </FlexExtended>
+              {/* </div>
 
-              <div className="col-md-6 mb-3">
-                <Input
+              <div className="col-md-6 mb-3"> */}
+              <FlexExtended>
+                <InputExtended
                   placeholder="Token Symbol"
                   scale="lg"
                   className="mt-3"
                   value={token_symbol}
                   onChange={handleChange('token_symbol')}
                 />
-              </div>
+              {/* </div>
 
-              <div className="col-md-6 mb-3">
-                <Input
+              <div className="col-md-6 mb-3"> */}
+                <InputExtended
                   placeholder="Token Decimal"
                   className="mt-3"
                   scale="lg"
                   value={token_decimal}
                   onChange={handleChange('token_decimal')}
                 />
-              </div>
-            </div>
+              </FlexExtended>
+              {/* </div>
+            </div> */}
 
-            <div className="mb-3">
-              <Input
+            {/* <div className="mb-3"> */}
+            <FlexExtended>
+              <InputExtended
                 placeholder="Allocation Point"
                 className="mt-3"
                 scale="lg"
                 value={allocation_point}
                 onChange={handleChange('allocation_point')}
               />
-            </div>
+            </FlexExtended>
+            {/* </div> */}
           </CardBody> 
 
           {/* <div className="d-flex justify-content-around  mb-5"> */}
-          <Flex justifyContent="space-around" margin="3rem">
+          {/* <Flex justifyContent="space-around" margin="3rem"> */}
+          <ButtonContainer>
             <Button onClick={handleSubmit}>Submit</Button>
             <Link to={`/create-farms`}>
               <Button>Back</Button>
             </Link>
-          </Flex>
+            </ButtonContainer>
           
         </AppBodyExtended>
       </Container>
