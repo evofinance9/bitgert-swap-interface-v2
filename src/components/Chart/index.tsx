@@ -120,7 +120,6 @@ export default function Chart() {
     createdAtTimestamp: string
   } | null>(null)
 
-
   useEffect(() => {
     if (!priceData || priceData?.length === 0) return
 
@@ -132,8 +131,8 @@ export default function Chart() {
 
     const firstChart = createChart('chartContainer', {
       layout: {
-        background: { type: ColorType.Solid, color: '#131722' },
-        textColor: '#d1d4dc',
+        background: { type: ColorType.Solid, color: '#fff' },
+        textColor: '#000',
       },
       width: document.getElementById('chartContainer')?.clientWidth,
       height: 400,
@@ -142,7 +141,7 @@ export default function Chart() {
           color: 'rgba(42, 46, 57, 0)',
         },
         horzLines: {
-          color: 'rgba(42, 46, 57, 0.6)',
+          color: '#ababab',
         },
       },
     })
@@ -152,6 +151,19 @@ export default function Chart() {
         formatter: (price) => parseFloat(price).toFixed(8),
       },
     })
+
+    candlestickSeries.applyOptions({
+      wickUpColor: '#2669f5',
+      upColor: '#2669f5',
+      wickDownColor: '#EA2027',
+      downColor: '#EA2027',
+      borderVisible: false,
+    })
+
+    candlestickSeries.priceScale().applyOptions({
+      borderColor: '#d2d2d2',
+    })
+
     candlestickSeries.setData(priceData)
   }, [priceData])
 
