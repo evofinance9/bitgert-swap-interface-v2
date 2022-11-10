@@ -1,20 +1,19 @@
 import styled from 'styled-components'
 
 export const TableHeader = styled.h3`
-  color: #f9d849;
+  color: #000;
   padding: 1rem;
-  font-family: 'Poppins', sans-serif !important;
   font-size: 1.2rem;
   font-weight: 600;
 `
 
 export const TableWrapper = styled.div`
-  background-color: #151212;
+  background-color: #fff;
   width: 90%;
   padding: 2rem;
   overflow-y: scroll;
   margin-bottom: 1.5rem;
-  border-radius: 24px;
+  border-radius: 6px;
 
   ${({ theme }) => theme.mediaQueries.xs} {
     width: 100%;
@@ -51,21 +50,20 @@ export const Table = styled.table`
   }
 
   & tr td:last-child {
-    color: #b8add2;
+    color: #2669f5;
   }
 
   & tr td,
   th {
     padding: 1rem;
-    font-family: 'Poppins', sans-serif !important;
-    color: #a7a7a7;
+    color: #555;
     font-size: 0.9rem;
   }
 
   & tr th {
-    font-family: 'Poppins', sans-serif !important;
     font-weight: 600;
-    color: #cec9c9;
+    color: #000;
+    text-align: start;
   }
 `
 

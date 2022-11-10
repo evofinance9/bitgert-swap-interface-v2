@@ -1,41 +1,31 @@
 /* eslint-disable */
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { Card, Badge, Button as BSButton, ProgressBar } from 'react-bootstrap'
+import React, { useState, useEffect } from 'react'
 
 import swal from 'sweetalert'
-import { Button, CardBody, Input } from '@evofinance9/uikit'
+import { Button, Flex } from '@evofinance9/uikit'
 import { DateTimePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
 import { Checkbox, useCheckboxState } from 'pretty-checkbox-react'
 import '@djthoms/pretty-checkbox'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import { TelegramIcon, TwitterIcon, WWWIcon } from '../../../assets/images'
 import { SocialIcon } from 'react-social-icons'
 
 import { ethers } from 'ethers'
-import Form from 'react-bootstrap/Form'
 
-import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import Container from 'components/Container'
 
 import { useActiveWeb3React } from 'hooks'
 import { useAirdropContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { getAirdropContract, getTokenContract } from 'utils'
-import getUnixTimestamp from 'utils/getUnixTimestamp'
 import CountDownTimer from '../CountDownTimer'
 import { AIRDROP_ADDRESS } from 'constants/abis/airdrop'
 import { Oval } from 'react-loader-spinner'
 
 import './style.css'
-import { AppBodyExtended } from 'pages/AppBody'
-import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
-import { RouteComponentProps } from 'react-router-dom'
 import { getAirdropById } from './apicalls'
-import { setFlagsFromString } from 'v8'
 import {
-  TableWrapper,
   Table,
   TableHeader,
   AirdropCardWrapper,
@@ -53,8 +43,6 @@ interface FormComponentProps {
     params: { airdropId }
   }
 }
-
-const currentTimeInitialState = async () => {}
 
 const CssTextField = withStyles({
   root: {
@@ -295,14 +283,14 @@ export default function AirdropDetails({
       {loading && (
         <LoaderWrapper>
           <Oval
-            height={80}
-            width={80}
-            color="#f9d849"
+            height={100}
+            width={100}
+            color="#2669f5"
             wrapperStyle={{}}
             wrapperClass=""
             visible={true}
             ariaLabel="oval-loading"
-            secondaryColor="#f4d85b"
+            secondaryColor="#4a81f8"
             strokeWidth={2}
             strokeWidthSecondary={2}
           />
@@ -313,16 +301,18 @@ export default function AirdropDetails({
           <AirdropCardWrapper>
             <AirdropCard>
               <AirdropCardBody>
-                <TableWrapperExtended className="d-flex flex-column justify-content-center align-items-center ">
+                <TableWrapperExtended >
+                  <Flex flexDirection="column" alignItems="center" justifyContent="center">
                   <div className="airdrop__logo mb-2">
                     <img src={airdrop.logo_url} alt="Airdrop Logo" className="rounded" />
                   </div>
                   <AirdropHeader fontSize="2rem">{airdrop.title}</AirdropHeader>
                   <AirdropSubHeader fontSize="1.2rem">{airdrop.description}</AirdropSubHeader>
+                  </Flex>
                 </TableWrapperExtended>
 
-                <div className="d-flex justify-content-center">
-                  <IconsWrapper className="d-flex justify-content-between">
+                <Flex justifyContent="center">
+                  <IconsWrapper>
                     <SocialIcon
                       url={airdrop.instagram_url}
                       network="instagram"
@@ -360,7 +350,7 @@ export default function AirdropDetails({
                       style={{ height: 40, width: 40 }}
                     />
                   </IconsWrapper>
-                </div>
+                </Flex>
 
                 <TableWrapperExtended>
                   <Table>

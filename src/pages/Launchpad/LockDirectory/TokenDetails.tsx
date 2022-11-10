@@ -59,18 +59,18 @@ export default function TokenDetails({
 
         {loading && (
           <LoaderWrapper>
-            <Oval
-              height={80}
-              width={80}
-              color="#f9d849"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={true}
-              ariaLabel="oval-loading"
-              secondaryColor="#f4d85b"
-              strokeWidth={2}
-              strokeWidthSecondary={2}
-            />
+           <Oval
+                height={100}
+                width={100}
+                color="#2669f5"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="oval-loading"
+                secondaryColor="#4a81f8"
+                strokeWidth={2}
+                strokeWidthSecondary={2}
+              />
           </LoaderWrapper>
         )}
         {token !== null && (
@@ -114,17 +114,17 @@ export default function TokenDetails({
         {loading && (
           <LoaderWrapper>
             <Oval
-              height={80}
-              width={80}
-              color="#f9d849"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={true}
-              ariaLabel="oval-loading"
-              secondaryColor="#f4d85b"
-              strokeWidth={2}
-              strokeWidthSecondary={2}
-            />
+                height={100}
+                width={100}
+                color="#2669f5"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="oval-loading"
+                secondaryColor="#4a81f8"
+                strokeWidth={2}
+                strokeWidthSecondary={2}
+              />
           </LoaderWrapper>
         )}
 

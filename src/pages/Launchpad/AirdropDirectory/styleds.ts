@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 export const StyledCard = styled.div`
-  background-color: #151212 !important;
   font-family: 'Poppins', sans-serif;
   color: #fff;
   height: 25rem;
@@ -9,19 +8,37 @@ export const StyledCard = styled.div`
 `
 
 export const StyledCardBody = styled.div`
-  padding: 2rem;
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: #fff !important;
+  padding: 2rem;
+  color: #000;
+  height: 25rem;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 29, 110, 0.1);
+  box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1);
+`
+
+export const CardHeader = styled.h4`
+  color: #343434;
+  font-size: 20px;
+  font-weight: 600;
+`
+
+export const CardSubHeader = styled.h6`
+  color: #56595c;
+  font-size: 16px;
+  font-weight: 100;
+  line-height: 24px;
 `
 
 export const StyledCardContainer = styled.div`
-  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   display: grid;
   gap: 3rem;
+
 
   ${({ theme }) => theme.mediaQueries.xs} {
     grid-template-columns: repeat(1, 1fr);
@@ -61,7 +78,8 @@ export const TableHeader = styled.h3`
 `
 
 export const TableWrapper = styled.div`
-  background-color: #151212;
+  background-color: #fff;
+  color: #000;
   width: 90%;
   padding: 1rem;
   overflow-y: scroll;
@@ -96,6 +114,8 @@ export const TableWrapperExtended = styled(TableWrapper)`
 
 export const IconsWrapper = styled(TableWrapper)`
   width: 70%;
+  display: flex;
+  justify-content: space-between;
 `
 
 export const Table = styled.table`
@@ -111,21 +131,19 @@ export const Table = styled.table`
   }
 
   & tr td:last-child {
-    color: #b8add2;
+    color: #555;
   }
 
   & tr td,
   th {
     padding: 1rem;
-    font-family: 'Poppins', sans-serif !important;
-    color: #a7a7a7;
+    color: #000;
     font-size: 0.9rem;
   }
 
   & tr th {
-    font-family: 'Poppins', sans-serif !important;
     font-weight: 600;
-    color: #cec9c9;
+    color: #000;
   }
 `
 
@@ -157,8 +175,8 @@ export const AirdropCardWrapper = styled.div`
 `
 
 export const AirdropCard = styled.div`
-  background-color: #151212 !important;
-  color: #fff;
+  background-color: #fff !important;
+  color: #000;
   border-radius: 24px;
 `
 
