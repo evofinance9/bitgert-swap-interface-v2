@@ -19,7 +19,6 @@ export const StyledText = styled.h3`
 `
 
 export const ButtonContainer = styled.div`
-  display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
@@ -31,6 +30,11 @@ export const Flex = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
+`
+
+export const Th = styled.th`
+  text-align: left;
+  color: black
 `
 
 export const InputExtended = styled(Input)`
@@ -46,12 +50,12 @@ export const InputExtended = styled(Input)`
 `
 
 export const TableWrapper = styled.div`
-  background-color: #151212;
+  background-color: white;
   width: 100%;
   padding: 2rem;
   overflow-y: scroll;
   margin-bottom: 1.5rem;
-  border-radius: 24px;
+  border-radius: 6px;
 
 
 
@@ -104,7 +108,7 @@ export const Table = styled.table`
   & tr th {
     font-family: 'Poppins', sans-serif !important;
     font-weight: 600;
-    color: #cec9c9;
+    color: black;
   }
 `
 

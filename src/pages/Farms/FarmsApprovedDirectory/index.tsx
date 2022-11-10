@@ -27,7 +27,7 @@ import { FARM_ADDRESS } from 'constants/abis/farm'
 
 import { getAllFarmOwner } from './apicalls'
 // import getAllFarmUser from './apicalls'
-import { TableWrapper, Table, LoaderWrapper, StyledText, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
+import { TableWrapper, Table, LoaderWrapper, StyledText, Flex as FlexExtended, InputExtended, ButtonContainer, Th } from './styleds'
 
 // const InputExtended = styled(Input)`
 //   width: 100px;
@@ -521,14 +521,14 @@ export default function FarmsCreatedDirectory() {
           {loading && (
             <LoaderWrapper>
               <Oval
-                height={80}
-                width={80}
-                color="#f9d849"
+                height={100}
+                width={100}
+                color="#2669f5"
                 wrapperStyle={{}}
                 wrapperClass=""
                 visible={true}
                 ariaLabel="oval-loading"
-                secondaryColor="#f4d85b"
+                secondaryColor="#4a81f8"
                 strokeWidth={2}
                 strokeWidthSecondary={2}
               />
@@ -540,7 +540,7 @@ export default function FarmsCreatedDirectory() {
             {/* <div className="d-flex justify-content-around my-5"> */}
             {/* <Flex justifyContent="space-around" margin="3rem">
               <div className="mb-3 mr-4"> */}
-            <FlexExtended>
+          <Flex alignItems={'center'} justifyContent={'space-around'}>
 
                 { (parseFloat(allowance) < DepositRewardAmount || parseFloat(allowance) === 0) &&
                 <ButtonContainer>
@@ -551,7 +551,7 @@ export default function FarmsCreatedDirectory() {
                 }
 
                 <ButtonContainer>
-                  <Button  variant="tertiary" onClick={handleAllowanceDeposit}>
+                  <Button style={{marginRight: "5px"}} variant="tertiary" onClick={handleAllowanceDeposit}>
                     Deposit Reward Tokens
                   </Button>
                   <Tooltip show={feeTooltip1} placement="top" text={`Total Rewards present: ${rewardBalance} `}>
@@ -561,7 +561,6 @@ export default function FarmsCreatedDirectory() {
                     onMouseLeave={() => setFeeTooltip1(false)}
                   />
                   </Tooltip>
-                <br />
                 {/* <div className="mt-2"> */}
                   <InputExtended
                     placeholder="Deposit"
@@ -590,11 +589,12 @@ export default function FarmsCreatedDirectory() {
                     </ButtonContainer>
                 {/* </div>
               </div> */}
-            </FlexExtended>
+            </Flex>
             {/* <div className="d-flex justify-content-around my-5"> */}
 
             {/* <Flex justifyContent="space-around" margin="3rem"> */}
-            <FlexExtended>
+          <Flex alignItems={'center'} justifyContent={'space-around'}>
+            {/* <FlexExtended> */}
               <ButtonContainer>
               <Button  variant="secondary" onClick={handlePause}>
                 {`${pause ? 'Unpause' : 'Pause'} it`}
@@ -632,12 +632,13 @@ export default function FarmsCreatedDirectory() {
               </Button>
               </ButtonContainer>
 
-              </FlexExtended>
+              </Flex>
 
             {/* <Flex justifyContent="space-between" margin="0rem"> */}
 
               {/* <div className="mb-3 mr-4"> */}
-              <FlexExtended>
+          <Flex alignItems={'center'} justifyContent={'space-around'}>
+              {/* <FlexExtended> */}
               <ButtonContainer>  
                 <Button variant="secondary" onClick={handleMultiplier}>
                   Update Multiplier
@@ -710,7 +711,7 @@ export default function FarmsCreatedDirectory() {
                         </ButtonContainer>
                     {/* </div>
                 </div> */}
-                </FlexExtended>
+                </Flex>
           </>
           )}
 
@@ -718,12 +719,12 @@ export default function FarmsCreatedDirectory() {
             <Table>
               <thead>
               <tr>
-                  <th> Token  </th>
-                  <th> Liquidity </th>
-                  <th> APY </th>
-                  <th> Investment </th>
-                  <th> Amount </th>
-                  <th> Action </th>
+                  <Th> Token  </Th>
+                  <Th> Liquidity </Th>
+                  <Th> APY </Th>
+                  <Th> Investment </Th>
+                  <Th> Amount </Th>
+                  <Th> Action </Th>
                 </tr>
               </thead>
               <tbody>
