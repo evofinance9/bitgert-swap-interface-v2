@@ -19,6 +19,7 @@ export const StyledHeading = styled.h1`
   text-transform: uppercase;
   font-size: 1.1rem;
   font-weight: 200;
+  color: #000;
 `
 
 export const TokenLogo = styled.img`
@@ -39,7 +40,7 @@ export const PriceHeading = styled.h1`
   text-transform: uppercase;
   font-size: 1.5rem;
   letter-spacing: 1px;
-  color: #b8add2;
+  color: #000;
 `
 
 export const PriceSubHeading = styled.sub`

@@ -5,18 +5,18 @@ export const ContainerExtended = styled(Container)`
   display: grid;
   padding: 1rem;
   grid-column-gap: 1rem;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 1fr 2fr;
   grid-auto-rows: 1fr;
   ${({ theme }) => theme.mediaQueries.xs} {
     grid-template-columns: 1fr;
   }
 
   ${({ theme }) => theme.mediaQueries.md} {
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 1fr 2fr;
   }
 
   ${({ theme }) => theme.mediaQueries.lg} {
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 1fr 2fr;
   }
 `
 
@@ -68,6 +68,10 @@ export const SidebarContainer = styled.div`
   border-radius: 6px;
   width: 100%;
   height: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
 `
 
 export const IconGrid = styled.div`
