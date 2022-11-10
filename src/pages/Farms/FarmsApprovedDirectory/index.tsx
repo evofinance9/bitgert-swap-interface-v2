@@ -27,7 +27,7 @@ import { FARM_ADDRESS } from 'constants/abis/farm'
 
 import { getAllFarmOwner } from './apicalls'
 // import getAllFarmUser from './apicalls'
-import { TableWrapper, Table, LoaderWrapper, StyledText, Flex as FlexExtended, InputExtended, ButtonContainer, Th } from './styleds'
+import { TableWrapper, Table, LoaderWrapper, StyledText, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
 
 // const InputExtended = styled(Input)`
 //   width: 100px;
@@ -544,19 +544,19 @@ export default function FarmsCreatedDirectory() {
 
                 { (parseFloat(allowance) < DepositRewardAmount || parseFloat(allowance) === 0) &&
                 <ButtonContainer>
-                  <Button scale="sm" className="mx-2" variant="tertiary" onClick={handleAllowanceApprove}>
+                  <Button scale="sm" variant="tertiary" onClick={handleAllowanceApprove}>
                     Approve
                   </Button>
                 </ButtonContainer>
                 }
 
                 <ButtonContainer>
-                  <Button style={{marginRight: "5px"}} variant="tertiary" onClick={handleAllowanceDeposit}>
+                  <Button scale="sm" style={{marginRight: "5px"}} variant="tertiary" onClick={handleAllowanceDeposit}>
                     Deposit Reward Tokens
                   </Button>
                   <Tooltip show={feeTooltip1} placement="top" text={`Total Rewards present: ${rewardBalance} `}>
                   <FaInfoCircle
-                    className="mx-2" color='grey'
+                    color='grey'
                     onMouseEnter={() => setFeeTooltip1(true)}
                     onMouseLeave={() => setFeeTooltip1(false)}
                   />
@@ -574,7 +574,7 @@ export default function FarmsCreatedDirectory() {
               {/* </div> */}
               {/* <div className="mb-3 mr-4"> */}
               <ButtonContainer>
-                <Button variant="tertiary" onClick={handleEmergencyRewardWithdraw}>
+                <Button scale="sm" variant="tertiary" onClick={handleEmergencyRewardWithdraw}>
                   Withdraw Reward Tokens
                 </Button>
                 <br />
@@ -586,24 +586,24 @@ export default function FarmsCreatedDirectory() {
                     value={WithdrawAmount}
                     onChange={handleChange('WithdrawAmount')}
                     />
-                    </ButtonContainer>
+              </ButtonContainer>
                 {/* </div>
               </div> */}
-            </Flex>
+          </Flex>
             {/* <div className="d-flex justify-content-around my-5"> */}
 
             {/* <Flex justifyContent="space-around" margin="3rem"> */}
           <Flex alignItems={'center'} justifyContent={'space-around'}>
             {/* <FlexExtended> */}
               <ButtonContainer>
-              <Button  variant="secondary" onClick={handlePause}>
+              <Button scale="sm" variant="secondary" onClick={handlePause}>
                 {`${pause ? 'Unpause' : 'Pause'} it`}
               </Button>
               </ButtonContainer>
 
               {/* <div className="mb-3 mr-4"> */}
               <ButtonContainer>
-                <Button  variant="secondary" onClick={handleBitgertToken}>
+                <Button scale="sm" variant="secondary" style={{marginRight: "5px"}} onClick={handleBitgertToken}>
                   {`Change Reward Token`}
                 </Button>
                 <Tooltip show={feeTooltip2} placement="top" text={`Bitgert Reward Token is : ${bitgertToken} `}>
@@ -632,7 +632,7 @@ export default function FarmsCreatedDirectory() {
               </Button>
               </ButtonContainer>
 
-              </Flex>
+          </Flex>
 
             {/* <Flex justifyContent="space-between" margin="0rem"> */}
 
@@ -640,12 +640,12 @@ export default function FarmsCreatedDirectory() {
           <Flex alignItems={'center'} justifyContent={'space-around'}>
               {/* <FlexExtended> */}
               <ButtonContainer>  
-                <Button variant="secondary" onClick={handleMultiplier}>
+                <Button scale="sm" variant="secondary" style={{marginRight: "5px"}} onClick={handleMultiplier}>
                   Update Multiplier
                 </Button>
                 <Tooltip show={feeTooltip3} placement="top" text={`Current Multiplier is : ${multiplier} `}>
                 <FaInfoCircle
-                  className="mx-2" color='grey'
+                  color='grey'
                   onMouseEnter={() => setFeeTooltip3(true)}
                   onMouseLeave={() => setFeeTooltip3(false)}
                 />
@@ -664,7 +664,7 @@ export default function FarmsCreatedDirectory() {
               </div>
               <div className="mb-3 mr-4">   */}
               <ButtonContainer>
-                  <Button  variant="secondary" onClick={handleEmissionRate}>
+                  <Button scale="sm" variant="secondary" style={{marginRight: "5px"}} onClick={handleEmissionRate}>
                     Update Emission Rate
                   </Button>
                   <Tooltip show={feeTooltip4} placement="top" text={`Bitgert per block is : ${bitgertPerBlock} `}>
@@ -689,7 +689,7 @@ export default function FarmsCreatedDirectory() {
                 {/* <div className="mb-3 mr-4">   */}
 
                 <ButtonContainer>
-                    <Button variant="secondary" onClick={handlechangeToBurn}>
+                    <Button scale="sm" variant="secondary" style={{marginRight: "5px"}} onClick={handlechangeToBurn}>
                       Update ToBurn
                     </Button>
                     <Tooltip show={feeTooltip5} placement="top" text={`to burn value is : ${toBurn} `}>
@@ -711,7 +711,7 @@ export default function FarmsCreatedDirectory() {
                         </ButtonContainer>
                     {/* </div>
                 </div> */}
-                </Flex>
+          </Flex>
           </>
           )}
 
@@ -719,12 +719,12 @@ export default function FarmsCreatedDirectory() {
             <Table>
               <thead>
               <tr>
-                  <Th> Token  </Th>
-                  <Th> Liquidity </Th>
-                  <Th> APY </Th>
-                  <Th> Investment </Th>
-                  <Th> Amount </Th>
-                  <Th> Action </Th>
+                  <th> Token  </th>
+                  <th> Liquidity </th>
+                  <th> APY </th>
+                  <th> Investment </th>
+                  <th> Amount </th>
+                  <th> Action </th>
                 </tr>
               </thead>
               <tbody>

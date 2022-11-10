@@ -236,11 +236,11 @@ const FarmOwner = ({ farmID }) => {
       </td>
       <td>
         {/* <div className="d-flex justify-content-between mb-3"> */}
-        <Flex>
+        <Flex justifyContent="space-around">
           <Button scale="sm" variant="secondary" onClick={() => handleAllowance(true)}>
             Authorize
           </Button>
-          <Button scale="sm" variant="subtle" onClick={() => handleAllowance(false)}>
+          <Button scale="sm" variant="tertiary" style={{marginLeft: "5px"}} onClick={() => handleAllowance(false)}>
             Reject
           </Button>
         </Flex>

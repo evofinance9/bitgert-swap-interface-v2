@@ -29,7 +29,7 @@ export const Flex = styled.div<FlexProps>`
 `
 
 export const TableWrapper = styled.div`
-  background-color: #151212;
+  background-color: white;
   width: 100%;
   padding: 2rem;
   overflow-y: scroll;
@@ -87,7 +87,8 @@ export const Table = styled.table`
   & tr th {
     font-family: 'Poppins', sans-serif !important;
     font-weight: 600;
-    color: #cec9c9;
+    color: black;
+    text-align: left;
   }
 `
 
