@@ -312,7 +312,7 @@ const FarmUser = ({ farm }) => {
             </Button>
           </Link>
           <br />
-          <div className="mt-2">
+          <div className="mt-3">
             <span>{balance ? parseFloat(balance).toFixed(4) : ''}</span>
           </div>
         </div>

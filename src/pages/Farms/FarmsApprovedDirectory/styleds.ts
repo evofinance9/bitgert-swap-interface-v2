@@ -32,11 +32,6 @@ export const Flex = styled.div`
   gap: 1rem;
 `
 
-export const Th = styled.th`
-  text-align: left;
-  color: black
-`
-
 export const InputExtended = styled(Input)`
   margin: 1rem 0;
 
@@ -109,6 +104,7 @@ export const Table = styled.table`
     font-family: 'Poppins', sans-serif !important;
     font-weight: 600;
     color: black;
+    text-align: left;
   }
 `
 
