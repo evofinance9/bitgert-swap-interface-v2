@@ -166,7 +166,7 @@ export default function Stake() {
             pendingText="Please wait..."
           />
           <CardHeader>
-            <Heading>Stakes</Heading>
+            <Heading>Stake Pools</Heading>
           </CardHeader>
 
           {account && (owner === account || ownerFlag) && (
@@ -178,7 +178,7 @@ export default function Stake() {
               {/* <div className="d-flex justify-content-around my-5"> */}
               <Flex justifyContent="space-around" margin="3rem">
                 <Button>
-                  <Link to={`/create-stakes/owner`}>Create Stake</Link>
+                  <Link to={`/create-stakes/owner`}>Create Stake Pool</Link>
                 </Button>
               </Flex>
               {/* <div className="d-flex justify-content-around my-5"> */}
@@ -250,7 +250,7 @@ export default function Stake() {
               {/* <div className="d-flex justify-content-around my-5"> */}
               <Flex justifyContent="space-around" margin="3rem">
                 <Link to={`/create-stakes/user`}>
-                  <Button>Create Stake</Button>
+                  <Button>Create Stake Pool</Button>
                 </Link>
               </Flex>
               {/* <div className="d-flex justify-content-around my-5"> */}
@@ -260,7 +260,7 @@ export default function Stake() {
               {/* <div className="d-flex justify-content-around my-5"> */}
               <Flex justifyContent="space-around" margin="3rem">
                 <Link to={`/stakeApproved`}>
-                  <Button>Stakes</Button>
+                  <Button>Stake Pools</Button>
                 </Link>
               </Flex>
             </>

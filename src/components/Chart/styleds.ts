@@ -68,7 +68,7 @@ export const InputWrapper = styled.div`
 export const SearchResContainer = styled.div`
   position: absolute;
   z-index: 999;
-  background-color: #08060b;
+  background-color: #f1f1f1;
   border-radius: 16px;
 `
 
