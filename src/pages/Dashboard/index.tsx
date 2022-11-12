@@ -60,8 +60,8 @@ const Dashboard = () => {
       <ContainerExtended>
         <Column>
           <SidebarContainer>
-            <ColumnHeader>Liquidity</ColumnHeader>
-            <Liquidity />
+            {/* <ColumnHeader>Liquidity</ColumnHeader>
+            <Liquidity /> */}
           </SidebarContainer>
         </Column>
 
