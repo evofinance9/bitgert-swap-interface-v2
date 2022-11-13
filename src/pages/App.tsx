@@ -115,7 +115,7 @@ export default function App() {
                 <Popups />
                 <Web3ReactManager>
                   <>
-                    <Route exact path="/" component={Dashboard} />
+                    <Route exact strict path="/" component={Dashboard} />
                     <Route exact strict path="/swap" component={Swap} />
                     <Route exact strict path="/find" component={PoolFinder} />
                     <Route exact strict path="/pool" component={Pool} />

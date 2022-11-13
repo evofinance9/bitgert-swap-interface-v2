@@ -34,6 +34,7 @@ const predefinedValues = [
   { label: '0.1%', value: 0.1 },
   { label: '0.5%', value: 0.5 },
   { label: '1%', value: 1 },
+  // { label: 'Auto', value: 30 },
 ]
 
 type SlippageToleranceSettingsModalProps = {
@@ -112,7 +113,7 @@ const SlippageToleranceSettings = ({ translateString }: SlippageToleranceSetting
             />
           </Option>
           <Option>
-            <Text fontSize="18px">%</Text>
+            <Text fontSize="18px" color="#000">%</Text>
           </Option>
         </Flex>
       </Options>

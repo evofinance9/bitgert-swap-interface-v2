@@ -52,7 +52,7 @@ const TransactionDeadlineSetting = ({ translateString }: TransactionDeadlineSett
       </Flex>
       <Field>
         <Input type="number" step="1" min="1" value={value} onChange={handleChange} />
-        <Text fontSize="14px" ml="8px">
+        <Text fontSize="14px" ml="8px" color="#000">
           Minutes
         </Text>
       </Field>
