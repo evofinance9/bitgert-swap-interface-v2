@@ -18,6 +18,7 @@ import {
   updateUserDeadline,
   updateUserExpertMode,
   updateUserSlippageTolerance,
+  updateUserAutoSlippageTolerance,
   muteAudio,
   unmuteAudio,
 } from './actions'
@@ -106,10 +107,14 @@ export function useExpertModeManager(): [boolean, () => void] {
   return [expertMode, toggleSetExpertMode]
 }
 
-export function useUserSlippageTolerance(): [number, (slippage: number) => void] {
+export function useUserSlippageTolerance(): [number, (slippage: number) => void, boolean, (isAuto: boolean) => void] {
   const dispatch = useDispatch<AppDispatch>()
   const userSlippageTolerance = useSelector<AppState, AppState['user']['userSlippageTolerance']>((state) => {
     return state.user.userSlippageTolerance
+  })
+
+  const isAutoSlippageTolerance = useSelector<AppState, AppState['user']['isAutoSlippageTolerance']>((state) => {
+    return state.user.isAutoSlippageTolerance
   })
 
   const setUserSlippageTolerance = useCallback(
@@ -119,7 +124,14 @@ export function useUserSlippageTolerance(): [number, (slippage: number) => void]
     [dispatch]
   )
 
-  return [userSlippageTolerance, setUserSlippageTolerance]
+  const setAutoUserSlippageTolerance = useCallback(
+    (isAuto: boolean) => {
+      dispatch(updateUserAutoSlippageTolerance({ isAutoSlippageTolerance: isAuto }))
+    },
+    [dispatch]
+  )
+
+  return [userSlippageTolerance, setUserSlippageTolerance, isAutoSlippageTolerance, setAutoUserSlippageTolerance]
 }
 
 export function useUserDeadline(): [number, (slippage: number) => void] {
@@ -242,11 +254,10 @@ export function useTrackedTokenPairs(): [Token, Token][] {
     })
   }, [savedSerializedPairs, chainId])
 
-  const combinedList = useMemo(() => userPairs.concat(generatedPairs).concat(pinnedPairs), [
-    generatedPairs,
-    pinnedPairs,
-    userPairs,
-  ])
+  const combinedList = useMemo(
+    () => userPairs.concat(generatedPairs).concat(pinnedPairs),
+    [generatedPairs, pinnedPairs, userPairs]
+  )
 
   return useMemo(() => {
     // dedupes pairs of tokens in the combined list

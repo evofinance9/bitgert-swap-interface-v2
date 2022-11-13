@@ -34,7 +34,6 @@ const predefinedValues = [
   { label: '0.1%', value: 0.1 },
   { label: '0.5%', value: 0.5 },
   { label: '1%', value: 1 },
-  // { label: 'Auto', value: 30 },
 ]
 
 type SlippageToleranceSettingsModalProps = {
@@ -42,12 +41,17 @@ type SlippageToleranceSettingsModalProps = {
 }
 
 const SlippageToleranceSettings = ({ translateString }: SlippageToleranceSettingsModalProps) => {
-  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance()
+  const [userSlippageTolerance, setUserslippageTolerance, isAutoSlippageTolerance, setAutoUserSlippageTolerance] =
+    useUserSlippageTolerance()
   const [value, setValue] = useState(userSlippageTolerance / 100)
   const [error, setError] = useState<string | null>(null)
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = evt.target
     setValue(parseFloat(inputValue))
+  }
+
+  const handleAuto = () => {
+    setAutoUserSlippageTolerance(!isAutoSlippageTolerance)
   }
 
   // Updates local storage if value is valid
@@ -77,7 +81,9 @@ const SlippageToleranceSettings = ({ translateString }: SlippageToleranceSetting
   return (
     <Box mb="16px">
       <Flex alignItems="center" mb="8px">
-        <Text bold color="#000">{translateString(88, 'Slippage tolerance')}</Text>
+        <Text bold color="#000">
+          {translateString(88, 'Slippage tolerance')}
+        </Text>
         <QuestionHelper
           text={translateString(
             186,
@@ -98,6 +104,9 @@ const SlippageToleranceSettings = ({ translateString }: SlippageToleranceSetting
               </Option>
             )
           })}
+          <Button variant={isAutoSlippageTolerance ? 'primary' : 'tertiary'} onClick={handleAuto}>
+            Auto
+          </Button>
         </Flex>
         <Flex alignItems="center">
           <Option>
@@ -113,7 +122,9 @@ const SlippageToleranceSettings = ({ translateString }: SlippageToleranceSetting
             />
           </Option>
           <Option>
-            <Text fontSize="18px" color="#000">%</Text>
+            <Text fontSize="18px" color="#000">
+              %
+            </Text>
           </Option>
         </Flex>
       </Options>
