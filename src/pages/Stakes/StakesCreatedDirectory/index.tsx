@@ -45,13 +45,13 @@ export default function StakesCreatedDirectory() {
       setLoading(true)
 
       const stakeDetails = getSigCheckContract(chainId, library, account)
-      
+
       const stakesLength = await stakeDetails?.callStatic.txLength()
 
       let count = 0
-      let arr:number[] = []
-      
-      for (let i = 0; i < stakesLength; i++) {
+      let arr: number[] = []
+
+      for (let i = 0; i < stakesLength.toNumber(); i++) {
         const allStakes = await stakeDetails?.callStatic.transactions(i)
         if (allStakes.executed === false && allStakes.rejected === false && allStakes.to === STAKE_ADDRESS) {
           arr.push(i)
@@ -63,11 +63,10 @@ export default function StakesCreatedDirectory() {
       setStakes(arr)
 
       // if all stakes are executed, no more pending stakes for owner
-      if (stakesLength === count) {
+      if (stakesLength.toNumber() === count) {
         setText(true)
       }
       setLoading(false)
-
     }
 
     fetchStakeList()
@@ -104,21 +103,11 @@ export default function StakesCreatedDirectory() {
                   <th> Approve </th>
                 </tr>
               </thead>
-              <tbody>
-                {!text && (
-                  stakes.map((stakeID) => (
-                    <StakeOwner stakeID={stakeID} key={stakeID} />
-                  ))) 
-                }
-              </tbody>
+              <tbody>{!text && stakes.map((stakeID) => <StakeOwner stakeID={stakeID} key={stakeID} />)}</tbody>
             </Table>
           )}
         </TableWrapper>
-        {text && (
-        <StyledText>
-          No more pending stakes!
-        </StyledText>
-        )}
+        {text && <StyledText>No more pending stakes!</StyledText>}
       </Container>
       <div className="mt-5"> </div>
     </>

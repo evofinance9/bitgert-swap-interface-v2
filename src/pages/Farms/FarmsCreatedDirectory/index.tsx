@@ -22,7 +22,7 @@ import { useFarmContract, useDateTimeContract, useTokenContract } from 'hooks/us
 import { getFarmContract, getTokenContract, getSigCheckContract } from 'utils'
 import { FARM_ADDRESS } from 'constants/abis/farm'
 
-import {getAllFarmOwner} from './apicalls'
+import { getAllFarmOwner } from './apicalls'
 import getAllFarmUser from './apicalls'
 import { TableWrapper, Table, LoaderWrapper, StyledText } from './styleds'
 
@@ -39,20 +39,20 @@ export default function FarmsCreatedDirectory() {
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-
     const fetchFarmList = async () => {
       if (!chainId || !library || !account) return
 
       setLoading(true)
 
       const farmDetails = getSigCheckContract(chainId, library, account)
-      
+
       const farmsLength = await farmDetails?.callStatic.txLength()
+      console.log('farmsLength: ', farmsLength)
 
       let count = 0
-      let arr:number[] = []
-      
-      for (let i = 0; i < farmsLength; i++) {
+      let arr: number[] = []
+
+      for (let i = 0; i < farmsLength.toNumber(); i++) {
         const allFarms = await farmDetails?.callStatic.transactions(i)
         if (allFarms.executed === false && allFarms.rejected === false && allFarms.to === FARM_ADDRESS) {
           arr.push(i)
@@ -64,11 +64,11 @@ export default function FarmsCreatedDirectory() {
       setFarms(arr)
 
       // if all farms are executed, no more pending farms for owner
-      if (farmsLength === count) {
+      if (farmsLength.toNumber() === count) {
+        console.log('no more pending things')
         setText(true)
       }
       setLoading(false)
-
     }
 
     fetchFarmList()
@@ -86,7 +86,6 @@ export default function FarmsCreatedDirectory() {
     //       swal('Oops', 'Something went wrong!', 'error')
     //     })
     // }
-
   }, [])
 
   return (
@@ -120,31 +119,12 @@ export default function FarmsCreatedDirectory() {
                   <th> Approve </th>
                 </tr>
               </thead>
-              <tbody>
-                {!text && (
-                  farms.map((farmID) => (
-                    <FarmOwner farmID={farmID} key={farmID} />
-                  ))) 
-                }
-              </tbody>
+              <tbody>{!text && farms.map((farmID) => <FarmOwner farmID={farmID} key={farmID} />)}</tbody>
             </Table>
           )}
         </TableWrapper>
-        {text && (
-        <StyledText>
-          No more pending farms!
-        </StyledText>
-        )}
+        {text && <StyledText>No more pending farms!</StyledText>}
       </Container>
-              {/* <tbody>
-                {farms.map((farm) => (
-                <FarmUser farm={farm} />
-                ))} 
-              </tbody>
-            </Table>
-          )}
-        </TableWrapper>
-      </Container> */}
       <div className="mt-5"> </div>
     </>
   )

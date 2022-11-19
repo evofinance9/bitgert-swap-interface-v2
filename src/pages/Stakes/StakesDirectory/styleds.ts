@@ -1,14 +1,15 @@
 import styled from 'styled-components'
+import { Input } from '@evofinance9/uikit'
 
 interface FlexProps {
-  justifyContent: any;
-  margin: any;
+  justifyContent: any
+  margin: any
 }
 
 export const StyledCard = styled.div`
-  background-color: #151212 !important;
+  background-color: #ffffff !important;
   font-family: 'Poppins', sans-serif;
-  color: #fff;
+  color: grey;
   height: 25rem;
   border-radius: 24px;
 `
@@ -66,7 +67,7 @@ export const TableHeader = styled.h3`
 `
 
 export const TableWrapper = styled.div`
-  background-color: #151212;
+  background-color: #ffffff;
   width: 90%;
   padding: 1rem;
   overflow-y: scroll;
@@ -108,7 +109,7 @@ export const Table = styled.table`
   height: 100%;
 
   & tr {
-    border-bottom: 1px solid #252525;
+    border-bottom: 1px solid #ffffff;
   }
 
   & tr:last-child {
@@ -136,17 +137,55 @@ export const Table = styled.table`
 
 export const StyledText = styled.h3`
   font-size: 2rem;
-  color: #fff;
+  color: #2669f5;
   text-align: center;
   margin: auto;
 `
 
-export const Flex = styled.div<FlexProps>`
+// export const Flex = styled.div<FlexProps>`
+//   display: flex;
+//   align-items: center;
+//   justify-content: ${props => props.justifyContent};
+//   margin: ${props => props.margin};
+//   gap: 1rem;
+// `
+
+export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${props => props.justifyContent};
-  margin: ${props => props.margin};
+  justify-content: center;
   gap: 1rem;
+  margin-bottom: 1rem;
+`
+
+export const Flex = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+`
+
+export const Heading = styled.h3`
+  font-size: 1.3rem;
+  line-height: 1.1;
+  font-weight: 500;
+  margin-right: 10px;
+  display: flex;
+  margin: 0.5rem;
+  align-items: center;
+  justify-content: center;
+`
+
+export const InputExtended = styled(Input)`
+  margin: 1rem 0;
+
+  ::placeholder,
+  ::-webkit-input-placeholder {
+    color: #757575;
+  }
+  :-ms-input-placeholder {
+    color: #757575;
+  }
 `
 
 export const StakeCardWrapper = styled.div`
@@ -177,7 +216,7 @@ export const StakeCardWrapper = styled.div`
 `
 
 export const StakeCard = styled.div`
-  background-color: #151212 !important;
+  background-color: #ffffff !important;
   color: #fff;
   border-radius: 24px;
 `

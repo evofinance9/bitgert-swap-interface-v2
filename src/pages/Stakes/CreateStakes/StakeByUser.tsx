@@ -234,7 +234,7 @@ export default function Stake() {
             <Flex direction="column" alignItems="start">
               <Text>Bitgert will be approving and making the token eligible for Staking!!</Text>
               <Text>Please log the details below and submit!!</Text>
-              <Text>Kindly expect the response within 1 week.</Text>
+              <Text>Kindly expect the response within 7 to 10 days.</Text>
               <Text>To submit your stake creation request, you must pay 5 BRISE.</Text>
             </Flex>
 
@@ -332,7 +332,7 @@ export default function Stake() {
           </CardBody>
         </AppBodyExtended>
 
-        <div style={{ padding: "3rem", margin: "2rem" }} />
+        <div style={{ padding: '3rem', margin: '2rem' }} />
       </Container>
     </>
   )

@@ -1,8 +1,6 @@
 import styled from 'styled-components'
 import { Input } from '@evofinance9/uikit'
 
-
-
 export const TableHeader = styled.h3`
   color: #f9d849;
   padding: 1rem;
@@ -13,7 +11,7 @@ export const TableHeader = styled.h3`
 
 export const StyledText = styled.h3`
   font-size: 2rem;
-  color: #fff;
+  color: #2669f5;
   text-align: center;
   margin: auto;
 `
@@ -52,8 +50,6 @@ export const TableWrapper = styled.div`
   margin-bottom: 1.5rem;
   border-radius: 6px;
 
-
-
   ${({ theme }) => theme.mediaQueries.xs} {
     width: 100%;
     padding: 1rem;
@@ -81,7 +77,7 @@ export const Table = styled.table`
   height: 100%;
 
   & tr {
-    border-bottom: 1px solid #252525;
+    border-bottom: none;
   }
 
   & tr:last-child {
@@ -103,7 +99,7 @@ export const Table = styled.table`
   & tr th {
     font-family: 'Poppins', sans-serif !important;
     font-weight: 600;
-    color: black;
+    color: #2669f5;
     text-align: left;
   }
 `
@@ -115,7 +111,5 @@ export const LoaderWrapper = styled.div`
   align-items: center;
   padding: 6rem 0;
 `
-
-
 
 export default {}

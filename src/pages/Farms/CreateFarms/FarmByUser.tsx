@@ -221,7 +221,7 @@ export default function Farm() {
             <Flex direction="column" alignItems="start">
               <Text>Bitgert will be creating the pool for investors to stake or Farm!</Text>
               <Text>Please log the details below and submit!!</Text>
-              <Text>Kindly expect the response within 1 week.</Text>
+              <Text>Kindly expect the response within 7 to 10 days.</Text>
               <Text>To submit your stake creation request, you must pay 5 BRISE.</Text>
             </Flex>
 

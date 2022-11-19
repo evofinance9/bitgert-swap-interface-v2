@@ -1,16 +1,15 @@
 import styled from 'styled-components'
 import { Input } from '@evofinance9/uikit'
 
-
 interface FlexProps {
-  justifyContent: any;
-  margin: any;
+  justifyContent: any
+  margin: any
 }
 
 export const StyledCard = styled.div`
-  background-color: #151212 !important;
+  background-color: #ffffff !important;
   font-family: 'Poppins', sans-serif;
-  color: #fff;
+  color: grey;
   height: 30rem;
   border-radius: 24px;
 `
@@ -26,7 +25,7 @@ export const StyledCardBody = styled.div`
 
 export const StyledText = styled.h3`
   font-size: 2rem;
-  color: #fff;
+  color: #2669f5;
   text-align: center;
   margin: auto;
 `
@@ -57,7 +56,6 @@ export const InputExtended = styled(Input)`
     color: #757575;
   }
 `
-
 
 export const Heading = styled.h3`
   font-size: 1.3rem;
@@ -114,7 +112,7 @@ export const TableHeader = styled.h3`
 `
 
 export const TableWrapper = styled.div`
-  background-color: #151212;
+  background-color: #ffffff;
   width: 90%;
   padding: 1rem;
   overflow-y: scroll;
@@ -171,7 +169,7 @@ export const Table = styled.table`
   th {
     padding: 1rem;
     font-family: 'Poppins', sans-serif !important;
-    color: #a7a7a7;
+    color: grey;
     font-size: 0.9rem;
   }
 
@@ -210,7 +208,7 @@ export const FarmCardWrapper = styled.div`
 `
 
 export const FarmCard = styled.div`
-  background-color: #151212 !important;
+  background-color: #FFFFFF !important;
   color: #fff;
   border-radius: 24px;
 `

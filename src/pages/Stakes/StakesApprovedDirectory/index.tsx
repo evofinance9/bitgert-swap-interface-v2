@@ -8,7 +8,7 @@ import './style.css'
 
 import Container from 'components/Container'
 import StakeUser from 'components/StakeUser'
-import { Button, CardBody, Input } from '@evofinance9/uikit'
+import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
 import { FaCopy, FaInfoCircle } from 'react-icons/fa'
 import Tooltip from 'components/Tooltip'
 
@@ -28,11 +28,19 @@ import { STAKE_ADDRESS } from 'constants/abis/stake'
 
 import { getAllStakeOwner } from './apicalls'
 // import getAllStakeUser from './apicalls'
-import { TableWrapper, Table, LoaderWrapper, StyledText, Flex } from './styleds'
+import {
+  TableWrapper,
+  Table,
+  LoaderWrapper,
+  StyledText,
+  Flex as FlexExtended,
+  InputExtended,
+  ButtonContainer,
+} from './styleds'
 
-const InputExtended = styled(Input)`
-  width: 100px;
-`
+// const InputExtended = styled(Input)`
+//   width: 100px;
+// `
 
 export default function StakesCreatedDirectory() {
   const { account, chainId, library } = useActiveWeb3React()
@@ -44,7 +52,7 @@ export default function StakesCreatedDirectory() {
   const [pause, setPause] = useState<boolean>(false)
   const [stakeReward, setStakeReward] = useState<boolean>(false)
   const [rewardBalance, setRewardBalance] = useState<string>('')
-  const [rewardPerBlock, setRewardPerBlock] = useState<string>('')
+  // const [rewardPerBlock, setRewardPerBlock] = useState<string>('')
   const [tokenDecimals, setTokenDecimals] = useState<string>('')
   const [totalBalance, setTotalBalance] = useState<string>('')
   const [feeTooltip1, setFeeTooltip1] = useState<boolean>(false)
@@ -55,40 +63,38 @@ export default function StakesCreatedDirectory() {
   const [isApproved, setIsApproved] = useState<boolean>(false)
   const [text, setText] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  
+
   const [formData, setFormData] = useState({
     chain_id: '32520',
     owner_address: '',
-    RewardPerBlock: 0,
+    // RewardPerBlock: 0,
     WithdrawAmount: 0,
     DepositRewardAmount: 0,
   })
 
   // destructure
-  const { owner_address, RewardPerBlock, WithdrawAmount, DepositRewardAmount } = formData
+  const { owner_address, WithdrawAmount, DepositRewardAmount } = formData
 
   useEffect(() => {
-    
     const fetchStakeList = async () => {
       setLoading(true)
 
       if (!chainId || !library || !account) return
 
-      
       const stakeDetails = getStakeContract(chainId, library, account)
-      
-      const pausedOrNot = await stakeDetails?.callStatic.isPaused()
-      setPause(pausedOrNot)
-      
-      const rewardOrNot = await stakeDetails?.callStatic.bonusEndBlock()
-      setStakeReward(rewardOrNot)
+
+      // const pausedOrNot = await stakeDetails?.callStatic.isPaused( )
+      // setPause(pausedOrNot)
+
+      // const rewardOrNot = await stakeDetails?.callStatic.bonusEndBlock()
+      // setStakeReward(rewardOrNot)
 
       const stakeRewardBalance = await stakeDetails?.callStatic.rewardBalance()
       setRewardBalance(ethers.utils.formatEther(stakeRewardBalance))
 
-      const stakeRewardPerBlock = await stakeDetails?.callStatic.rewardPerBlock()
-      setRewardPerBlock(stakeRewardPerBlock.toString())
-      
+      // const stakeRewardPerBlock = await stakeDetails?.callStatic.rewardPerBlock()
+      // setRewardPerBlock(stakeRewardPerBlock.toString())
+
       const stakeRewardToken = await stakeDetails?.callStatic.rewardToken()
       setTokenAddress(stakeRewardToken)
 
@@ -125,7 +131,6 @@ export default function StakesCreatedDirectory() {
           if (response.length === count) {
             setText(true)
           }
-
         })
         .catch((err) => {
           setLoading(false)
@@ -135,122 +140,26 @@ export default function StakesCreatedDirectory() {
     }
 
     fetchStakeList()
-  }, [account, library, chainId, RewardPerBlock, WithdrawAmount, DepositRewardAmount])
+  }, [account, library, chainId, WithdrawAmount, DepositRewardAmount])
 
   const handleChange = (name) => (event) => {
     const value = event.target.value
     setFormData({ ...formData, [name]: value })
   }
 
-  const handlePause = async () => {
-
-    if (!chainId || !library || !account) return
-
-    const stakeDetails = getSigCheckContract(chainId, library, account)
-
-    const payload = [STAKE_ADDRESS, 'setPause()']
-
-    const method: (...args: any) => Promise<TransactionResponse> = stakeDetails['submitTransaction(address,string)']
-    const args: Array<string[] | string | boolean | number> = payload
-
-    setAttemptingTxn(true)
-    await method(...args)
-      .then((response) => {
-        swal('Congratulations!', `The request to ${pause ? 'Unpause' : 'Pause'} the stake has been generated`, 'success')
-        setAttemptingTxn(false)
-
-        setTxHash(response.hash)
-      })
-      .catch((e) => {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
-          console.error(e)
-          alert(e.message)
-        }
-      })
-  }
-
-  const handleReward = async () => {
-
-    if (!chainId || !library || !account) return
-
-    const stakeDetails = getSigCheckContract(chainId, library, account)
-
-    const payload = [STAKE_ADDRESS, 'stopReward()']
-
-    const method: (...args: any) => Promise<TransactionResponse> = stakeDetails['submitTransaction(address,string)']
-    const args: Array<string[] | string | boolean | number> = payload
-
-    setAttemptingTxn(true)
-    await method(...args)
-      .then((response) => {
-        swal('Congratulations!', 'The request to stop the reward has been generated!', 'success')
-        setAttemptingTxn(false)
-
-        setTxHash(response.hash)
-      })
-      .catch((e) => {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
-          console.error(e)
-          alert(e.message)
-        }
-      })
-  }
-
-  const handleRewardPerBlock = async () => {
-
-    if (!chainId || !library || !account || !RewardPerBlock) return
-
-    const stakeDetails = getSigCheckContract(chainId, library, account)
-
-    const payload = [STAKE_ADDRESS, 'updateRewardPerBlock(uint256)', RewardPerBlock]
-
-    const method: (...args: any) => Promise<TransactionResponse> = stakeDetails['submitTransaction(address,string,uint256)']
-    const args: Array<string[] | string | boolean | number> = payload
-
-    setAttemptingTxn(true)
-    await method(...args)
-      .then((response) => {
-        setFormData({
-          ...formData,
-          chain_id: '32520',
-          owner_address: '',
-          RewardPerBlock: 0,
-          WithdrawAmount: 0,
-          DepositRewardAmount: 0,
-        })
-        swal('Congratulations!', 'The update on Stake reward per Block has been requested!', 'success')
-        setAttemptingTxn(false)
-
-        setTxHash(response.hash)
-      })
-      .catch((e) => {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
-          console.error(e)
-          alert(e.message)
-        }
-      })
-  }
-
   const handleEmergencyRewardWithdraw = async () => {
-
     if (!chainId || !library || !account || !WithdrawAmount) return
 
     const stakeDetails = getSigCheckContract(chainId, library, account)
 
     const payload = [
-      STAKE_ADDRESS, 
-      'emergencyRewardWithdraw(uint256)',  
+      STAKE_ADDRESS,
+      'emergencyRewardWithdraw(uint256)',
       ethers.utils.parseUnits(WithdrawAmount.toString(), parseInt(tokenDecimals)).toString(),
     ]
 
-
-    const method: (...args: any) => Promise<TransactionResponse> = stakeDetails['submitTransaction(address,string,uint256)']
+    const method: (...args: any) => Promise<TransactionResponse> =
+      stakeDetails['submitTransaction(address,string,uint256)']
     const args: Array<string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
@@ -260,7 +169,6 @@ export default function StakesCreatedDirectory() {
           ...formData,
           chain_id: '32520',
           owner_address: '',
-          RewardPerBlock: 0,
           WithdrawAmount: 0,
           DepositRewardAmount: 0,
         })
@@ -272,7 +180,7 @@ export default function StakesCreatedDirectory() {
       .catch((e) => {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
@@ -280,16 +188,13 @@ export default function StakesCreatedDirectory() {
   }
 
   const handleAllowanceApprove = async () => {
-    if (!chainId || !library || !account ) return
+    if (!chainId || !library || !account) return
     const tokenContract = getTokenContract(tokenAddress, library, account)
 
     const TBalance = await tokenContract?.callStatic.balanceOf(account)
     const TDecimals = await tokenContract?.callStatic.decimals()
 
-    const payload = [
-      STAKE_ADDRESS,
-      MaxUint256,
-    ]
+    const payload = [STAKE_ADDRESS, MaxUint256]
 
     const method: (...args: any) => Promise<TransactionResponse> = tokenContract!.approve
     const args: Array<string | string[] | string | BigNumber | number> = payload
@@ -308,7 +213,7 @@ export default function StakesCreatedDirectory() {
         setIsApproved(false)
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
@@ -320,9 +225,7 @@ export default function StakesCreatedDirectory() {
 
     const stakeDetails = getStakeContract(chainId, library, account)
 
-    const payload = [
-      ethers.utils.parseUnits(DepositRewardAmount.toString(), parseInt(tokenDecimals)).toString(),
-    ]
+    const payload = [ethers.utils.parseUnits(DepositRewardAmount.toString(), parseInt(tokenDecimals)).toString()]
 
     const method: (...args: any) => Promise<TransactionResponse> = stakeDetails!.depositRewardToken
     const args: Array<string | number | boolean> = payload
@@ -335,7 +238,6 @@ export default function StakesCreatedDirectory() {
           ...formData,
           chain_id: '32520',
           owner_address: '',
-          RewardPerBlock: 0,
           WithdrawAmount: 0,
           DepositRewardAmount: 0,
         })
@@ -348,53 +250,12 @@ export default function StakesCreatedDirectory() {
         setIsApproved(false)
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
       })
-  }  
-
-  // const handleAllowance = async () => {
-  //   if (!chainId || !library || !account || !tokenAddress || !DepositRewardAmount) return
-
-  //   const tokenContract = getTokenContract(tokenAddress, library, account)
-
-  //   const payload = [
-  //     STAKE_ADDRESS,
-  //     ethers.utils.parseUnits(DepositRewardAmount.toString(), parseInt(tokenDecimals)).toString(),
-  //   ]
-
-  //   const method: (...args: any) => Promise<TransactionResponse> = tokenContract!.transfer
-  //   const args: Array<string | string[] | string | BigNumber | number> = payload
-
-  //   setAttemptingTxn(true)
-  //   setIsApproved(false)
-  //   await method(...args)
-  //     .then((response) => {
-  //       setFormData({
-  //         ...formData,
-  //         chain_id: '32520',
-  //         owner_address: '',
-  //         RewardPerBlock: 0,
-  //         WithdrawAmount: 0,
-  //         DepositRewardAmount: 0,
-  //       })
-  //       swal('Congratulations!', 'Reward Tokens has been deposited in the Stake contract!', 'success')
-  //       setIsApproved(true)
-  //       setAttemptingTxn(false)
-  //       setTxHash(response.hash)
-  //     })
-  //     .catch((e) => {
-  //       setIsApproved(false)
-  //       setAttemptingTxn(false)
-  //       // we only care if the error is something _other_ than the user rejected the tx
-  //       if (e?.code !== "ACTION_REJECTED") {
-  //         console.error(e)
-  //         alert(e.message)
-  //       }
-  //     })
-  // }
+  }
 
   return (
     <>
@@ -419,28 +280,34 @@ export default function StakesCreatedDirectory() {
 
           {isOwner && (
             <>
-            {/* <div className="d-flex justify-content-around my-5"> */}
-            <Flex justifyContent="space-around" margin="3rem">
-              <div className="mb-3 mr-4">
+              {/* <div className="d-flex justify-content-around my-5"> */}
+              {/* <div className="mb-3 mr-4"> */}
+              {/* <Flex justifyContent="space-around" margin="3rem"> */}
+              <Flex alignItems={'center'} justifyContent={'space-around'}>
+                <ButtonContainer>
+                  {(parseFloat(allowance) < DepositRewardAmount || parseFloat(allowance) === 0) && (
+                    <Button
+                      scale="sm"
+                      style={{ marginRight: '5px' }}
+                      variant="tertiary"
+                      onClick={handleAllowanceApprove}
+                    >
+                      Approve
+                    </Button>
+                  )}
 
-                { (parseFloat(allowance) < DepositRewardAmount || parseFloat(allowance) === 0) &&
-                  <Button scale="sm" className="mx-2" variant="tertiary" onClick={handleAllowanceApprove}>
-                    Approve
+                  <Button scale="sm" style={{ marginRight: '5px' }} variant="tertiary" onClick={handleAllowanceDeposit}>
+                    Deposit Reward Tokens
                   </Button>
-                }
-
-                <Button scale="sm" variant="tertiary" onClick={handleAllowanceDeposit}>
-                  Deposit Reward Tokens
-                </Button>
-                <Tooltip show={feeTooltip1} placement="top" text={`Total Rewards present: ${rewardBalance} `}>
-                <FaInfoCircle
-                  className="mx-2" color='grey'
-                  onMouseEnter={() => setFeeTooltip1(true)}
-                  onMouseLeave={() => setFeeTooltip1(false)}
-                />
-                </Tooltip>
-                <br />
-                <div className="mt-2">
+                  <Tooltip show={feeTooltip1} placement="top" text={`Total Rewards present: ${rewardBalance} `}>
+                    <FaInfoCircle
+                      className="mx-2"
+                      color="grey"
+                      onMouseEnter={() => setFeeTooltip1(true)}
+                      onMouseLeave={() => setFeeTooltip1(false)}
+                    />
+                  </Tooltip>
+                  <br />
                   <InputExtended
                     placeholder="Deposit"
                     className="mt-3"
@@ -448,14 +315,13 @@ export default function StakesCreatedDirectory() {
                     value={DepositRewardAmount}
                     onChange={handleChange('DepositRewardAmount')}
                   />
-                </div>
-              </div>
-              <div className="mb-3 mr-4">
-                <Button scale="sm" variant="tertiary" onClick={handleEmergencyRewardWithdraw}>
-                  Withdraw Reward Tokens
-                </Button>
-                <br />
-                <div className="mt-2">
+                </ButtonContainer>
+
+                <ButtonContainer>
+                  <Button scale="sm" variant="tertiary" onClick={handleEmergencyRewardWithdraw}>
+                    Withdraw Reward Tokens
+                  </Button>
+                  <br />
                   <InputExtended
                     placeholder="Withdraw"
                     className="mt-3"
@@ -463,41 +329,9 @@ export default function StakesCreatedDirectory() {
                     value={WithdrawAmount}
                     onChange={handleChange('WithdrawAmount')}
                   />
-                </div>
-              </div>
-            </Flex>
-            {/* <div className="d-flex justify-content-around my-5"> */}
-            <Flex justifyContent="space-around" margin="3rem">
-              <Button scale="sm" variant="secondary" onClick={handlePause}>
-                {`${pause ? 'Unpause' : 'Pause'} it`}
-              </Button>
-              <Button scale="sm" variant="secondary" onClick={handleReward}>
-                {`Reward End Block: ${stakeReward}`}
-              </Button>
-              <div className="mb-3 mr-4">
-              <Button scale="sm" variant="secondary" onClick={handleRewardPerBlock}>
-                Update Reward per Block
-              </Button>
-              <Tooltip show={feeTooltip2} placement="top" text={`Reward Per Block: ${rewardPerBlock} `}>
-                <FaInfoCircle
-                  className="mx-2" color='grey'
-                  onMouseEnter={() => setFeeTooltip2(true)}
-                  onMouseLeave={() => setFeeTooltip2(false)}
-                />
-                </Tooltip>
-                <br />
-                <div className="mt-2">
-                  <InputExtended
-                    placeholder="Update"
-                    className="mt-3"
-                    scale="sm"
-                    value={RewardPerBlock}
-                    onChange={handleChange('RewardPerBlock')}
-                  />
-                </div>
-              </div>
-            </Flex>
-          </>
+                </ButtonContainer>
+              </Flex>
+            </>
           )}
 
           {Object.entries(stakes).length !== 0 && (

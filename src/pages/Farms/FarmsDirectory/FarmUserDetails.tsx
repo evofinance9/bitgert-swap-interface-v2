@@ -47,10 +47,10 @@ import {
   TableWrapperExtended,
   IconsWrapper,
   LoaderWrapper,
-  Heading, 
-  Flex as FlexExtended, 
-  InputExtended, 
-  ButtonContainer 
+  Heading,
+  Flex as FlexExtended,
+  InputExtended,
+  ButtonContainer,
 } from './styleds'
 import { addFarmOwner } from '../CreateFarms/apicalls'
 
@@ -112,6 +112,8 @@ export default function FarmUserDetails({
   const [addressAmount, setAddressAmount] = useState<any[]>([])
   const [farmID, setFarmID] = useState<any>()
   const [amounts, setAmounts] = useState<any[]>([])
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [userContributionBNB, setUserContributionBNB] = useState<any>()
   const [userContributionToken, setUserContributionToken] = useState<any>()
   const [farmStarted, setFarmStarted] = useState<boolean>(false)
@@ -127,10 +129,11 @@ export default function FarmUserDetails({
     chain_id: '32520',
     owner_address: '',
     allocation_point: '',
+    rewardPerBlock: '',
   })
 
   // destructure
-  const { allocation_point } = formData
+  const { allocation_point, rewardPerBlock } = formData
 
   // fetch farm info
   useEffect(() => {
@@ -156,6 +159,12 @@ export default function FarmUserDetails({
   const handleChange = (name) => (event) => {
     const value = event.target.value
     setFormData({ ...formData, [name]: value })
+  }
+
+  const handleDismissConfirmation = () => {
+    setIsOpen(false)
+    setShowConfirm(false)
+    setTxHash('')
   }
 
   // const createFarm = async (formData) => {
@@ -215,32 +224,36 @@ export default function FarmUserDetails({
   // }
 
   const createFarm = async (formData) => {
-
     if (!chainId || !library || !account) return
 
     const farmDetails = getSigCheckContract(chainId, library, account)
 
-    const payload = [FARM_ADDRESS, 'add(uint256,address,bool)', allocation_point, farm.token_address, false]
+    const payload = [FARM_ADDRESS, 'add(address,uint256,uint256)', farm.token_address, allocation_point, rewardPerBlock]
 
-    const method: (...args: any) => Promise<TransactionResponse> = farmDetails['submitTransaction(address,string,uint256,address,bool)']
+    const method: (...args: any) => Promise<TransactionResponse> =
+      farmDetails['submitTransaction(address,string,address,uint256,uint256)']
     const args: Array<object | string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
     await method(...args)
       .then(async (response: any) => {
         const txReceipt = await response.wait()
+        console.log('farmUser details: ', txReceipt)
+        console.log('farmUser details: ', txReceipt.events[0])
         const farmID = txReceipt.events[0].args.txIndex.toNumber()
-  //       const farmID = txReceipt.events[0].args.pid.toNumber()
+        //       const farmID = txReceipt.events[0].args.pid.toNumber()
 
         setAttemptingTxn(false)
         setTxHash(response.hash)
 
-        addFarmOwner({ ...formData, owner_address: account, 
-          farmOwner_id: farmID, 
+        addFarmOwner({
+          ...formData,
+          owner_address: account,
+          farmOwner_id: farmID,
           token_address: farm.token_address,
           token_name: farm.token_name,
           token_symbol: farm.token_symbol,
-          token_decimal: farm.token_decimal
+          token_decimal: farm.token_decimal,
         })
           .then((data) => {
             if (data.error) {
@@ -251,7 +264,9 @@ export default function FarmUserDetails({
                 chain_id: '32520',
                 owner_address: '',
                 allocation_point: '',
+                rewardPerBlock: '',
               })
+              setIsCreated(true)
               swal('Congratulations!', 'Farm is Created! It will be live soon!', 'success')
             }
           })
@@ -260,18 +275,18 @@ export default function FarmUserDetails({
       .catch((e) => {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
       })
-      updateFarmUser(farmId, {is_ended: true})
+    updateFarmUser(farmId, { is_ended: true })
   }
 
   const handleCreate = (e) => {
     e.preventDefault()
 
-    if (!account || !allocation_point) {
+    if (!account || !allocation_point || !rewardPerBlock) {
       swal('Are you sure?', 'There are incomplete fields in your submission!', 'warning')
       return
     }
@@ -299,6 +314,14 @@ export default function FarmUserDetails({
       )}
       {farm !== null && !loading && (
         <div>
+          <TransactionConfirmationModal
+            isOpen={isOpen}
+            onDismiss={handleDismissConfirmation}
+            attemptingTxn={attemptingTxn}
+            hash={txHash}
+            content={() => <></>}
+            pendingText="Please wait..."
+          />
           <FarmCardWrapper>
             <FarmCard>
               <FarmCardBody>
@@ -327,37 +350,44 @@ export default function FarmUserDetails({
 
                       <tr>
                         <td>Start Date</td>
-                        <td>{startDate}</td>                        
+                        <td>{startDate}</td>
                       </tr>
                     </tbody>
                   </Table>
                 </TableWrapperExtended>
                 {!isCreated && (
-                <>
-                <div>
-                  <Input
-                    placeholder="Allocation Point"
-                    className="mt-3"
-                    scale="lg"
-                    value={allocation_point}
-                    onChange={handleChange('allocation_point')}
-                  />
-                </div>
-                {/* <div className=" d-flex justify-content-around my-4"> */}
-                {/* <Flex justifyContent="space-around" margin="1.5rem"> */}
-                  <FlexExtended>
-                  <ButtonContainer>
-                    <Button scale="md" variant="secondary" onClick={handleCreate}>
-                      Create
-                    </Button>
-                  </ButtonContainer>
-                  <ButtonContainer >
-                    <Link to={`/farm`}>
-                      <Button scale="md" variant="secondary">Back</Button>
-                    </Link>
-                  </ButtonContainer>
-                  </FlexExtended>
-                </>
+                  <>
+                    <FlexExtended>
+                      <InputExtended
+                        placeholder="Allocation Point"
+                        className="mt-3"
+                        scale="lg"
+                        value={allocation_point}
+                        onChange={handleChange('allocation_point')}
+                      />
+                      <InputExtended
+                        placeholder="Reward Per Block"
+                        className="mt-3"
+                        scale="lg"
+                        value={rewardPerBlock}
+                        onChange={handleChange('rewardPerBlock')}
+                      />
+                    </FlexExtended>
+                    <FlexExtended>
+                      <ButtonContainer>
+                        <Button scale="md" variant="secondary" onClick={handleCreate}>
+                          Create
+                        </Button>
+                      </ButtonContainer>
+                      <ButtonContainer>
+                        <Link to={`/farm`}>
+                          <Button scale="md" variant="secondary">
+                            Back
+                          </Button>
+                        </Link>
+                      </ButtonContainer>
+                    </FlexExtended>
+                  </>
                 )}
               </FarmCardBody>
             </FarmCard>
