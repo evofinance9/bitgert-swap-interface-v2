@@ -13,6 +13,7 @@ import {
   updateUserExpertMode,
   updateUserSlippageTolerance,
   updateUserDeadline,
+  updateUserAutoSlippageTolerance,
   muteAudio,
   unmuteAudio
 } from './actions'
@@ -27,6 +28,8 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   userExpertMode: boolean
+
+  isAutoSlippageTolerance: boolean
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -59,6 +62,7 @@ function pairKey(token0Address: string, token1Address: string) {
 export const initialState: UserState = {
   userDarkMode: null,
   matchesDarkMode: false,
+  isAutoSlippageTolerance: false,
   userExpertMode: false,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
@@ -95,6 +99,10 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateUserAutoSlippageTolerance, (state, action) => {
+      state.isAutoSlippageTolerance = action.payload.isAutoSlippageTolerance
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserSlippageTolerance, (state, action) => {

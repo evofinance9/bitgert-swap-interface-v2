@@ -223,7 +223,7 @@ export default function Stake() {
           />
           <CardHeader>
             <Flex alignItems={'center'} justifyContent={'space-between'}>
-              <Heading>Create Stake</Heading>
+              <Heading>Create Staking Pool</Heading>
               <Tooltip show={feeTooltip} placement="right" text="Request stake option for your Token">
                 <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
               </Tooltip>
@@ -232,7 +232,7 @@ export default function Stake() {
 
           <CardBody>
             <Flex direction="column" alignItems="start">
-              <Text>Bitgert will be approving and making the token eligible for Staking!!</Text>
+              <Text>Evo will be approving and making the token eligible for Staking!!</Text>
               <Text>Please log the details below and submit!!</Text>
               <Text>Kindly expect the response within 7 to 10 days.</Text>
               <Text>To submit your stake creation request, you must pay 5 BRISE.</Text>

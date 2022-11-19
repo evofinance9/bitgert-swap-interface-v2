@@ -58,15 +58,15 @@ const Dashboard = () => {
         </BannerWrapper>
       </BannerContainer>
       <ContainerExtended>
-        <Column>
+        {/* <Column>
           <SidebarContainer>
             <ColumnHeader>Liquidity</ColumnHeader>
             <Liquidity />
           </SidebarContainer>
-        </Column>
+        </Column> */}
 
         <Column>
-          <IconGridContainer>
+          {/* <IconGridContainer>
             <IconGrid>
               <IconWrapper>
                 <ChartIcon />
@@ -95,7 +95,7 @@ const Dashboard = () => {
                 <IconGridSub>{millify(parseFloat(data?.token?.totalLiquidity)) || `0`} BTS</IconGridSub>
               </IconGridRowContainer>
             </IconGrid>
-          </IconGridContainer>
+          </IconGridContainer> */}
 
           {/* Price Charts */}
           <ChartContainer>

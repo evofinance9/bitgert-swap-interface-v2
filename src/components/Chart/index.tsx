@@ -2,27 +2,22 @@ import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 import { SWAP_API } from 'backend'
-import { Currency, Trade } from '@evofinance9/sdk'
 import { CardBody, Card, Input } from '@evofinance9/uikit'
 import { useQuery, gql } from '@apollo/client'
-import { createChart, ColorType } from 'lightweight-charts'
 import { isAddress } from 'ethers/lib/utils'
+import { Area } from '@ant-design/plots'
+
 import Container from 'components/Container'
 import Loader from 'components/Loader'
 
 import {
-  ChartContainerDiv,
   StyledHeading,
   TokenLogo,
   HeadingContainer,
   TokenLogoContainer,
   PriceHeading,
-  PriceSubHeading,
   TokenInfoCol,
   PriceHeadingContainer,
-  DateText,
-  TokenInfoColHeading,
-  TokenInfoColSubHeading,
   TokenInfoRow,
   LoaderContainer,
   InputWrapper,
@@ -94,7 +89,6 @@ export default function Chart() {
   const { data: priceGraphData, refetch: priceRefetch } = useQuery(PRICE_QUERY)
   const { data: tokensData, refetch } = useQuery(TOKENS_QUERY)
 
-  const [priceData, setPriceData] = useState([])
   const [show, setShow] = useState(false)
   const [search, setSearch] = useState('')
   const [tokens, setTokens] = useState<
@@ -120,52 +114,7 @@ export default function Chart() {
     createdAtTimestamp: string
   } | null>(null)
 
-  useEffect(() => {
-    if (!priceData || priceData?.length === 0) return
-
-    const element = document.getElementById('chartContainer') as HTMLDivElement
-
-    if (element) {
-      element.innerHTML = ''
-    }
-
-    const firstChart = createChart('chartContainer', {
-      layout: {
-        background: { type: ColorType.Solid, color: '#fff' },
-        textColor: '#000',
-      },
-      width: document.getElementById('chartContainer')?.clientWidth,
-      height: 400,
-      grid: {
-        vertLines: {
-          color: 'rgba(42, 46, 57, 0)',
-        },
-        horzLines: {
-          color: '#ababab',
-        },
-      },
-    })
-    const candlestickSeries = firstChart.addCandlestickSeries({
-      priceFormat: {
-        type: 'custom',
-        formatter: (price) => parseFloat(price).toFixed(8),
-      },
-    })
-
-    candlestickSeries.applyOptions({
-      wickUpColor: '#2669f5',
-      upColor: '#2669f5',
-      wickDownColor: '#EA2027',
-      downColor: '#EA2027',
-      borderVisible: false,
-    })
-
-    candlestickSeries.priceScale().applyOptions({
-      borderColor: '#d2d2d2',
-    })
-
-    candlestickSeries.setData(priceData)
-  }, [priceData])
+  const [chartConfig, setChartConfig] = useState<any | null>(null)
 
   useEffect(() => {
     if (graphData) {
@@ -177,13 +126,35 @@ export default function Chart() {
     if (!priceGraphData) return
     const { tokenDayDatas } = priceGraphData
     const formattedData = tokenDayDatas.map((tokenDayData) => ({
-      open: tokenDayData.open,
-      high: tokenDayData.high,
-      low: tokenDayData.low,
-      close: tokenDayData.close,
-      time: moment.unix(tokenDayData.date).format('YYYY-MM-DD'),
+      // open: tokenDayData.open,
+      // high: tokenDayData.high,
+      // low: tokenDayData.low,
+      // close: tokenDayData.close,
+      price: parseFloat(tokenDayData.priceUSD) * 100,
+      Date: moment.unix(tokenDayData.date).format('YYYY-MM-DD'),
     }))
-    setPriceData(formattedData)
+    setChartConfig({
+      data: formattedData,
+      xField: 'Date',
+      yField: 'price',
+      xAxis: {
+        type: 'time',
+        tickCount: 5,
+      },
+      meta: {
+        price: {
+          formatter: (value) => value / 100,
+        },
+      },
+      animation: true,
+      slider: {
+        start: 0.1,
+        end: 0.9,
+        trendCfg: {
+          isArea: true,
+        },
+      },
+    })
   }, [priceGraphData])
 
   useEffect(() => {
@@ -291,29 +262,10 @@ export default function Chart() {
                     </PriceHeading>
                   </PriceHeadingContainer>
                 </TokenInfoCol>
-
-                {/* <TokenInfoCol>
-                  <TokenInfoColHeading>Volume</TokenInfoColHeading>
-                  <TokenInfoColSubHeading>
-                    $ {parseFloat(priceGraphData?.tokenDayDatas[0]?.dailyVolumeUSD).toFixed(8)}
-                  </TokenInfoColSubHeading>
-                </TokenInfoCol>
-
-                <TokenInfoCol>
-                  <TokenInfoColHeading>Market cap</TokenInfoColHeading>
-                  <TokenInfoColSubHeading>
-                    ${' '}
-                    {(
-                      parseFloat(
-                        priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.totalLiquidityToken
-                      ) * parseFloat(priceGraphData?.tokenDayDatas[priceGraphData?.tokenDayDatas?.length - 1]?.priceUSD)
-                    ).toFixed(8)}
-                  </TokenInfoColSubHeading>
-                </TokenInfoCol> */}
               </TokenInfoRow>
             )}
           </div>
-          <ChartContainerDiv id="chartContainer" />
+          {chartConfig && <Area {...chartConfig} />}
         </CardBody>
       </BodyWrapper>
     </ContainerExtended>

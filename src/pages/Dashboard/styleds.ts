@@ -5,9 +5,10 @@ export const ContainerExtended = styled(Container)`
   display: grid;
   padding: 1rem;
   grid-column-gap: 1rem;
-  grid-template-columns: 1fr 2fr;
+  /* grid-template-columns: 1fr 2fr; */
+  grid-template-columns: 1fr;
   grid-auto-rows: 1fr;
-  ${({ theme }) => theme.mediaQueries.xs} {
+  /* ${({ theme }) => theme.mediaQueries.xs} {
     grid-template-columns: 1fr;
   }
 
@@ -17,7 +18,7 @@ export const ContainerExtended = styled(Container)`
 
   ${({ theme }) => theme.mediaQueries.lg} {
     grid-template-columns: 1fr 2fr;
-  }
+  } */
 `
 
 export const Column = styled.div`

@@ -77,7 +77,7 @@ const Swap = () => {
 
   // get custom setting values for user
   const [deadline] = useUserDeadline()
-  const [allowedSlippage] = useUserSlippageTolerance()
+  const [allowedSlippage, _, isAutoSlippageTolerance] = useUserSlippageTolerance()
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
@@ -164,7 +164,7 @@ const Swap = () => {
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
     trade,
-    allowedSlippage,
+    isAutoSlippageTolerance ? 4000 : allowedSlippage,
     deadline,
     recipient
   )

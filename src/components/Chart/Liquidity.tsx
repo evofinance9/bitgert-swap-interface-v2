@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { Area } from '@ant-design/plots'
 
 const ChartContainer = styled.div`
   height: 400px;
@@ -24,36 +24,36 @@ const DAY_UPDATE_QUERY = gql`
 
 const Liquidity = () => {
   const { data: graphData } = useQuery(DAY_UPDATE_QUERY)
-
-  const [data, setData] = useState([])
+  const [chartConfig, setChartConfig] = useState<any | null>(null)
 
   useEffect(() => {
     if (!graphData) return
     const { uniswapDayDatas } = graphData
     const formattedData = uniswapDayDatas.map((uniswapDayData) => ({
       ...uniswapDayData,
-      liquidity: parseFloat(uniswapDayData.totalLiquidityUSD).toFixed(4),
-      date: moment.unix(uniswapDayData.date).format('DD MMM'),
+      liquidity: parseFloat(uniswapDayData.totalLiquidityUSD),
+      Date: moment.unix(uniswapDayData.date).format('YYYY-MM-DD'),
     }))
-    setData(formattedData)
+    setChartConfig({
+      data: formattedData,
+      xField: 'Date',
+      yField: 'liquidity',
+      xAxis: {
+        type: 'time',
+        tickCount: 5,
+      },
+      animation: true,
+      slider: {
+        start: 0.1,
+        end: 0.9,
+        trendCfg: {
+          isArea: true,
+        },
+      },
+    })
   }, [graphData])
 
-  return (
-    <ChartContainer>
-      {data && (
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={data}
-          >
-            <XAxis strokeWidth={0} dataKey="date" tick={false} />
-            <YAxis strokeWidth={0} domain={[0, 400000]} />
-            <Tooltip />
-            <Area type="monotone" dataKey="liquidity" stroke="#2669f5" fill="#f0f5ff" />
-          </AreaChart>
-        </ResponsiveContainer>
-      )}
-    </ChartContainer>
-  )
+  return <ChartContainer>{chartConfig && <Area {...chartConfig} />}</ChartContainer>
 }
 
 export default Liquidity

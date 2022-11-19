@@ -54,7 +54,7 @@ const config: MenuEntry[] = [
         href: '/create-farms',
       },
       {
-        label: 'Stakes',
+        label: 'Staking Pools',
         href: '/create-stakes',
       },
     ],

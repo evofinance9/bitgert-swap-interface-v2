@@ -46,6 +46,8 @@ import { EN, allLanguages } from '../constants/localisation/languageCodes'
 import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
 
+import '@ant-design/flowchart/dist/index.css'
+
 import Menu from '../components/Menu'
 
 const AppWrapper = styled.div`
@@ -113,7 +115,7 @@ export default function App() {
                 <Popups />
                 <Web3ReactManager>
                   <>
-                    <Route exact path="/" component={Dashboard} />
+                    <Route exact strict path="/" component={Dashboard} />
                     <Route exact strict path="/swap" component={Swap} />
                     <Route exact strict path="/find" component={PoolFinder} />
                     <Route exact strict path="/pool" component={Pool} />
