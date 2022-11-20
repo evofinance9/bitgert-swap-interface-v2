@@ -48,12 +48,7 @@ export default function ConfirmSwapModal({
   onDismiss: () => void
 }) {
   const showAcceptChanges = useMemo(
-    () =>
-      Boolean(
-        (trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)) ||
-          trade?.route.input.symbol === 'USDT' ||
-          trade?.route.output.symbol === 'USDT'
-      ),
+    () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
     [originalTrade, trade]
   )
 

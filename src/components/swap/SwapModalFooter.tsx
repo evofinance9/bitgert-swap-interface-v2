@@ -39,8 +39,6 @@ export default function SwapModalFooter({
   const severity = warningSeverity(priceImpactWithoutFee)
   const TranslateString = useI18n()
 
-  console.log(disabledConfirm)
-
   return (
     <>
       <AutoColumn gap="0px">
