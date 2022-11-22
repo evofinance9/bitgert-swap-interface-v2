@@ -112,21 +112,19 @@ export default function Stake() {
 
   useEffect(() => {
     const fetch = async () => {
-      if (!library || !account) return
+      if (!library || !account || !token_address || !reward_token_address) return
 
       const tokenContract = getTokenContract(token_address, library, account)
       const TName = await tokenContract?.callStatic.name()
       const TSymbol = await tokenContract?.callStatic.symbol()
       const TDecimals = await tokenContract?.callStatic.decimals()
-
-      setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals }))
       
       const rewardTokenContract = getTokenContract(reward_token_address, library, account)
       const RTName = await rewardTokenContract?.callStatic.name()
       const RTSymbol = await rewardTokenContract?.callStatic.symbol()
       const RTDecimals = await rewardTokenContract?.callStatic.decimals()
       
-      setFormData((prev) => ({ ...prev, reward_token_name: RTName, reward_token_symbol: RTSymbol, reward_token_decimal: RTDecimals }))
+      setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals, reward_token_name: RTName, reward_token_symbol: RTSymbol, reward_token_decimal: RTDecimals }))
     
     }
     if (account && token_address && library instanceof ethers.providers.Web3Provider) {

@@ -61,6 +61,8 @@ const PRICE_QUERY = gql`
 const StakeUser = ({ stake }) => {
   const { account, chainId, library } = useActiveWeb3React()
   const [isApproved, setIsApproved] = useState<boolean>(false)
+  const [isApprovedDeposit, setIsApprovedDeposit] = useState<boolean>(false)
+  const [isApprovedReward, setIsApprovedReward] = useState<boolean>(false)
   const [isOwner, setIsOwner] = useState<boolean>(false)
   const [isCreator, setIsCreator] = useState<boolean>(false)
   const [txHash, setTxHash] = useState<string>('')
@@ -335,17 +337,17 @@ const StakeUser = ({ stake }) => {
     const args: Array<string | string[] | string | BigNumber | number> = payload
 
     setAttemptingTxn(true)
-    setIsApproved(false)
+    setIsApprovedReward(false)
     await method(...args)
       .then((response) => {
         swal('Congratulations!', 'You have approved to deposit the reward tokens in the contract!', 'success')
 
-        setIsApproved(true)
+        setIsApprovedReward(true)
         setAttemptingTxn(false)
         setTxHash(response.hash)
       })
       .catch((e) => {
-        setIsApproved(false)
+        setIsApprovedReward(false)
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
         if (e?.code !== 'ACTION_REJECTED') {
@@ -369,7 +371,7 @@ const StakeUser = ({ stake }) => {
     const args: Array<string | number | boolean> = payload
 
     setAttemptingTxn(true)
-    setIsApproved(false)
+    setIsApprovedDeposit(false)
     await method(...args)
       .then((response) => {
         setFormData({
@@ -383,12 +385,12 @@ const StakeUser = ({ stake }) => {
           DepositRewardAmount: 0,
         })
         swal('Congratulations!', 'Reward Tokens has been deposited in the Stake contract!', 'success')
-        setIsApproved(true)
+        setIsApprovedDeposit(true)
         setAttemptingTxn(false)
         setTxHash(response.hash)
       })
       .catch((e) => {
-        setIsApproved(false)
+        setIsApprovedDeposit(false)
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
         if (e?.code !== 'ACTION_REJECTED') {
@@ -868,8 +870,7 @@ const StakeUser = ({ stake }) => {
           <td>
             <Flex>
               <ButtonContainer>
-                {/*  */}
-                <Flex alignItems="center" justifyContent="space-between" style={{marginBottom: '10px'}} onClick={() => handleEmergencyRewardWithdraw(stake.pool_id)}>
+                <Flex alignItems="center" justifyContent="space-between" style={{marginBottom: '10px'}} >
                   <InputExtended
                     placeholder="Withdraw"
                     style={{ marginRight: '5px', flex: '2' }}
@@ -880,7 +881,7 @@ const StakeUser = ({ stake }) => {
                   </Flex>
 
                   <Flex> 
-                  <Button scale="md" variant="tertiary" >
+                  <Button scale="md" variant="tertiary" onClick={() => handleEmergencyRewardWithdraw(stake.pool_id)}>
                     Withdraw Reward
                   </Button>
                   </Flex>
@@ -902,7 +903,7 @@ const StakeUser = ({ stake }) => {
                     value={DepositRewardAmount}
                     onChange={handleChange('DepositRewardAmount')}
                   />{' '}
-                  <Tooltip show={feeTooltip6} placement="top" text={`Total Rewards present: ${stakeRewardBalance} `}>
+                  <Tooltip show={feeTooltip6} placement="top" text={`Total Rewards present: ${stakeRewardBalance ? parseFloat(stakeRewardBalance).toFixed(2) : 0} ${stake.reward_token_symbol}`}>
                     <FaInfoCircle
                       className="mx-2"
                       color="grey"
