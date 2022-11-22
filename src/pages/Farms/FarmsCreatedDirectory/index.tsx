@@ -73,20 +73,7 @@ export default function FarmsCreatedDirectory() {
 
     fetchFarmList()
 
-    // const fetchFarmList = () => {
-    //   setLoading(true)
-    //   getAllFarmOwner()
-    //     .then((response) => {
-    //       setLoading(false)
-    //       setFarms(response)
-    //     })
-    //     .catch((err) => {
-    //       setLoading(false)
-    //       console.log(err)
-    //       swal('Oops', 'Something went wrong!', 'error')
-    //     })
-    // }
-  }, [])
+  }, [chainId, library, account])
 
   return (
     <>

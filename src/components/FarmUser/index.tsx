@@ -16,7 +16,7 @@ import { useQuery, gql } from '@apollo/client'
 import swal from 'sweetalert'
 import { useActiveWeb3React } from 'hooks'
 import { useFarmContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
-import { getFarmContract, getTokenContract, getSigCheckContract, bnSub, formatTokenAmount  } from 'utils'
+import { getFarmContract, getTokenContract, getSigCheckContract, bnSub, formatTokenAmount } from 'utils'
 import Tooltip from 'components/Tooltip'
 import { MaxUint256 } from '@ethersproject/constants'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
@@ -63,6 +63,47 @@ const PAIR_QUERY = gql`
   }
 `
 
+const LIQUIDITY_QUERY = gql`
+  query Pairs(
+    $where: Pair_filter
+    $orderBy: LiquidityPositionSnapshot_orderBy
+    $orderDirection: OrderDirection
+    $first: Int
+  ) {
+    pairs(where: $where) {
+      id
+      token0 {
+        id
+        name
+      }
+      token1 {
+        id
+        name
+      }
+      liquidityPositionSnapshots(orderBy: $orderBy, orderDirection: $orderDirection, first: $first) {
+        liquidityTokenTotalSupply
+      }
+    }
+  }
+`
+
+const VOLUME_QUERY = gql`
+  query PairDayDatas($where: PairDayData_filter, $orderBy: PairDayData_orderBy, $orderDirection: OrderDirection, $first: Int) {
+    pairDayDatas(where: $where, orderBy: $orderBy, orderDirection: $orderDirection, first: $first) {
+      id
+      token0 {
+        id
+        name
+      }
+      token1 {
+        id
+        name
+      }
+      dailyVolumeUSD
+    }
+  }
+`
+
 const FarmUser = ({ farm }) => {
   const { account, chainId, library } = useActiveWeb3React()
   const [isApproved, setIsApproved] = useState<boolean>(false)
@@ -73,6 +114,7 @@ const FarmUser = ({ farm }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [totalBalance, setTotalBalance] = useState<string>('')
+  const [allocationPoint, setAllocationPoint] = useState<string>('')
   const [APY, setAPY] = useState<string>('')
   const [onCopyValue, setOnCopyValue] = useState<string>('')
   const [depositAmount, setDepositAmount] = useState<string>('')
@@ -89,10 +131,13 @@ const FarmUser = ({ farm }) => {
   const [feeTooltip4, setFeeTooltip4] = useState<boolean>(false)
   const [feeTooltip5, setFeeTooltip5] = useState<boolean>(false)
   const [feeTooltip6, setFeeTooltip6] = useState<boolean>(false)
+  const [feeTooltip7, setFeeTooltip7] = useState<boolean>(false)
   // const [loading, setLoading] = useState<boolean>(false)
 
   const { data, loading, refetch } = useQuery(PAIR_QUERY)
   const [pairAddress, setPairAddress] = useState('0x77575200f7a35072e0c5e691b32b26286d43a973')
+  const { data: liquidityGraphData, refetch: liquidityRefetch } = useQuery(LIQUIDITY_QUERY)
+  const { data: volumeGraphData, refetch: volumeRefetch } = useQuery(VOLUME_QUERY)
 
   const [formData, setFormData] = useState({
     chain_id: '32520',
@@ -100,11 +145,12 @@ const FarmUser = ({ farm }) => {
     amount: 0,
     Multiplier: 0,
     EmissionRate: 0,
+    AllocationPoint: 0,
     ChangeToBurn: 0,
   })
 
   // destructure
-  const { owner_address, amount, Multiplier, EmissionRate, ChangeToBurn } = formData
+  const { owner_address, amount, Multiplier, AllocationPoint, EmissionRate, ChangeToBurn } = formData
 
   useEffect(() => {
     const fetch = async () => {
@@ -137,9 +183,10 @@ const FarmUser = ({ farm }) => {
       setDepositAmount(ethers.utils.formatEther(userDeposit.amount.toString()))
 
       const poolInfo = await farmDetails?.callStatic.poolInfo(farm.pool_id - 1)
-      const accBitgertPerShare = poolInfo.accBitgertPerShare
-      const lastRewardBlock = poolInfo.lastRewardBlock
+      // const accBitgertPerShare = poolInfo.accBitgertPerShare
+      // const allocPoint = poolInfo.allocPoint
       setBitgertPerBlock(poolInfo.bitgertPerBlock.toString())
+      setAllocationPoint(poolInfo.allocPoint.toString())
 
       // const farmBitgertPerBlock = await farmDetails?.callStatic.bitgertPerBlock()
       // setBitgertPerBlock(farmBitgertPerBlock.toString())
@@ -153,13 +200,14 @@ const FarmUser = ({ farm }) => {
       //   setAPY(apy.toString())
       // }
 
+      // APY -
+
+      // pause -
       const pausedOrNot = await farmDetails?.callStatic.isPaused(farm.pool_id - 1)
       setPause(pausedOrNot)
 
-      // also add getMultiplier - not given public so commenting should uncomment next time
-      // const farmBonusMultiplier = await farmDetails?.callStatic.BONUS_MULTIPLIER(farm.pool_id-1)
-      // const farmBonusMultiplier = await farmDetails?.callStatic.getMultiplier(farm.pool_id-1, lastRewardBlock, )
-      // setBonusMultiplier(farmBonusMultiplier.toString())
+      const farmBonusMultiplier = await farmDetails?.callStatic.BONUS_MULTIPLIER(farm.pool_id-1)
+      setBonusMultiplier(farmBonusMultiplier.toString())
 
       const farmToBurn = await farmDetails?.callStatic.toBurn(farm.pool_id - 1)
       setToBurn(farmToBurn.toString())
@@ -192,6 +240,62 @@ const FarmUser = ({ farm }) => {
       }
     }
   }, [refetch, farm.token_address, farm.farmOwner_id, account, library, amount, data, chainId])
+
+  useEffect(() => {
+    if (farm?.token_address) {
+    liquidityRefetch({
+      where: {
+        id: farm.token_address.toLowerCase(),
+      },
+      orderBy: 'timestamp',
+      orderDirection: 'desc',
+      first: 1,
+    })
+  }
+  }, [farm.token_address, liquidityRefetch])
+
+  // console.log(liquidityGraphData)
+  // console.log(liquidityGraphData.pairs[0])
+  // console.log(liquidityGraphData.pairs[0].liquidityPositionSnapshots[0].liquidityTokenTotalSupply)
+  // console.log(liquidityGraphData.pairs[0].liquidityPositionSnapshots[0].liquidityTokenTotalSupply)
+
+  useEffect(() => {
+    if (farm?.token_address) {
+      volumeRefetch({
+        where: {
+          pairAddress: farm.token_address.toLowerCase(),
+        },
+        orderBy: 'date',
+        orderDirection: 'desc',
+        first: 1,
+      })
+    }
+  }, [farm.token_address, volumeRefetch])
+
+  // console.log(volumeGraphData)
+  // console.log(volumeGraphData.pairDayDatas[0].dailyVolumeUSD)
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (!volumeGraphData || !liquidityGraphData || !Array.isArray(volumeGraphData?.pairDayDatas) || !Array.isArray(liquidityGraphData?.pairs)) {
+        return
+      }
+      const VolumeUSD365 = await (volumeGraphData.pairDayDatas[0].dailyVolumeUSD) * 365
+      console.log(VolumeUSD365)
+      const volumeUSD = VolumeUSD365 * 0.17 / 100
+      console.log(volumeUSD)
+      const LIQ_GRPH = await liquidityGraphData.pairs[0].liquidityPositionSnapshots[0].liquidityTokenTotalSupply
+      console.log(LIQ_GRPH)
+      if (LIQ_GRPH !== 0) {
+        const APYValue = (volumeUSD / LIQ_GRPH) * 100
+        console.log(APYValue.toString())
+        setAPY(APYValue.toString())
+      } else {
+        setAPY('')
+      }
+    }
+    fetch()
+  }, [volumeGraphData, liquidityGraphData])
 
   const handleChange = (name) => (event) => {
     const value = event.target.value
@@ -281,6 +385,7 @@ const FarmUser = ({ farm }) => {
           owner_address: '',
           amount: 0,
           Multiplier: 0,
+          AllocationPoint: 0,
           EmissionRate: 0,
           ChangeToBurn: 0,
         })
@@ -322,6 +427,7 @@ const FarmUser = ({ farm }) => {
           owner_address: '',
           amount: 0,
           Multiplier: 0,
+          AllocationPoint: 0,
           EmissionRate: 0,
           ChangeToBurn: 0,
         })
@@ -355,7 +461,7 @@ const FarmUser = ({ farm }) => {
       .then((response) => {
         swal(
           'Congratulations!',
-          `The request to ${pause ? 'Unpause' : 'Pause'} the stake has been generated`,
+          `The request to ${pause ? 'Unpause' : 'Pause'} the farm has been generated`,
           'success'
         )
         setAttemptingTxn(false)
@@ -425,6 +531,7 @@ const FarmUser = ({ farm }) => {
           owner_address: '',
           amount: 0,
           Multiplier: 0,
+          AllocationPoint: 0,
           EmissionRate: 0,
           ChangeToBurn: 0,
         })
@@ -463,10 +570,50 @@ const FarmUser = ({ farm }) => {
           owner_address: '',
           amount: 0,
           Multiplier: 0,
+          AllocationPoint: 0,
           EmissionRate: 0,
           ChangeToBurn: 0,
         })
         swal('Congratulations!', 'The request to change the Bitgert Per Block!', 'success')
+        setAttemptingTxn(false)
+
+        setTxHash(response.hash)
+      })
+      .catch((e) => {
+        setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (e?.code !== 'ACTION_REJECTED') {
+          console.error(e)
+          alert(e.message)
+        }
+      })
+  }
+
+  const handleAllocationPoint = async (farmID) => {
+    if (!chainId || !library || !account || !AllocationPoint) return
+
+    const farmDetails = getSigCheckContract(chainId, library, account)
+
+    const payload = [FARM_ADDRESS, 'updateAllocPoint(uint256,uint256)', parseInt(farmID) - 1, AllocationPoint]
+
+    const method: (...args: any) => Promise<TransactionResponse> =
+      farmDetails['submitTransaction(address,string,uint256,uint256)']
+    const args: Array<string[] | string | boolean | number> = payload
+
+    setAttemptingTxn(true)
+    await method(...args)
+      .then((response) => {
+        setFormData({
+          ...formData,
+          chain_id: '32520',
+          owner_address: '',
+          amount: 0,
+          Multiplier: 0,
+          AllocationPoint: 0,
+          EmissionRate: 0,
+          ChangeToBurn: 0,
+        })
+        swal('Congratulations!', 'The request to change the allocation point!', 'success')
         setAttemptingTxn(false)
 
         setTxHash(response.hash)
@@ -501,6 +648,7 @@ const FarmUser = ({ farm }) => {
           owner_address: '',
           amount: 0,
           Multiplier: 0,
+          AllocationPoint: 0,
           EmissionRate: 0,
           ChangeToBurn: 0,
         })
@@ -546,7 +694,7 @@ const FarmUser = ({ farm }) => {
         <td>
           {/* <div className="mb-3 mr-4"> */}
           <Link to={`/add/${token0}/${token1}/`}>
-            <Button scale="sm" variant="secondary" style={{ marginRight: '5px' }}>
+            <Button scale="sm" variant="secondary" style={{ marginBottom: '5px' }}>
               Add
             </Button>
           </Link>{' '}
@@ -607,7 +755,13 @@ const FarmUser = ({ farm }) => {
               <div className="mb-3">
                 {/* <div className=" d-flex justify-content-between"> */}
                 <Flex>
-                  <Button scale="sm" style={{marginRight: '5px'}} variant="secondary" className="mr-2" onClick={() => handleDeposit(farm.pool_id)}>
+                  <Button
+                    scale="sm"
+                    style={{ marginRight: '5px' }}
+                    variant="secondary"
+                    className="mr-2"
+                    onClick={() => handleDeposit(farm.pool_id)}
+                  >
                     Invest
                   </Button>{' '}
                   <Button scale="sm" variant="secondary" onClick={() => handleWithdraw(farm.pool_id)}>
@@ -621,11 +775,19 @@ const FarmUser = ({ farm }) => {
       </tr>
       {isOwner && (
         <tr key={farm.pool_id}>
+          <TransactionConfirmationModal
+            isOpen={isOpen}
+            onDismiss={handleDismissConfirmation}
+            attemptingTxn={attemptingTxn}
+            hash={txHash}
+            content={() => <></>}
+            pendingText="Please wait..."
+          />
           <td>
             <Flex>
               <ButtonContainer>
-                <Button variant="secondary" onClick={() => handlePause(farm.pool_id)}>
-                  {`${pause ? 'Unpause' : 'Pause'} it`}
+                <Button scale="md" variant="secondary" onClick={() => handlePause(farm.pool_id)}>
+                  {`${pause ? 'Unpause' : 'Pause'}`}
                 </Button>
               </ButtonContainer>
             </Flex>
@@ -634,12 +796,13 @@ const FarmUser = ({ farm }) => {
           <td>
             <Flex>
               <ButtonContainer>
-                <Button variant="secondary" onClick={() => handleIsMint(farm.pool_id)}>
+                <Button scale="md" variant="secondary" onClick={() => handleIsMint(farm.pool_id)}>
                   {`${isMint ? 'stop Mint' : 'Start Mint'}`}
                 </Button>
               </ButtonContainer>
             </Flex>
           </td>
+
           <td>
             <Flex>
               <ButtonContainer>
@@ -659,8 +822,35 @@ const FarmUser = ({ farm }) => {
                     />
                   </Tooltip>
                 </Flex>
-                <Button scale="sm" variant="secondary" onClick={() => handleMultiplier(farm.pool_id)}>
+                <Button scale="md" variant="secondary" onClick={() => handleMultiplier(farm.pool_id)}>
                   Update Multiplier
+                </Button>
+              </ButtonContainer>
+            </Flex>
+          </td>
+
+          
+          <td>
+            <Flex>
+              <ButtonContainer>
+                <Flex alignItems={'center'} justifyContent={'space-around'}>
+                  <InputExtended
+                    placeholder="Update"
+                    scale="sm"
+                    style={{ marginRight: '5px' }}
+                    value={AllocationPoint}
+                    onChange={handleChange('AllocationPoint')}
+                  />{' '}
+                  <Tooltip show={feeTooltip5} placement="top" text={`Allocation Point is : ${allocationPoint} `}>
+                    <FaInfoCircle
+                      color="grey"
+                      onMouseEnter={() => setFeeTooltip5(true)}
+                      onMouseLeave={() => setFeeTooltip5(false)}
+                    />
+                  </Tooltip>
+                </Flex>
+                <Button scale="md" variant="secondary" onClick={() => handleAllocationPoint(farm.pool_id)}>
+                  Update Allocation
                 </Button>
               </ButtonContainer>
             </Flex>
@@ -677,16 +867,16 @@ const FarmUser = ({ farm }) => {
                     value={EmissionRate}
                     onChange={handleChange('EmissionRate')}
                   />{' '}
-                  <Tooltip show={feeTooltip5} placement="top" text={`Bitgert per block is : ${bitgertPerBlock} `}>
+                  <Tooltip show={feeTooltip6} placement="top" text={`Bitgert per block is : ${bitgertPerBlock} `}>
                     <FaInfoCircle
                       color="grey"
-                      onMouseEnter={() => setFeeTooltip5(true)}
-                      onMouseLeave={() => setFeeTooltip5(false)}
+                      onMouseEnter={() => setFeeTooltip6(true)}
+                      onMouseLeave={() => setFeeTooltip6(false)}
                     />
                   </Tooltip>
                 </Flex>
-                <Button scale="sm" variant="secondary" onClick={() => handleEmissionRate(farm.pool_id)}>
-                  Update Emission Rate
+                <Button scale="md" variant="secondary" onClick={() => handleEmissionRate(farm.pool_id)}>
+                  Update Emission
                 </Button>
               </ButtonContainer>
             </Flex>
@@ -703,15 +893,15 @@ const FarmUser = ({ farm }) => {
                     value={ChangeToBurn}
                     onChange={handleChange('ChangeToBurn')}
                   />{' '}
-                  <Tooltip show={feeTooltip6} placement="top" text={`to burn value is : ${toBurn} `}>
+                  <Tooltip show={feeTooltip7} placement="top" text={`to burn value is : ${toBurn} `}>
                     <FaInfoCircle
                       color="grey"
-                      onMouseEnter={() => setFeeTooltip6(true)}
-                      onMouseLeave={() => setFeeTooltip6(false)}
+                      onMouseEnter={() => setFeeTooltip7(true)}
+                      onMouseLeave={() => setFeeTooltip7(false)}
                     />
                   </Tooltip>
                 </Flex>
-                <Button scale="sm" variant="secondary" onClick={() => handlechangeToBurn(farm.pool_id)}>
+                <Button scale="md" variant="secondary" onClick={() => handlechangeToBurn(farm.pool_id)}>
                   Update To Burn
                 </Button>
               </ButtonContainer>

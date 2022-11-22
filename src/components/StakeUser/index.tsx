@@ -15,7 +15,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { MaxUint256 } from '@ethersproject/constants'
 import styled from 'styled-components'
 // import {bnSub} from 'utils'
-// import { useQuery, gql } from '@apollo/client'
+import { useQuery, gql } from '@apollo/client'
 
 import { useActiveWeb3React } from 'hooks'
 import { useStakeContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
@@ -39,19 +39,45 @@ const td = styled.td`
   color: grey;
 `
 
+const PRICE_QUERY = gql`
+  query Tokens(
+    $where: TokenDayData_filter
+    $orderBy: TokenDayData_orderBy
+    $orderDirection: OrderDirection
+    $first: Int
+    $tokensWhere2: Token_filter
+  ) {
+    tokens(where: $tokensWhere2) {
+      id
+      name
+      tokenDayData(where: $where, orderBy: $orderBy, orderDirection: $orderDirection, first: $first) {
+        dailyVolumeUSD
+        totalLiquidityUSD
+      }
+    }
+  }
+`
+
 const StakeUser = ({ stake }) => {
   const { account, chainId, library } = useActiveWeb3React()
   const [isApproved, setIsApproved] = useState<boolean>(false)
   const [isOwner, setIsOwner] = useState<boolean>(false)
+  const [isCreator, setIsCreator] = useState<boolean>(false)
   const [txHash, setTxHash] = useState<string>('')
   const [balance, setBalance] = useState<string>('')
   const [rewardPerBlock, setRewardPerBlock] = useState<string>('')
   const [stakeBonusEndBlock, setStakeBonusEndBlock] = useState<string>('')
+  const [stakeRewardToken, setStakeRewardToken] = useState<string>('')
+  const [stakeRewardBalance, setStakeRewardBalance] = useState<string>('')
+  const [stakedTokenBalance, setStakedTokenBalance] = useState<string>('')
   const [pause, setPause] = useState<boolean>(false)
+  const [rewardStop, setRewardStop] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [rewardTokenDecimals, setRewardTokenDecimals] = useState<string>('')
   const [rewardBalance, setRewardBalance] = useState<string>('')
   const [totalBalance, setTotalBalance] = useState<string>('')
+  const [allowanceReward, setAllowanceReward] = useState<string>('')
   const [onCopyValue, setOnCopyValue] = useState<string>('')
   const [APY, setAPY] = useState<string>('')
   const [feeTooltip1, setFeeTooltip1] = useState<boolean>(false)
@@ -59,8 +85,12 @@ const StakeUser = ({ stake }) => {
   const [feeTooltip3, setFeeTooltip3] = useState<boolean>(false)
   const [feeTooltip4, setFeeTooltip4] = useState<boolean>(false)
   const [feeTooltip5, setFeeTooltip5] = useState<boolean>(false)
+  const [feeTooltip6, setFeeTooltip6] = useState<boolean>(false)
   const [depositAmount, setDepositAmount] = useState<string>('')
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
+
+  const { data: priceGraphData, refetch: priceRefetch } = useQuery(PRICE_QUERY)
+
   // const [loading, setLoading] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
@@ -69,78 +99,95 @@ const StakeUser = ({ stake }) => {
     amount: 0,
     EmissionRate: 0,
     BonusEndBlock: 0,
+    WithdrawAmount: 0,
+    DepositRewardAmount: 0,
   })
 
   // destructure
-  const { owner_address, amount, EmissionRate, BonusEndBlock } = formData
+  const { owner_address, amount, EmissionRate, BonusEndBlock, WithdrawAmount, DepositRewardAmount} = formData
 
   useEffect(() => {
     const fetch = async () => {
+
+      
       if (!chainId || !library || !account) return
+      
+      // setIsCreator
+      if (stake.stakeCreator_id === account ) {
+        setIsCreator(true)
+      } else {
+        setIsCreator(false)
+      }
 
-      console.log('done')
+      // console.log(library)
+
+      // opens up metamask extension and connects Web2 to Web3
+      // await (window as any).ethereum.send('eth_requestAccounts')
+
+      // create provider
+      // const provider = new ethers.providers.Web3Provider((window as any).ethereum)
+      // const provider = new ethers.providers.Web3Provider()
+
+      // provider.getBlockNumber()
+
+      // console.log(blockNumber)
+
+      
+      // const stakeRewardToken = await stakeDetails?.callStatic.rewardToken()
+
+
+      // this is wrong way of calc it 
+      // const stakeRewardBalance = await stakeDetails?.callStatic.rewardBalance()
+
+      // For sigCheck details
+      const sigCheckDetails = getSigCheckContract(chainId, library, account)
+      
+      const isOwnerOrNot = await sigCheckDetails?.callStatic.isOwner(account)
+      
+      setIsOwner(isOwnerOrNot)
+      
+      // For stake details
       const stakeDetails = getStakeContract(chainId, library, account)
-
-      // const stakeRewardPerBlock = await stakeDetails?.callStatic.rewardPerBlock()
-      // setRewardPerBlock(stakeRewardPerBlock.toString())
-
+      
       const pausedOrNot = await stakeDetails?.callStatic.isPaused(stake.pool_id - 1)
       setPause(pausedOrNot)
-
+      
       const userDeposit = await stakeDetails?.callStatic.userInfo(stake.pool_id - 1, account)
       setDepositAmount(ethers.utils.formatEther(userDeposit.amount.toString()))
-
+      
       const poolInfo = await stakeDetails?.callStatic.poolInfo(stake.pool_id - 1)
-      const accTokenPerShare = poolInfo.accTokenPerShare
       setRewardPerBlock(poolInfo.rewardPerBlock.toString())
       setStakeBonusEndBlock(poolInfo.bonusEndBlock.toString())
+      const rewardToken = poolInfo.rewardToken.toString()
+      setStakeRewardToken(poolInfo.rewardToken.toString())
+      setStakeRewardBalance(poolInfo.rewardBalance.toString())
+      setStakedTokenBalance(poolInfo.stakeBalance.toString())
+      
+      const blockNumber = await library.getBlockNumber()
+      
+      
+      if (blockNumber > poolInfo.bonusEndBlock) {
+        setRewardStop(true)
+      } else {
+        setRewardStop(false)
+      }
+      
+      // For reward token details
+      const rewardTokenContract = getTokenContract(rewardToken, library, account)
+      
+      const totalrewardAllowance = await rewardTokenContract?.callStatic.allowance(account, STAKE_ADDRESS)
+      setAllowanceReward(ethers.utils.formatEther(totalrewardAllowance))
 
-      // const rewardOrNot = await stakeDetails?.callStatic.bonusEndBlock()
-
-      const stakeRewardToken = await stakeDetails?.callStatic.rewardToken()
-      console.log('coming')
-      const stakeRewardBalance = await stakeDetails?.callStatic.rewardBalance()
-
-      const sigCheckDetails = getSigCheckContract(chainId, library, account)
-
-      const isOwnerOrNot = await sigCheckDetails?.callStatic.isOwner(account)
-
-      setIsOwner(isOwnerOrNot)
-
+      const RTokenDecimals = await rewardTokenContract?.callStatic.decimals()
+      setRewardTokenDecimals(RTokenDecimals)
+      
+      // For stake token details
       const tokenContract = getTokenContract(stake.token_address, library, account)
-
+      
       setOnCopyValue(stake.token_address)
-
+      
       const accountBalance = await tokenContract?.callStatic.balanceOf(account)
       setBalance(ethers.utils.formatEther(accountBalance))
-
-      const totalStakeBalance = await tokenContract?.callStatic.balanceOf(STAKE_ADDRESS)
-      console.log(totalStakeBalance)
-      console.log(stakeRewardBalance)
-      // check it
-      if (stakeRewardToken === stake.token_address) {
-        const stakeRewardTokenBalance = bnSub(totalStakeBalance, stakeRewardBalance)
-        console.log(stakeRewardTokenBalance)
-        // console.log(ethers.utils.formatEther(stakeRewardTokenBalance))
-        // setTotalBalance(ethers.utils.formatEther(stakeRewardTokenBalance))
-
-        setTotalBalance(formatTokenAmount(stakeRewardTokenBalance.toString(), parseInt(stake.token_decimal)).toString())
-        // setTotalBalance(ethers.utils.formatEther(stakeRewardTokenBalance.toNumber()))
-        if (stakeRewardTokenBalance.toNumber() === 0) {
-          setAPY('')
-        } else {
-          const apy = (accTokenPerShare.toNumber() / stakeRewardTokenBalance.toNumber()) * 100
-          setAPY(apy.toString())
-        }
-      } else {
-        setTotalBalance(ethers.utils.formatEther(totalStakeBalance))
-        if (totalStakeBalance.toNumber() === 0) {
-          setAPY('')
-        } else {
-          const apy = (accTokenPerShare.toNumber() / totalStakeBalance.toNumber()) * 100
-          setAPY(apy.toString())
-        }
-      }
 
       const allowanceAmount = await tokenContract?.callStatic.allowance(account, STAKE_ADDRESS)
       const allowanceEther = ethers.utils.formatEther(allowanceAmount)
@@ -151,12 +198,63 @@ const StakeUser = ({ stake }) => {
         setIsApproved(false)
       }
 
-      // const tokenStakeContract = getTokenContract(stakedToken, library, account)
-      // const stakedTokenBalance = await tokenStakeContract?.callStatic.balanceOf(STAKE_ADDRESS)
+      // cant be the bal 
+      // const totalStakeBalance = await tokenContract?.callStatic.balanceOf(STAKE_ADDRESS)
+
+      // if (stakeRewardToken === stake.token_address) {
+      //   const stakeRewardTokenBalance = bnSub(totalStakeBalance, stakeRewardBalance)
+      //   setTotalBalance(formatTokenAmount(stakeRewardTokenBalance.toString(), parseInt(stake.token_decimal)).toString())
+      // } else {
+      //   setTotalBalance(ethers.utils.formatEther(totalStakeBalance))
+      // }
+
+      
     }
 
     fetch()
-  }, [stake, stake.stakeOwner_id, stake.token_address, account, library, amount, chainId])
+  }, [stake, stake.stakeOwner_id, stake.token_address, account, library, amount, chainId, WithdrawAmount, DepositRewardAmount])
+
+  useEffect(() => {
+    if (stake?.token_address) {
+    priceRefetch({
+      where: {
+        token: stake.token_address.toLowerCase(),
+      },
+      orderBy: 'date',
+      orderDirection: 'desc',
+      first: 1,
+      tokensWhere2: {
+        id: stake.token_address.toLowerCase(),
+      },
+    })
+  }
+  }, [stake.token_address, priceRefetch])
+  // console.log(priceGraphData)
+
+  // asc change to desc
+  // change to query to find first
+  useEffect(() => {
+    const fetch = async () => {
+      if (!priceGraphData || !Array.isArray(priceGraphData?.tokens)) {
+        return
+      }
+      const VolumeUSD365 = await (priceGraphData.tokens[0].tokenDayData[0].dailyVolumeUSD) * 365
+      console.log(VolumeUSD365)
+      // calculate the fee share of liquidity providers in the pool (based on the 0.17% trading fee structure)
+      const volumeUSD = VolumeUSD365 * 0.17 / 100
+      console.log(volumeUSD)
+      const LIQ_GRPH = await priceGraphData.tokens[0].tokenDayData[0].totalLiquidityUSD
+      console.log(LIQ_GRPH)
+      if (LIQ_GRPH !== 0) {
+        const APYValue = (volumeUSD / LIQ_GRPH) * 100
+        console.log(APYValue.toString())
+        setAPY(APYValue.toString())
+      } else {
+        setAPY('')
+      }
+    }
+    fetch()
+  }, [priceGraphData])
 
   const handleChange = (name) => (event) => {
     const value = event.target.value
@@ -175,6 +273,129 @@ const StakeUser = ({ stake }) => {
     setTimeout(() => {
       setOnCopyValue(stake.token_address)
     }, 1500)
+  }
+
+
+  const handleEmergencyRewardWithdraw = async (stakeID) => {
+    if (!chainId || !library || !account || !WithdrawAmount) return
+
+    const stakeDetails = getSigCheckContract(chainId, library, account)
+
+    const payload = [
+      STAKE_ADDRESS,
+      'emergencyRewardWithdraw(uint256,uint256)',
+      parseInt(stakeID) - 1,
+      ethers.utils.parseUnits(WithdrawAmount.toString(), parseInt(rewardTokenDecimals)).toString(),
+    ]
+
+    const method: (...args: any) => Promise<TransactionResponse> =
+      stakeDetails['submitTransaction(address,string,uint256,uint256)']
+    const args: Array<string[] | string | boolean | number> = payload
+
+    setAttemptingTxn(true)
+    await method(...args)
+      .then((response) => {
+        setFormData({
+          ...formData,
+          chain_id: '32520',
+          owner_address: '',
+          amount: 0,
+          EmissionRate: 0,
+          BonusEndBlock: 0,
+          WithdrawAmount: 0,
+          DepositRewardAmount: 0,
+        })
+        swal('Congratulations!', 'The request for emergency withdraw of reward tokens has been raised!', 'success')
+        setAttemptingTxn(false)
+
+        setTxHash(response.hash)
+      })
+      .catch((e) => {
+        setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (e?.code !== 'ACTION_REJECTED') {
+          console.error(e)
+          alert(e.message)
+        }
+      })
+  }
+
+  const handleAllowanceApprove = async () => {
+
+    if (!chainId || !library || !account) return
+
+    const tokenContract = getTokenContract(stakeRewardToken, library, account)
+
+    const TBalance = await tokenContract?.callStatic.balanceOf(account)
+    const TDecimals = await tokenContract?.callStatic.decimals()
+
+    const payload = [STAKE_ADDRESS, MaxUint256]
+
+    const method: (...args: any) => Promise<TransactionResponse> = tokenContract!.approve
+    const args: Array<string | string[] | string | BigNumber | number> = payload
+
+    setAttemptingTxn(true)
+    setIsApproved(false)
+    await method(...args)
+      .then((response) => {
+        swal('Congratulations!', 'You have approved to deposit the reward tokens in the contract!', 'success')
+
+        setIsApproved(true)
+        setAttemptingTxn(false)
+        setTxHash(response.hash)
+      })
+      .catch((e) => {
+        setIsApproved(false)
+        setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (e?.code !== 'ACTION_REJECTED') {
+          console.error(e)
+          alert(e.message)
+        }
+      })
+  }
+
+  const handleAllowanceDeposit = async (stakeID) => {
+    if (!chainId || !library || !account || !DepositRewardAmount) return
+
+    const stakeDetails = getStakeContract(chainId, library, account)
+
+    const payload = [
+      parseInt(stakeID) - 1,
+      ethers.utils.parseUnits(DepositRewardAmount.toString(), parseInt(rewardTokenDecimals)).toString()
+    ]
+
+    const method: (...args: any) => Promise<TransactionResponse> = stakeDetails!.depositRewardToken
+    const args: Array<string | number | boolean> = payload
+
+    setAttemptingTxn(true)
+    setIsApproved(false)
+    await method(...args)
+      .then((response) => {
+        setFormData({
+          ...formData,
+          chain_id: '32520',
+          owner_address: '',
+          amount: 0,
+          EmissionRate: 0,
+          BonusEndBlock: 0,
+          WithdrawAmount: 0,
+          DepositRewardAmount: 0,
+        })
+        swal('Congratulations!', 'Reward Tokens has been deposited in the Stake contract!', 'success')
+        setIsApproved(true)
+        setAttemptingTxn(false)
+        setTxHash(response.hash)
+      })
+      .catch((e) => {
+        setIsApproved(false)
+        setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (e?.code !== 'ACTION_REJECTED') {
+          console.error(e)
+          alert(e.message)
+        }
+      })
   }
 
   const handlePause = async (stakeID) => {
@@ -260,6 +481,8 @@ const StakeUser = ({ stake }) => {
           amount: 0,
           EmissionRate: 0,
           BonusEndBlock: 0,
+          WithdrawAmount: 0,
+          DepositRewardAmount: 0,
         })
         swal('Congratulations!', 'The request to change the Reward Per Block has been created!', 'success')
         setAttemptingTxn(false)
@@ -297,8 +520,10 @@ const StakeUser = ({ stake }) => {
           amount: 0,
           EmissionRate: 0,
           BonusEndBlock: 0,
+          WithdrawAmount: 0,
+          DepositRewardAmount: 0,
         })
-        swal('Congratulations!', 'The request to change the Reward Per Block has been created!', 'success')
+        swal('Congratulations!', 'The request to change the Bonus End Block has been created!', 'success')
         setAttemptingTxn(false)
 
         setTxHash(response.hash)
@@ -385,6 +610,8 @@ const StakeUser = ({ stake }) => {
           amount: 0,
           EmissionRate: 0,
           BonusEndBlock: 0,
+          WithdrawAmount: 0,
+          DepositRewardAmount: 0,
         })
 
         swal('Congratulations!', 'Amount deposited in Stake!', 'success')
@@ -427,6 +654,8 @@ const StakeUser = ({ stake }) => {
           amount: 0,
           EmissionRate: 0,
           BonusEndBlock: 0,
+          WithdrawAmount: 0,
+          DepositRewardAmount: 0,
         })
         swal('Congratulations!', 'Amount withdrawn from the Stake!', 'success')
 
@@ -498,7 +727,7 @@ const StakeUser = ({ stake }) => {
           <Tooltip
             show={feeTooltip3}
             placement="bottom"
-            text={`Total Investment: ${totalBalance ? parseFloat(totalBalance).toFixed(2) : 0} ${stake.token_symbol}`}
+            text={`Total Investment: ${stakedTokenBalance ? parseFloat(stakedTokenBalance).toFixed(2) : 0} ${stake.token_symbol}`}
           >
             <FaInfoCircle
               // className="mx-2"
@@ -531,7 +760,12 @@ const StakeUser = ({ stake }) => {
               <div className="mb-3">
                 {/* <div className=" d-flex justify-content-between"> */}
                 <Flex>
-                  <Button scale="sm" style={{marginRight: '5px'}} variant="secondary" onClick={() => handleDeposit(stake.pool_id)}>
+                  <Button
+                    scale="sm"
+                    style={{ marginRight: '5px' }}
+                    variant="secondary"
+                    onClick={() => handleDeposit(stake.pool_id)}
+                  >
                     Invest
                   </Button>{' '}
                   <Button scale="sm" variant="secondary" onClick={() => handleWithdraw(stake.pool_id)}>
@@ -543,13 +777,24 @@ const StakeUser = ({ stake }) => {
           )}
         </td>
       </tr>
-      {isOwner && (
-        <>
+
+      {(isOwner || isCreator) && (
+        <tr>
+          <TransactionConfirmationModal
+            isOpen={isOpen}
+            onDismiss={handleDismissConfirmation}
+            attemptingTxn={attemptingTxn}
+            hash={txHash}
+            content={() => <></>}
+            pendingText="Please wait..."
+          />
+          { isOwner && (
+            <>
           <td>
             <Flex>
               <ButtonContainer>
-                <Button scale="sm" variant="secondary" onClick={() => handlePause(stake.pool_id)}>
-                  {`${pause ? 'Unpause' : 'Pause'} it`}
+                <Button scale="md" variant="secondary" onClick={() => handlePause(stake.pool_id)}>
+                  {`${pause ? 'Unpause' : 'Pause'}`}
                 </Button>
               </ButtonContainer>
             </Flex>
@@ -558,23 +803,11 @@ const StakeUser = ({ stake }) => {
           <td>
             <Flex>
               <ButtonContainer>
-                <Button scale="sm" variant="secondary" onClick={() => handleReward(stake.pool_id)}>
-                  {`Reward End Block: ${stakeBonusEndBlock}`}
-                </Button>
-              </ButtonContainer>
-            </Flex>
-          </td>
-
-          <td />
-
-          <td>
-            <Flex>
-              <ButtonContainer>
-                <Flex alignItems="center" justifyContent="space-around">
+                <Flex alignItems="center" justifyContent="space-around" style={{marginBottom: '10px'}}>
                   <InputExtended
                     placeholder="Update"
                     scale="sm"
-                    style={{ marginRight: '5px' }}
+                    style={{ marginRight: '5px', flex: '2'  }}
                     value={EmissionRate}
                     onChange={handleChange('EmissionRate')}
                   />{' '}
@@ -586,23 +819,31 @@ const StakeUser = ({ stake }) => {
                     />
                   </Tooltip>
                 </Flex>
-                <Button scale="sm" variant="secondary" onClick={() => handleEmissionRate(stake.pool_id)}>
-                  Update Emission Rate
+                <Button scale="md" variant="secondary" onClick={() => handleEmissionRate(stake.pool_id)}>
+                  Update Emission
                 </Button>
               </ButtonContainer>
             </Flex>
           </td>
 
-          <td />
+          <td>
+          <Flex>
+              <ButtonContainer>
+                <Button scale="md" style={{ marginRight: '5px'}} variant="secondary" onClick={() => handleReward(stake.pool_id)}>
+                  {`${rewardStop ? 'Reward Stopped' : 'Stop Reward'}`}
+                </Button>
+             </ButtonContainer>
+          </Flex>
+          </td>
 
           <td>
             <Flex>
               <ButtonContainer>
-                <Flex alignItems="center" justifyContent="space-around">
+                <Flex alignItems="center" justifyContent="space-between" style={{marginBottom: '10px'}}>
                   <InputExtended
                     placeholder="Update"
                     scale="sm"
-                    style={{ marginRight: '5px' }}
+                    style={{ marginRight: '5px', flex: '2' }}
                     value={BonusEndBlock}
                     onChange={handleChange('BonusEndBlock')}
                   />{' '}
@@ -614,13 +855,83 @@ const StakeUser = ({ stake }) => {
                     />
                   </Tooltip>
                 </Flex>
-                <Button scale="sm" variant="secondary" onClick={() => handleBonusEndBlock(stake.pool_id)}>
-                  Update Bonus End Block
-                </Button>
+
+                <Flex>  
+                  <Button scale="md" variant="secondary" onClick={() => handleBonusEndBlock(stake.pool_id)}>
+                    Update Bonus End Block
+                  </Button>
+                </Flex>
               </ButtonContainer>
             </Flex>
           </td>
-        </>
+
+          <td>
+            <Flex>
+              <ButtonContainer>
+                {/*  */}
+                <Flex alignItems="center" justifyContent="space-between" style={{marginBottom: '10px'}} onClick={() => handleEmergencyRewardWithdraw(stake.pool_id)}>
+                  <InputExtended
+                    placeholder="Withdraw"
+                    style={{ marginRight: '5px', flex: '2' }}
+                    scale="sm"
+                    value={WithdrawAmount}
+                    onChange={handleChange('WithdrawAmount')}
+                  />
+                  </Flex>
+
+                  <Flex> 
+                  <Button scale="md" variant="tertiary" >
+                    Withdraw Reward
+                  </Button>
+                  </Flex>
+                </ButtonContainer>
+            </Flex>
+          </td>
+          </>
+          )}
+
+          <td>
+          {(isOwner || isCreator) && (
+              <Flex alignItems='center' justifyContent='space-around'>
+                <ButtonContainer>
+                <Flex alignItems="center" justifyContent="space-between" style={{marginBottom: '10px'}}>
+                  <InputExtended
+                    placeholder="Deposit"
+                    style={{ marginRight: '5px', flex: '2' }}
+                    scale="sm"
+                    value={DepositRewardAmount}
+                    onChange={handleChange('DepositRewardAmount')}
+                  />{' '}
+                  <Tooltip show={feeTooltip6} placement="top" text={`Total Rewards present: ${stakeRewardBalance} `}>
+                    <FaInfoCircle
+                      className="mx-2"
+                      color="grey"
+                      onMouseEnter={() => setFeeTooltip6(true)}
+                      onMouseLeave={() => setFeeTooltip6(false)}
+                    />
+                  </Tooltip>
+                  </Flex>
+                  <Flex>
+                  {(parseFloat(allowanceReward) < DepositRewardAmount || parseFloat(allowanceReward) === 0) && (
+                    <Button
+                      scale="md"
+                      style={{ marginRight: '5px' }}
+                      variant="tertiary"
+                      onClick={handleAllowanceApprove}                   
+                    >
+                      Approve
+                    </Button>
+                  )}
+                   {/*  //  */}
+                  <Button scale="md" style={{ marginRight: '5px' }} variant="tertiary" onClick={() => handleAllowanceDeposit(stake.pool_id)}>
+                    Deposit Reward
+                  </Button>
+                  </Flex>  
+                </ButtonContainer>
+              </Flex>
+            )}
+            </td>
+          </tr>
       )}
     </>
   )

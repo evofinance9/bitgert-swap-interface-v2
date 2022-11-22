@@ -70,7 +70,7 @@ export default function StakesCreatedDirectory() {
     }
 
     fetchStakeList()
-  }, [])
+  }, [chainId, library, account])
 
   return (
     <>

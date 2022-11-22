@@ -21,6 +21,7 @@ import { useFarmContract, useDateTimeContract, useTokenContract } from 'hooks/us
 import { updateFarmOwner } from 'pages/Farms/FarmsCreatedDirectory/apicalls'
 import { getFarmContract, getTokenContract, getSigCheckContract } from 'utils'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
+import { ChainId } from '@evofinance9/sdk'
 // import { SIGCHECK_ABI, SIGCHECK_ADDRESS } from 'constants/abis/sigCheck'
 
 // import { FARM_ADDRESS } from 'constants/abis/farm'
@@ -42,6 +43,7 @@ const FarmOwner = ({ farmID }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   // const [matched, setMatch] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
+  const [decisionMade, setDecisionMade] = useState<boolean>(false)
   // const [onCopyValue, setOnCopyValue] = useState<string>('')
   // const [feeTooltip1, setFeeTooltip1] = useState<boolean>(false)
   // const [feeTooltip2, setFeeTooltip2] = useState<boolean>(false)
@@ -70,19 +72,19 @@ const FarmOwner = ({ farmID }) => {
       let param1
       let param2
       let param3
-      const farmEvent1 = farmDetails.filters.SubmitTransaction1(null, farmID)
+      const farmEvent1 = farmDetails.filters.SubmitTransactionForFarmAdd(null, farmID)
       const events1 = await farmDetails.queryFilter(farmEvent1, farmID)
       if (events1.length === 0) {
-        const farmEvent2 = farmDetails.filters.SubmitTransaction2(null, farmID)
+        const farmEvent2 = farmDetails.filters.SubmitTransactionForSet(null, farmID)
         const events2 = await farmDetails.queryFilter(farmEvent2, farmID)
         if (events2.length === 0) {
-          const farmEvent3 = farmDetails.filters.SubmitTransaction3(null, farmID)
+          const farmEvent3 = farmDetails.filters.SubmitTransactionForUpdate(null, farmID)
           const events3 = await farmDetails.queryFilter(farmEvent3, farmID)
           if (events3.length === 0) {
-            const farmEvent4 = farmDetails.filters.SubmitTransaction4(null, farmID)
+            const farmEvent4 = farmDetails.filters.SubmitTransactionForPoolUpdate(null, farmID)
             const events4 = await farmDetails.queryFilter(farmEvent4, farmID)
             if (events4.length === 0) {
-              const farmEvent5 = farmDetails.filters.SubmitTransaction5(null, farmID)
+              const farmEvent5 = farmDetails.filters.SubmitTransactionForAddrUpdate(null, farmID)
               const events5 = await farmDetails.queryFilter(farmEvent5, farmID)
               setEventDetails(events5[0].args)
               console.log('events5: ', events5[0].args)
@@ -98,6 +100,7 @@ const FarmOwner = ({ farmID }) => {
             console.log('events3: ', events3[0].args)
             setEventDetails(events3[0].args)
             NameOfFunction = events3[0].args!.funcSig
+            param1 = events3[0].args!.arg1.toString()
             param2 = events3[0].args!.arg2.toString()
           }
         } else {
@@ -110,9 +113,9 @@ const FarmOwner = ({ farmID }) => {
         console.log('events1: ', events1[0].args)
         setEventDetails(events1[0].args)
         NameOfFunction = events1[0].args!.funcSig
-        param1 = events1[0].args!.arg1
-        param2 = events1[0].args!.arg2
-        param3 = events1[0].args!.arg3
+        param1 = events1[0].args!.arg1.toString()
+        param2 = events1[0].args!.arg2.toString()
+        param3 = events1[0].args!.arg3.toString()
       }
 
       const arr = NameOfFunction.split('(')
@@ -154,8 +157,12 @@ const FarmOwner = ({ farmID }) => {
         setTextValue(param2)
       } else if (funcName === 'updateEmissionRate') {
         setTextValue(param2)
+      } else if (funcName === 'updateAllocPoint') {
+        setTextValue(param2)
       } else if (funcName === 'updateMultiplier') {
         setTextValue(param2)
+      } else if (funcName === 'massUpdatePools') {
+        setTextValue("update")
       }
     }
 
@@ -214,6 +221,7 @@ const FarmOwner = ({ farmID }) => {
         }
         setAttemptingTxn(false)
         setTxHash(response.hash)
+        setDecisionMade(true)
       })
       .catch((e) => {
         setAttemptingTxn(false)
@@ -240,6 +248,7 @@ const FarmOwner = ({ farmID }) => {
       <td>{textValue}</td>
       <td>
         {/* <div className="d-flex justify-content-between mb-3"> */}
+        { !decisionMade &&
         <Flex justifyContent="space-around">
           <Button scale="sm" variant="secondary" onClick={() => handleAllowance(true)}>
             Authorize
@@ -248,6 +257,7 @@ const FarmOwner = ({ farmID }) => {
             Reject
           </Button>
         </Flex>
+        }
       </td>
     </tr>
   )

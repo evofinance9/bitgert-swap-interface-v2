@@ -181,6 +181,44 @@
                     "type": "string"
                 },
                 {
+                    "internalType": "address",
+                    "name": "_arg1",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "_arg2",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_arg3",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_arg4",
+                    "type": "uint256"
+                }
+            ],
+            "name": "submitTransaction",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_to",
+                    "type": "address"
+                },
+                {
+                    "internalType": "string",
+                    "name": "_funcSig",
+                    "type": "string"
+                },
+                {
                     "internalType": "uint256",
                     "name": "_arg1",
                     "type": "uint256"
@@ -234,6 +272,49 @@
                     "internalType": "address",
                     "name": "arg1",
                     "type": "address"
+                }
+            ],
+            "name": "SubmitTransactionForAddrUpdate",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "uint256",
+                    "name": "txIndex",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "bytes",
+                    "name": "data",
+                    "type": "bytes"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "funcSig",
+                    "type": "string"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "arg1",
+                    "type": "address"
                 },
                 {
                     "indexed": false,
@@ -248,7 +329,44 @@
                     "type": "uint256"
                 }
             ],
-            "name": "SubmitTransaction1",
+            "name": "SubmitTransactionForFarmAdd",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "uint256",
+                    "name": "txIndex",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "bytes",
+                    "name": "data",
+                    "type": "bytes"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "funcSig",
+                    "type": "string"
+                }
+            ],
+            "name": "SubmitTransactionForPoolUpdate",
             "type": "event"
         },
         {
@@ -291,7 +409,68 @@
                     "type": "uint256"
                 }
             ],
-            "name": "SubmitTransaction2",
+            "name": "SubmitTransactionForSet",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "uint256",
+                    "name": "txIndex",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "bytes",
+                    "name": "data",
+                    "type": "bytes"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "funcSig",
+                    "type": "string"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "arg1",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "arg2",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "arg3",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "arg4",
+                    "type": "uint256"
+                }
+            ],
+            "name": "SubmitTransactionForStakeAdd",
             "type": "event"
         },
         {
@@ -340,87 +519,7 @@
                     "type": "uint256"
                 }
             ],
-            "name": "SubmitTransaction3",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "owner",
-                    "type": "address"
-                },
-                {
-                    "indexed": true,
-                    "internalType": "uint256",
-                    "name": "txIndex",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "bytes",
-                    "name": "data",
-                    "type": "bytes"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "string",
-                    "name": "funcSig",
-                    "type": "string"
-                }
-            ],
-            "name": "SubmitTransaction4",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "owner",
-                    "type": "address"
-                },
-                {
-                    "indexed": true,
-                    "internalType": "uint256",
-                    "name": "txIndex",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "bytes",
-                    "name": "data",
-                    "type": "bytes"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "string",
-                    "name": "funcSig",
-                    "type": "string"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "arg1",
-                    "type": "address"
-                }
-            ],
-            "name": "SubmitTransaction5",
+            "name": "SubmitTransactionForUpdate",
             "type": "event"
         },
         {

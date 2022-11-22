@@ -296,6 +296,14 @@ export default function FarmUserDetails({
 
   return (
     <Container>
+      <TransactionConfirmationModal
+        isOpen={isOpen}
+        onDismiss={handleDismissConfirmation}
+        attemptingTxn={attemptingTxn}
+        hash={txHash}
+        content={() => <></>}
+        pendingText="Please wait..."
+      />
       {loading && (
         <LoaderWrapper>
           <Oval
@@ -314,14 +322,6 @@ export default function FarmUserDetails({
       )}
       {farm !== null && !loading && (
         <div>
-          <TransactionConfirmationModal
-            isOpen={isOpen}
-            onDismiss={handleDismissConfirmation}
-            attemptingTxn={attemptingTxn}
-            hash={txHash}
-            content={() => <></>}
-            pendingText="Please wait..."
-          />
           <FarmCardWrapper>
             <FarmCard>
               <FarmCardBody>

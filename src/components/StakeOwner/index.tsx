@@ -42,6 +42,7 @@ const StakeOwner = ({ stakeID }) => {
   // const [matched, setMatch] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
+  const [decisionMade, setDecisionMade] = useState<boolean>(false)
   // const [onCopyValue, setOnCopyValue] = useState<string>('')
   // const [feeTooltip1, setFeeTooltip1] = useState<boolean>(false)
   // const [feeTooltip2, setFeeTooltip2] = useState<boolean>(false)
@@ -70,17 +71,19 @@ const StakeOwner = ({ stakeID }) => {
       let param1
       let param2
       let param3
-      const stakeEvent1 = stakeDetails.filters.SubmitTransaction1(null, stakeID)
+      let param4
+      const stakeEvent1 = stakeDetails.filters.SubmitTransactionForStakeAdd(null, stakeID)
       const events1 = await stakeDetails.queryFilter(stakeEvent1, stakeID)
       if (events1.length === 0) {
-        const stakeEvent2 = stakeDetails.filters.SubmitTransaction2(null, stakeID)
+        const stakeEvent2 = stakeDetails.filters.SubmitTransactionForSet(null, stakeID)
         const events2 = await stakeDetails.queryFilter(stakeEvent2, stakeID)
         if (events2.length === 0) {
-          const stakeEvent3 = stakeDetails.filters.SubmitTransaction3(null, stakeID)
+          const stakeEvent3 = stakeDetails.filters.SubmitTransactionForUpdate(null, stakeID)
           const events3 = await stakeDetails.queryFilter(stakeEvent3, stakeID)
           console.log('events3: ', events3[0].args)
           setEventDetails(events3[0].args)
           NameOfFunction = events3[0].args!.funcSig
+          param1 = events3[0].args!.arg1.toString()
           param2 = events3[0].args!.arg2.toString()
         } else {
           console.log('events2: ', events2[0].args)
@@ -92,9 +95,10 @@ const StakeOwner = ({ stakeID }) => {
         console.log('events1: ', events1[0].args)
         setEventDetails(events1[0].args)
         NameOfFunction = events1[0].args!.funcSig
-        param1 = events1[0].args!.arg1
-        param2 = events1[0].args!.arg2
-        param3 = events1[0].args!.arg3
+        param1 = events1[0].args!.arg1.toString()
+        param2 = events1[0].args!.arg2.toString()
+        param3 = events1[0].args!.arg3.toString()
+        param4 = events1[0].args!.arg4.toString()
       }
 
       const arr = NameOfFunction.split('(')
@@ -103,13 +107,17 @@ const StakeOwner = ({ stakeID }) => {
       setFunctionName(funcName)
 
       if (funcName === 'add') {
-        const tokenContract = getTokenContract(param1, library, account)
-        const TName = await tokenContract?.callStatic.name()
-        const FinalText = `${TName} - BEB: ${param2} - RPB: ${param3}`
-        console.log('TName: ', TName)
+        const stakeTokenContract = getTokenContract(param1, library, account)
+        const STName = await stakeTokenContract?.callStatic.name()
+        const rewardTokenContract = getTokenContract(param2, library, account)
+        const RTName = await rewardTokenContract?.callStatic.name()
+        const FinalText = `ST: ${STName} - RT: ${RTName}  - BEB: ${param3} - RPB: ${param4}`
+        console.log('STName: ', STName)
+        console.log('RTName: ', RTName)
         console.log('param1: ', param1)
         console.log('param2: ', param2)
         console.log('param3: ', param3)
+        console.log('param4: ', param4)
         console.log('FinalText:', FinalText)
         setTextValue(FinalText)
       } else if (funcName === 'setPause') {
@@ -121,8 +129,10 @@ const StakeOwner = ({ stakeID }) => {
       } else if (funcName === 'stopReward') {
         setTextValue('Stop')
       } else if (funcName === 'emergencyRewardWithdraw') {
-        setTextValue(param1)
+        setTextValue(param2)
       } else if (funcName === 'updateRewardPerBlock') {
+        setTextValue(param2)
+      } else if (funcName === 'updateBonusEndBlock') {
         setTextValue(param2)
       }
     }
@@ -178,6 +188,7 @@ const StakeOwner = ({ stakeID }) => {
         }
         setAttemptingTxn(false)
         setTxHash(response.hash)
+        setDecisionMade(true)
       })
       .catch((e) => {
         setAttemptingTxn(false)
@@ -204,6 +215,7 @@ const StakeOwner = ({ stakeID }) => {
       <td>{textValue}</td>
       <td>
         {/* <div className="d-flex justify-content-between mb-3"> */}
+        {!decisionMade && 
         <Flex justifyContent="space-around">
           <Button scale="sm" variant="secondary" onClick={() => handleAllowance(true)}>
             Authorize
@@ -212,6 +224,7 @@ const StakeOwner = ({ stakeID }) => {
             Reject
           </Button>
         </Flex>
+        }
       </td>
     </tr>
   )

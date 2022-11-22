@@ -56,7 +56,7 @@ export const Text = styled.p`
   font-size: 1rem;
   line-height: 1.1;
   font-weight: 300;
-  color: #000;
+  color: #2669f5;
 `
 
 export const ButtonContainer = styled.div`

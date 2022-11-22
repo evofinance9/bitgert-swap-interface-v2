@@ -78,16 +78,20 @@ export default function Stake() {
     token_name: '',
     token_symbol: '',
     token_decimal: '',
+    reward_token_address: '',
+    reward_token_name: '',
+    reward_token_symbol: '',
+    reward_token_decimal: '',
     bonusEndBlock: '',
     rewardPerBlock: '',
   })
 
   // destructure
-  const { token_address, token_name, token_decimal, token_symbol, bonusEndBlock, rewardPerBlock } = formData
+  const { token_address, token_name, token_decimal, token_symbol, reward_token_address, reward_token_name, reward_token_decimal, reward_token_symbol, bonusEndBlock, rewardPerBlock } = formData
 
   useEffect(() => {
     const fetch = async () => {
-      if (!library || !account || !chainId || !token_address) return
+      if (!library || !account || !chainId || !token_address || reward_token_address) return
 
       const sigCheck = getSigCheckContract(chainId, library, account)
 
@@ -100,11 +104,18 @@ export default function Stake() {
       const TDecimals = await tokenContract?.callStatic.decimals()
 
       setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals }))
+      
+      const rewardTokenContract = getTokenContract(reward_token_address, library, account)
+      const RTName = await rewardTokenContract?.callStatic.name()
+      const RTSymbol = await rewardTokenContract?.callStatic.symbol()
+      const RTDecimals = await rewardTokenContract?.callStatic.decimals()
+      
+      setFormData((prev) => ({ ...prev, reward_token_name: RTName, reward_token_symbol: RTSymbol, reward_token_decimal: RTDecimals }))
     }
     if (account && library instanceof ethers.providers.Web3Provider) {
       fetch()
     }
-  }, [token_address, account, library])
+  }, [token_address, reward_token_address, account, library])
 
   const handleDismissConfirmation = () => {
     setIsOpen(false)
@@ -126,10 +137,10 @@ export default function Stake() {
 
     const stake = getSigCheckContract(chainId, library, account)
 
-    const payload = [STAKE_ADDRESS, 'add(address,uint256,uint256)', token_address, bonusEndBlock, rewardPerBlock]
+    const payload = [STAKE_ADDRESS, 'add(address,address,uint256,uint256)', token_address, reward_token_address, bonusEndBlock, rewardPerBlock]
 
     const method: (...args: any) => Promise<TransactionResponse> =
-      stake['submitTransaction(address,string,address,uint256,uint256)']
+      stake['submitTransaction(address,string,address,address,uint256,uint256)']
     const args: Array<object | string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
@@ -142,7 +153,7 @@ export default function Stake() {
         setAttemptingTxn(false)
         setTxHash(response.hash)
 
-        addStakeOwner({ ...formData, owner_address: account, stakeOwner_id: stakeID })
+        addStakeOwner({ ...formData, owner_address: account, stakeOwner_id: stakeID, stakeCreator_id: account })
           .then((data) => {
             if (data.error) {
               swal('Oops', 'Something went wrong!', 'error')
@@ -155,6 +166,10 @@ export default function Stake() {
                 token_name: '',
                 token_symbol: '',
                 token_decimal: '',
+                reward_token_address: '',
+                reward_token_name: '',
+                reward_token_symbol: '',
+                reward_token_decimal: '',
                 bonusEndBlock: '',
                 rewardPerBlock: '',
               })
@@ -207,14 +222,14 @@ export default function Stake() {
           <CardBody>
             <FlexExtended>
               <InputExtended
-                placeholder="Token Address"
+                placeholder="Stake Token Address"
                 className="mt-3"
                 scale="lg"
                 value={token_address}
                 onChange={handleChange('token_address')}
               />
               <InputExtended
-                placeholder="Token Name"
+                placeholder="Stake Token Name"
                 scale="lg"
                 className="mt-3"
                 value={token_name}
@@ -223,18 +238,50 @@ export default function Stake() {
             </FlexExtended>
             <FlexExtended>
               <InputExtended
-                placeholder="Token Symbol"
+                placeholder="Stake Token Symbol"
                 scale="lg"
                 className="mt-3"
                 value={token_symbol}
                 onChange={handleChange('token_symbol')}
               />
               <InputExtended
-                placeholder="Token Decimal"
+                placeholder="Stake Token Decimal"
                 className="mt-3"
                 scale="lg"
                 value={token_decimal}
                 onChange={handleChange('token_decimal')}
+              />
+            </FlexExtended>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Reward Token Address"
+                className="mt-3"
+                scale="lg"
+                value={reward_token_address}
+                onChange={handleChange('reward_token_address')}
+              />
+              <InputExtended
+                placeholder="Reward Token Name"
+                scale="lg"
+                className="mt-3"
+                value={reward_token_name}
+                onChange={handleChange('reward_token_name')}
+              />
+            </FlexExtended>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Reward Token Symbol"
+                scale="lg"
+                className="mt-3"
+                value={reward_token_symbol}
+                onChange={handleChange('reward_token_symbol')}
+              />
+              <InputExtended
+                placeholder="Reward Token Decimal"
+                className="mt-3"
+                scale="lg"
+                value={reward_token_decimal}
+                onChange={handleChange('reward_token_decimal')}
               />
             </FlexExtended>
             <FlexExtended>

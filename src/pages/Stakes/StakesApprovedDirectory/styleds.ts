@@ -16,7 +16,7 @@ export const TableHeader = styled.h3`
 
 export const StyledText = styled.h3`
   font-size: 2rem;
-  color: #fff;
+  color: #2669f5;
   text-align: center;
   margin: auto;
 `

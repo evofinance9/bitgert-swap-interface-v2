@@ -173,10 +173,10 @@ export default function StakeUserDetails({
 
     const stakeDetails = getSigCheckContract(chainId, library, account)
 
-    const payload = [STAKE_ADDRESS, 'add(address,uint256,uint256)', stake.token_address, bonusEndBlock, rewardPerBlock]
+    const payload = [STAKE_ADDRESS, 'add(address,address,uint256,uint256)', stake.token_address, stake.reward_token_address, bonusEndBlock, rewardPerBlock]
 
     const method: (...args: any) => Promise<TransactionResponse> =
-      stakeDetails['submitTransaction(address,string,address,uint256,uint256)']
+      stakeDetails['submitTransaction(address,string,address,address,uint256,uint256)']
     const args: Array<object | string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
@@ -192,10 +192,15 @@ export default function StakeUserDetails({
           ...formData,
           owner_address: account,
           stakeOwner_id: stakeID,
+          stakeCreator_id: stake.owner_address,
           token_address: stake.token_address,
           token_name: stake.token_name,
           token_symbol: stake.token_symbol,
           token_decimal: stake.token_decimal,
+          reward_token_address: stake.reward_token_address,
+          reward_token_name: stake.reward_token_name,
+          reward_token_symbol: stake.reward_token_symbol,
+          reward_token_decimal: stake.reward_token_decimal,
         })
           .then((data) => {
             if (data.error) {
@@ -238,6 +243,14 @@ export default function StakeUserDetails({
 
   return (
     <Container>
+      <TransactionConfirmationModal
+        isOpen={isOpen}
+        onDismiss={handleDismissConfirmation}
+        attemptingTxn={attemptingTxn}
+        hash={txHash}
+        content={() => <></>}
+        pendingText="Please wait..."
+      />
       {loading && (
         <LoaderWrapper>
           <Oval
@@ -254,14 +267,6 @@ export default function StakeUserDetails({
           />
         </LoaderWrapper>
       )}
-      <TransactionConfirmationModal
-        isOpen={isOpen}
-        onDismiss={handleDismissConfirmation}
-        attemptingTxn={attemptingTxn}
-        hash={txHash}
-        content={() => <></>}
-        pendingText="Please wait..."
-      />
       {stake !== null && !loading && (
         <div>
           <StakeCardWrapper>
@@ -288,6 +293,16 @@ export default function StakeUserDetails({
                       <tr>
                         <td>Token Decimal</td>
                         <td>{stake.token_decimal}</td>
+                      </tr>
+
+                      <tr>
+                        <td>Reward Token Address</td>
+                        <td>{stake.reward_token_address}</td>
+                      </tr>
+
+                      <tr>
+                        <td>Reward Token details </td>
+                        <td>{stake.reward_token_name} - {stake.reward_token_symbol} - {stake.reward_token_decimal}</td>
                       </tr>
 
                       <tr>

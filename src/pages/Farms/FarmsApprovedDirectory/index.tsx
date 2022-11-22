@@ -95,8 +95,8 @@ export default function FarmsCreatedDirectory() {
       // const pausedOrNot = await farmDetails?.callStatic.isPaused()
       // setPause(pausedOrNot)
 
-      const farmRewardBalance = await farmDetails?.callStatic.rewardBalance()
-      setRewardBalance(ethers.utils.formatEther(farmRewardBalance))
+      // const farmRewardBalance = await farmDetails?.callStatic.rewardBalance()
+      // setRewardBalance(ethers.utils.formatEther(farmRewardBalance))
 
       const farmBitgertToken = await farmDetails?.callStatic.bitgert()
       setBitgertToken(farmBitgertToken)
@@ -118,6 +118,9 @@ export default function FarmsCreatedDirectory() {
       const TDecimals = await tokenContract?.callStatic.decimals()
       setTokenDecimals(TDecimals)
 
+      const totalRewardBalance = await tokenContract?.callStatic.balanceOf(FARM_ADDRESS)
+      setRewardBalance(ethers.utils.formatEther(totalRewardBalance))
+
       const totalFarmAllowance = await tokenContract?.callStatic.allowance(account, FARM_ADDRESS)
       setAllowance(ethers.utils.formatEther(totalFarmAllowance))
 
@@ -134,6 +137,7 @@ export default function FarmsCreatedDirectory() {
 
           let count = 0
           for (let i = 0; i < response.length; i++) {
+            console.log(response)
             if (response[i].is_approved === true) {
               break
             } else {
