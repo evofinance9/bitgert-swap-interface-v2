@@ -117,14 +117,14 @@ export const Table = styled.table`
   }
 
   & tr td:last-child {
-    color: #b8add2;
+    color: #3f3d3d;
   }
 
   & tr td,
   th {
     padding: 1rem;
     font-family: 'Poppins', sans-serif !important;
-    color: #a7a7a7;
+    color: #000;
     font-size: 0.9rem;
   }
 

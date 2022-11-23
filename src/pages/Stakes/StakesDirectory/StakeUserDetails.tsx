@@ -180,13 +180,13 @@ export default function StakeUserDetails({
     const args: Array<object | string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
+    setIsOpen(true)
+
     await method(...args)
       .then(async (response: any) => {
         const txReceipt = await response.wait()
         const stakeID = txReceipt.events[0].args.txIndex.toNumber()
 
-        setAttemptingTxn(false)
-        setTxHash(response.hash)
 
         addStakeOwner({
           ...formData,
@@ -213,6 +213,8 @@ export default function StakeUserDetails({
                 bonusEndBlock: '',
                 rewardPerBlock: '',
               })
+              setAttemptingTxn(false)
+              setTxHash(response.hash)
               setIsCreated(true)
               swal('Congratulations!', 'Stake is Created! It will be live soon!', 'success')
             }

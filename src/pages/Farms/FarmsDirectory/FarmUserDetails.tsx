@@ -235,6 +235,8 @@ export default function FarmUserDetails({
     const args: Array<object | string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
+    setIsOpen(true)
+
     await method(...args)
       .then(async (response: any) => {
         const txReceipt = await response.wait()
@@ -243,8 +245,6 @@ export default function FarmUserDetails({
         const farmID = txReceipt.events[0].args.txIndex.toNumber()
         //       const farmID = txReceipt.events[0].args.pid.toNumber()
 
-        setAttemptingTxn(false)
-        setTxHash(response.hash)
 
         addFarmOwner({
           ...formData,
@@ -266,6 +266,8 @@ export default function FarmUserDetails({
                 allocation_point: '',
                 rewardPerBlock: '',
               })
+              setAttemptingTxn(false)
+              setTxHash(response.hash)
               setIsCreated(true)
               swal('Congratulations!', 'Farm is Created! It will be live soon!', 'success')
             }

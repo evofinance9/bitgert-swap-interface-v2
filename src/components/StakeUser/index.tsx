@@ -162,8 +162,11 @@ const StakeUser = ({ stake }) => {
       setStakeBonusEndBlock(poolInfo.bonusEndBlock.toString())
       const rewardToken = poolInfo.rewardToken.toString()
       setStakeRewardToken(poolInfo.rewardToken.toString())
-      setStakeRewardBalance(poolInfo.rewardBalance.toString())
-      setStakedTokenBalance(poolInfo.stakeBalance.toString())
+      setStakeRewardBalance(formatTokenAmount(poolInfo.rewardBalance.toString(), parseInt(stake.reward_token_decimal)).toString())
+      setStakedTokenBalance(formatTokenAmount(poolInfo.stakeBalance.toString(), parseInt(stake.token_decimal)).toString())
+      
+      // setStakeRewardBalance(poolInfo.rewardBalance.toString())
+      // setStakedTokenBalance(poolInfo.stakeBalance.toString())
       
       const blockNumber = await library.getBlockNumber()
       
@@ -729,7 +732,7 @@ const StakeUser = ({ stake }) => {
           <Tooltip
             show={feeTooltip3}
             placement="bottom"
-            text={`Total Investment: ${stakedTokenBalance ? parseFloat(stakedTokenBalance).toFixed(2) : 0} ${stake.token_symbol}`}
+            text={`Total Investment: ${stakedTokenBalance ? parseFloat(stakedTokenBalance).toFixed(8) : 0} ${stake.token_symbol}`}
           >
             <FaInfoCircle
               // className="mx-2"
@@ -903,7 +906,7 @@ const StakeUser = ({ stake }) => {
                     value={DepositRewardAmount}
                     onChange={handleChange('DepositRewardAmount')}
                   />{' '}
-                  <Tooltip show={feeTooltip6} placement="top" text={`Total Rewards present: ${stakeRewardBalance ? parseFloat(stakeRewardBalance).toFixed(2) : 0} ${stake.reward_token_symbol}`}>
+                  <Tooltip show={feeTooltip6} placement="top" text={`Total Rewards present: ${stakeRewardBalance ? parseFloat(stakeRewardBalance).toFixed(8) : 0} ${stake.reward_token_symbol}`}>
                     <FaInfoCircle
                       className="mx-2"
                       color="grey"

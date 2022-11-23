@@ -66,51 +66,41 @@ export default function StakeCard({ data }: StakeCardProps) {
           </div>
         </Flex>
         <Flex alignItems={'center'} justifyContent={'space-between'} flexDirection={'column'}>
-          <Heading>{project_name}</Heading>
-          <Card.Title className="mb-3 "> {token_address}</Card.Title>
+          <Heading className="custom-font-extended">{project_name}</Heading>
+          <Card.Title className="custom-font-extended"> {token_address}</Card.Title>
         </Flex>
 
         {/* <div className="d-flex justify-content-between"> */}
         <Flex justifyContent="space-between">
-          <Card.Text className="mb-2 custom-font">Stake Token</Card.Text>
-          <Card.Text className="mb-2 custom-font">{token_name} </Card.Text>
+          <Card.Text className="custom-font-extended">Stake Token:</Card.Text>
+          <Card.Text className="custom-font-extended">{token_name} </Card.Text>
         </Flex>
 
         <Flex justifyContent="space-between">
-          <Card.Text className="mb-2 custom-font">Reward Token</Card.Text>
-          <Card.Text className="mb-2 custom-font">{reward_token_name} </Card.Text>
+          <Card.Text className="custom-font-extended">Reward Token:</Card.Text>
+          <Card.Text className="custom-font-extended">{reward_token_name} </Card.Text>
         </Flex>
 
-        {/* <div className="d-flex gap-2"> */}
-        {/* check */}
-        {/* <Flex justifyContent="space-around" margin="1.5rem"> */}
         <Flex justifyContent="space-between">
-          <Card.Text className="mb-2 custom-font">Owner</Card.Text>
-          <Card.Text className="mb-2 ml-2 custom-font">{owner_address} </Card.Text>
+          <Card.Text className="custom-font-extended">Owner:</Card.Text>
+          <Card.Text className="custom-font-extended" style={{marginLeft: '5px'}}>{owner_address} </Card.Text>
         </Flex>
 
-        {/* <div className="d-flex justify-content-between"> */}
-        {/* <Flex justifyContent="space-between" margin="0rem"> */}
         <Flex justifyContent="space-between">
-          <Card.Text className="mb-2 custom-font">Telegram ID</Card.Text>
-          <Card.Text className="mb-2 custom-font">{telegram_id} </Card.Text>
+          <Card.Text className="custom-font-extended">Telegram ID:</Card.Text>
+          <Card.Text className="custom-font-extended">{telegram_id} </Card.Text>
         </Flex>
 
-        {/* <div className="d-flex justify-content-between"> */}
-        {/* <Flex justifyContent="space-between" margin="0rem"> */}
         <Flex justifyContent="space-between">
-          <Card.Text className="mb-2 custom-font">Email ID</Card.Text>
-          <Card.Text className="mb-2 custom-font">{email_id} </Card.Text>
+          <Card.Text className="custom-font-extended">Email ID:</Card.Text>
+          <Card.Text className="custom-font-extended">{email_id} </Card.Text>
         </Flex>
 
-        {/* <div className="d-flex justify-content-between"> */}
-        {/* <Flex justifyContent="space-between" margin="0rem"> */}
         <Flex justifyContent="space-between">
-          <Card.Text className="mb-2 custom-font">Start Date</Card.Text>
-          <Card.Text className="mb-2 custom-font">{moment(start_date).format('dddd, MMMM Do YYYY')} </Card.Text>
+          <Card.Text className="custom-font-extended">Start Date:</Card.Text>
+          <Card.Text className="custom-font-extended">{moment(start_date).format('dddd, MMMM Do YYYY')} </Card.Text>
         </Flex>
 
-        {/* <div className='mt-3'> */}
         <ButtonContainer>
           <Link to={`/stake/${_id}`}>
             <Button scale="md" variant="secondary" width="100%">

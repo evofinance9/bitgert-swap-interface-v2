@@ -154,7 +154,7 @@ export const Table = styled.table`
   height: 100%;
 
   & tr {
-    border-bottom: 1px solid #252525;
+    border-bottom: 1px solid #ffffff;
   }
 
   & tr:last-child {
@@ -162,14 +162,14 @@ export const Table = styled.table`
   }
 
   & tr td:last-child {
-    color: #b8add2;
+    color: #3f3d3d;
   }
 
   & tr td,
   th {
     padding: 1rem;
     font-family: 'Poppins', sans-serif !important;
-    color: grey;
+    color: #000;
     font-size: 0.9rem;
   }
 
