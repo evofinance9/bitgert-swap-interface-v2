@@ -2,21 +2,14 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
-// , Badge, ProgressBar
 import { Button, Flex } from '@evofinance9/uikit'
 
 import moment from 'moment'
-// import { SocialIcon } from 'react-social-icons'
-
-// import { useDateTimeContract } from 'hooks/useContract'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
 import { StyledCard, StyledCardBody, Heading, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
 
 import './style.css'
 
 import { FaArrowRight } from 'react-icons/fa'
-// FaLock, FaClock,
-// import { MdLockClock } from 'react-icons/md'
 
 interface StakeCardProps {
   data: {
@@ -57,9 +50,6 @@ export default function StakeCard({ data }: StakeCardProps) {
   return (
     <StyledCard>
       <StyledCardBody>
-        {/* <div className="d-flex justify-content-center align-items-center"> */}
-        {/* <Flex justifyContent="center" margin="0rem"> */}
-        {/* <Card.Title className="mb-2 token__symbol"> */}
         <Flex alignItems={'center'} justifyContent={'center'} >
           <div className="presale__logo p-2">
             <img src={logo_url} alt={token_name} className="rounded" />
@@ -70,7 +60,6 @@ export default function StakeCard({ data }: StakeCardProps) {
           <Card.Title className="custom-font-extended"> {token_address}</Card.Title>
         </Flex>
 
-        {/* <div className="d-flex justify-content-between"> */}
         <Flex justifyContent="space-between">
           <Card.Text className="custom-font-extended">Stake Token:</Card.Text>
           <Card.Text className="custom-font-extended">{token_name} </Card.Text>

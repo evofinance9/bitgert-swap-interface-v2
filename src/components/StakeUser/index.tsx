@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
 
 import { ethers } from 'ethers'
-// import Form from 'react-bootstrap/Form'
 import { Link } from 'react-router-dom'
 import { FaCopy, FaInfoCircle } from 'react-icons/fa'
 import copy from 'copy-to-clipboard'
@@ -14,7 +13,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { MaxUint256 } from '@ethersproject/constants'
 import styled from 'styled-components'
-// import {bnSub} from 'utils'
 import { useQuery, gql } from '@apollo/client'
 
 import { useActiveWeb3React } from 'hooks'
@@ -77,8 +75,6 @@ const StakeUser = ({ stake }) => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [rewardTokenDecimals, setRewardTokenDecimals] = useState<string>('')
-  const [rewardBalance, setRewardBalance] = useState<string>('')
-  const [totalBalance, setTotalBalance] = useState<string>('')
   const [allowanceReward, setAllowanceReward] = useState<string>('')
   const [onCopyValue, setOnCopyValue] = useState<string>('')
   const [APY, setAPY] = useState<string>('')
@@ -92,8 +88,6 @@ const StakeUser = ({ stake }) => {
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
 
   const { data: priceGraphData, refetch: priceRefetch } = useQuery(PRICE_QUERY)
-
-  // const [loading, setLoading] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
     chain_id: '32520',
@@ -121,26 +115,6 @@ const StakeUser = ({ stake }) => {
         setIsCreator(false)
       }
 
-      // console.log(library)
-
-      // opens up metamask extension and connects Web2 to Web3
-      // await (window as any).ethereum.send('eth_requestAccounts')
-
-      // create provider
-      // const provider = new ethers.providers.Web3Provider((window as any).ethereum)
-      // const provider = new ethers.providers.Web3Provider()
-
-      // provider.getBlockNumber()
-
-      // console.log(blockNumber)
-
-      
-      // const stakeRewardToken = await stakeDetails?.callStatic.rewardToken()
-
-
-      // this is wrong way of calc it 
-      // const stakeRewardBalance = await stakeDetails?.callStatic.rewardBalance()
-
       // For sigCheck details
       const sigCheckDetails = getSigCheckContract(chainId, library, account)
       
@@ -165,11 +139,7 @@ const StakeUser = ({ stake }) => {
       setStakeRewardBalance(formatTokenAmount(poolInfo.rewardBalance.toString(), parseInt(stake.reward_token_decimal)).toString())
       setStakedTokenBalance(formatTokenAmount(poolInfo.stakeBalance.toString(), parseInt(stake.token_decimal)).toString())
       
-      // setStakeRewardBalance(poolInfo.rewardBalance.toString())
-      // setStakedTokenBalance(poolInfo.stakeBalance.toString())
-      
       const blockNumber = await library.getBlockNumber()
-      
       
       if (blockNumber > poolInfo.bonusEndBlock) {
         setRewardStop(true)
@@ -202,17 +172,6 @@ const StakeUser = ({ stake }) => {
       } else {
         setIsApproved(false)
       }
-
-      // cant be the bal 
-      // const totalStakeBalance = await tokenContract?.callStatic.balanceOf(STAKE_ADDRESS)
-
-      // if (stakeRewardToken === stake.token_address) {
-      //   const stakeRewardTokenBalance = bnSub(totalStakeBalance, stakeRewardBalance)
-      //   setTotalBalance(formatTokenAmount(stakeRewardTokenBalance.toString(), parseInt(stake.token_decimal)).toString())
-      // } else {
-      //   setTotalBalance(ethers.utils.formatEther(totalStakeBalance))
-      // }
-
       
     }
 
@@ -234,10 +193,7 @@ const StakeUser = ({ stake }) => {
     })
   }
   }, [stake.token_address, priceRefetch])
-  // console.log(priceGraphData)
 
-  // asc change to desc
-  // change to query to find first
   useEffect(() => {
     const fetch = async () => {
       if (!priceGraphData || !Array.isArray(priceGraphData?.tokens)) {
@@ -548,9 +504,6 @@ const StakeUser = ({ stake }) => {
 
     const tokenContract = getTokenContract(tokenAddress, library, account)
 
-    // const TBalance = await tokenContract?.callStatic.balanceOf(account)
-    // const TDecimals = await tokenContract?.callStatic.decimals()
-
     const payload = [STAKE_ADDRESS, MaxUint256]
 
     const method: (...args: any) => Promise<TransactionResponse> = tokenContract!.approve
@@ -694,7 +647,6 @@ const StakeUser = ({ stake }) => {
           {'  '}
           <Tooltip show={feeTooltip1} placement="top" text={onCopyValue}>
             <FaCopy
-              // className="mx-2"
               onClick={copyToClipboard}
               onMouseEnter={() => setFeeTooltip1(true)}
               onMouseLeave={() => setFeeTooltip1(false)}
@@ -702,24 +654,18 @@ const StakeUser = ({ stake }) => {
           </Tooltip>
         </td>
         <td>
-          {/* <div className="mb-3 mr-4"> */}
           <Link to="/swap">
             <Button scale="sm" style={{ marginBottom: '5px' }} variant="secondary">
               Add
             </Button>
           </Link>{' '}
-          {/* <br /> */}
-          {/* <div className="mt-2"> */}
           <span>{balance ? parseFloat(balance).toFixed(2) : ''}</span>
-          {/* </div>
-        </div> */}
         </td>
         <td>
           {APY ? parseFloat(APY).toFixed(2) : 0}
           {'  '}
           <Tooltip show={feeTooltip2} placement="bottom" text="Annual percentage yield">
             <FaInfoCircle
-              // className="mx-2"
               color="grey"
               onMouseEnter={() => setFeeTooltip2(true)}
               onMouseLeave={() => setFeeTooltip2(false)}
@@ -735,7 +681,6 @@ const StakeUser = ({ stake }) => {
             text={`Total Investment: ${stakedTokenBalance ? parseFloat(stakedTokenBalance).toFixed(8) : 0} ${stake.token_symbol}`}
           >
             <FaInfoCircle
-              // className="mx-2"
               color="grey"
               onMouseEnter={() => setFeeTooltip3(true)}
               onMouseLeave={() => setFeeTooltip3(false)}
@@ -763,7 +708,6 @@ const StakeUser = ({ stake }) => {
           ) : (
             <>
               <div className="mb-3">
-                {/* <div className=" d-flex justify-content-between"> */}
                 <Flex>
                   <Button
                     scale="sm"

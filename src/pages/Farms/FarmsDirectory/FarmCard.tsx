@@ -5,18 +5,11 @@ import { Card, Badge, ProgressBar } from 'react-bootstrap'
 import { Button, Flex } from '@evofinance9/uikit'
 
 import moment from 'moment'
-// import { SocialIcon } from 'react-social-icons'
-
-// import { useDateTimeContract } from 'hooks/useContract'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
-// import { getAllFarm } from './apicalls'
-// import { StyledCard, StyledCardBody, Heading, Flex } from './styleds'
 import { StyledCard, StyledCardBody, Heading, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
 
 import './style.css'
 
 import { FaLock, FaClock, FaArrowRight } from 'react-icons/fa'
-// import { MdLockClock } from 'react-icons/md'
 
 interface FarmCardProps {
   data: {

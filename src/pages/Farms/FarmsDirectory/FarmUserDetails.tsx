@@ -167,61 +167,6 @@ export default function FarmUserDetails({
     setTxHash('')
   }
 
-  // const createFarm = async (formData) => {
-  //   if (!chainId || !library || !account) return
-  //   const farmDetails = getFarmContract(chainId, library, account)
-
-  //   const payload = [
-  //     allocation_point,
-  //     farm.token_address,
-  //     false
-  //   ]
-
-  //   const method: (...args: any) => Promise<TransactionResponse> = farmDetails!.add
-  //   const args: Array<object | string[] | string | boolean | number> = payload
-
-  //   setAttemptingTxn(true)
-  //   await method(...args)
-  //     .then(async (response: any) => {
-  //       const txReceipt = await response.wait()
-  //       const farmID = txReceipt.events[0].args.pid.toNumber()
-  //       setAttemptingTxn(false)
-  //       addFarmOwner({
-  //         ...formData,
-  //         farmOwner_id: farmID,
-  //         owner_address: account,
-  //         token_address: farm.token_address,
-  //         token_symbol: farm.token_symbol,
-  //         token_decimal: farm.token_decimal,
-  //       })
-  //         .then((data) => {
-  //           if (data.error) {
-  //             swal('Oops', 'Something went wrong!', 'error')
-  //           } else {
-  //             setFormData({
-  //               ...formData,
-  //               chain_id: '32520',
-  //               owner_address: '',
-  //               allocation_point: '',
-  //             })
-  //             setFarmID(farmID)
-  //             setIsCreated(true)
-  //             swal('Congratulations!', 'Farm is added!', 'success')
-  //           }
-  //         })
-  //         .catch((err) => console.log('Error in signup'))
-  //       setTxHash(response.hash)
-  //     })
-  //     .catch((e) => {
-  //       setAttemptingTxn(false)
-  //       // we only care if the error is something _other_ than the user rejected the tx
-  //       if (e?.code !== "ACTION_REJECTED") {
-  //         console.error(e)
-  //         alert(e.message)
-  //       }
-  //     })
-  //     updateFarmUser(farmId, {is_ended: true})
-  // }
 
   const createFarm = async (formData) => {
     if (!chainId || !library || !account) return
@@ -243,7 +188,6 @@ export default function FarmUserDetails({
         console.log('farmUser details: ', txReceipt)
         console.log('farmUser details: ', txReceipt.events[0])
         const farmID = txReceipt.events[0].args.txIndex.toNumber()
-        //       const farmID = txReceipt.events[0].args.pid.toNumber()
 
 
         addFarmOwner({

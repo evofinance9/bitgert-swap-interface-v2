@@ -5,8 +5,6 @@ import { Button, CardBody, Input, CardHeader, Flex } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 
-// import { BigNumber } from '@ethersproject/bignumber'
-// import { DateTimePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
 import { TransactionResponse } from '@ethersproject/providers'
 
@@ -16,7 +14,6 @@ import { addFarmOwner } from './apicalls'
 
 import { useFarmContract, useDateTimeContract } from 'hooks/useContract'
 import { getFarmContract, getTokenContract, getSigCheckContract } from 'utils'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
 import { FARM_ADDRESS } from 'constants/abis/farm'
 
 import './style.css'
@@ -182,58 +179,6 @@ export default function Farm() {
       })
   }
 
-  // const createFarm = async (formData) => {
-  //   if (!chainId || !library || !account) return
-  //   const farm = getFarmContract(chainId, library, account)
-
-  //   const payload = [
-  //     // ethers.utils.parseUnits(allocation_point, parseInt(token_decimal)).toString(),
-  //     allocation_point,
-  //     token_address,
-  //     false
-  //   ]
-
-  //   const method: (...args: any) => Promise<TransactionResponse> = farm!.add
-  //   const args: Array<object | string[] | string | boolean | number> = payload
-
-  //   setAttemptingTxn(true)
-  //   await method(...args)
-  //     .then(async (response: any) => {
-  //       const txReceipt = await response.wait()
-  //       const farmID = txReceipt.events[0].args.pid.toNumber()
-
-  //       setAttemptingTxn(false)
-  //       setTxHash(response.hash)
-
-  //       addFarmOwner({ ...formData, owner_address: account, farmOwner_id: farmID })
-  //         .then((data) => {
-  //           if (data.error) {
-  //             swal('Oops', 'Something went wrong!', 'error')
-  //           } else {
-  //             setFormData({
-  //               ...formData,
-  //               chain_id: '32520',
-  //               owner_address: '',
-  //               token_address: '',
-  //               token_name: '',
-  //               token_symbol: '',
-  //               token_decimal: '',
-  //               allocation_point: '',
-  //             })
-  //             swal('Congratulations!', 'Farm is added!', 'success')
-  //           }
-  //         })
-  //         .catch((err) => console.log(`error is ${err}`))
-  //     })
-  //     .catch((e) => {
-  //       setAttemptingTxn(false)
-  //       // we only care if the error is something _other_ than the user rejected the tx
-  //       if (e?.code !== "ACTION_REJECTED") {
-  //         console.error(e)
-  //         alert(e.message)
-  //       }
-  //     })
-  // }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -269,8 +214,6 @@ export default function Farm() {
           </CardHeader>
           <CardBody>
             <FlexExtended>
-              {/* <div className="row">
-              <div className="col-md-6 mb-3"> */}
               <InputExtended
                 placeholder="Token Address"
                 className="mt-3"
@@ -278,9 +221,6 @@ export default function Farm() {
                 value={token_address}
                 onChange={handleChange('token_address')}
               />
-              {/* </div> */}
-
-              {/* <div className="col-md-6 mb-3"> */}
               <InputExtended
                 placeholder="Token Name"
                 scale="lg"
@@ -289,9 +229,6 @@ export default function Farm() {
                 onChange={handleChange('token_name')}
               />
             </FlexExtended>
-            {/* </div>
-
-              <div className="col-md-6 mb-3"> */}
             <FlexExtended>
               <InputExtended
                 placeholder="Token Symbol"
@@ -300,9 +237,6 @@ export default function Farm() {
                 value={token_symbol}
                 onChange={handleChange('token_symbol')}
               />
-              {/* </div>
-
-              <div className="col-md-6 mb-3"> */}
               <InputExtended
                 placeholder="Token Decimal"
                 className="mt-3"
@@ -311,10 +245,6 @@ export default function Farm() {
                 onChange={handleChange('token_decimal')}
               />
             </FlexExtended>
-            {/* </div>
-            </div> */}
-
-            {/* <div className="mb-3"> */}
             <FlexExtended>
               <InputExtended
                 placeholder="Allocation Point"
@@ -331,7 +261,6 @@ export default function Farm() {
                 onChange={handleChange('rewardPerBlock')}
               />
             </FlexExtended>
-            {/* </div> */}
           </CardBody>
 
           <ButtonContainer>

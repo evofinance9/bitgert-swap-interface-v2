@@ -1,20 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
 
-// import { ethers } from 'ethers'
-// import Form from 'react-bootstrap/Form'
-// import { Link } from 'react-router-dom'
-// import { FaCopy, FaInfoCircle } from 'react-icons/fa'
-// import copy from 'copy-to-clipboard'
-// import Tooltip from 'components/Tooltip'
-
 import swal from 'sweetalert'
 
-// import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-// import { MaxUint256 } from '@ethersproject/constants'
 import styled from 'styled-components'
-// import { useQuery, gql } from '@apollo/client'
 
 import { useActiveWeb3React } from 'hooks'
 import { useFarmContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
@@ -22,9 +12,6 @@ import { updateFarmOwner } from 'pages/Farms/FarmsCreatedDirectory/apicalls'
 import { getFarmContract, getTokenContract, getSigCheckContract } from 'utils'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { ChainId } from '@evofinance9/sdk'
-// import { SIGCHECK_ABI, SIGCHECK_ADDRESS } from 'constants/abis/sigCheck'
-
-// import { FARM_ADDRESS } from 'constants/abis/farm'
 
 const InputExtended = styled(Input)`
   width: 100px;
@@ -32,24 +19,15 @@ const InputExtended = styled(Input)`
 
 const FarmOwner = ({ farmID }) => {
   const { account, chainId, library } = useActiveWeb3React()
-  // const [isApproved, setIsApproved] = useState<boolean>(false)
   const [txHash, setTxHash] = useState<string>('')
-  // const [balance, setBalance] = useState<string>('')
-  // const [totalBalance, setTotalBalance] = useState<string>('')
   const [transactionDetails, setTransactionDetails] = useState<any>({})
   const [eventDetails, setEventDetails] = useState<any>({})
   const [functionName, setFunctionName] = useState<string>('')
   const [textValue, setTextValue] = useState<string>('')
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  // const [matched, setMatch] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [decisionMade, setDecisionMade] = useState<boolean>(false)
-  // const [onCopyValue, setOnCopyValue] = useState<string>('')
-  // const [feeTooltip1, setFeeTooltip1] = useState<boolean>(false)
-  // const [feeTooltip2, setFeeTooltip2] = useState<boolean>(false)
-  // const [depositAmount, setDepositAmount] = useState<string>('')
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  // const [loading, setLoading] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
     chain_id: '32520',
@@ -247,7 +225,6 @@ const FarmOwner = ({ farmID }) => {
       <td>{functionName}</td>
       <td>{textValue}</td>
       <td>
-        {/* <div className="d-flex justify-content-between mb-3"> */}
         { !decisionMade &&
         <Flex justifyContent="space-around">
           <Button scale="sm" variant="secondary" onClick={() => handleAllowance(true)}>

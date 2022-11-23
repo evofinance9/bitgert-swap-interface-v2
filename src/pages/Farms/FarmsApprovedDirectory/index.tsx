@@ -53,16 +53,16 @@ export default function FarmsCreatedDirectory() {
   // const [farmReward, setFarmReward] = useState<boolean>(false)
   const [rewardBalance, setRewardBalance] = useState<string>('')
   const [bitgertToken, setBitgertToken] = useState<string>('')
-  const [multiplier, setBonusMultiplier] = useState<string>('')
-  const [bitgertPerBlock, setBitgertPerBlock] = useState<string>('')
-  const [toBurn, setToBurn] = useState<string>('')
+  // const [multiplier, setBonusMultiplier] = useState<string>('')
+  // const [bitgertPerBlock, setBitgertPerBlock] = useState<string>('')
+  // const [toBurn, setToBurn] = useState<string>('')
   const [tokenDecimals, setTokenDecimals] = useState<string>('')
   const [allowance, setAllowance] = useState<string>('')
   const [feeTooltip1, setFeeTooltip1] = useState<boolean>(false)
   const [feeTooltip2, setFeeTooltip2] = useState<boolean>(false)
-  const [feeTooltip3, setFeeTooltip3] = useState<boolean>(false)
-  const [feeTooltip4, setFeeTooltip4] = useState<boolean>(false)
-  const [feeTooltip5, setFeeTooltip5] = useState<boolean>(false)
+  // const [feeTooltip3, setFeeTooltip3] = useState<boolean>(false)
+  // const [feeTooltip4, setFeeTooltip4] = useState<boolean>(false)
+  // const [feeTooltip5, setFeeTooltip5] = useState<boolean>(false)
   const [txHash, setTxHash] = useState<string>('')
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
   const [isApproved, setIsApproved] = useState<boolean>(false)
@@ -92,26 +92,10 @@ export default function FarmsCreatedDirectory() {
 
       const farmDetails = getFarmContract(chainId, library, account)
 
-      // const pausedOrNot = await farmDetails?.callStatic.isPaused()
-      // setPause(pausedOrNot)
-
-      // const farmRewardBalance = await farmDetails?.callStatic.rewardBalance()
-      // setRewardBalance(ethers.utils.formatEther(farmRewardBalance))
 
       const farmBitgertToken = await farmDetails?.callStatic.bitgert()
       setBitgertToken(farmBitgertToken)
 
-      // const farmBonusMultiplier = await farmDetails?.callStatic.BONUS_MULTIPLIER()
-      // setBonusMultiplier(farmBonusMultiplier.toString())
-
-      // const farmBitgertPerBlock = await farmDetails?.callStatic.bitgertPerBlock()
-      // setBitgertPerBlock(farmBitgertPerBlock.toString())
-
-      // const farmToBurn = await farmDetails?.callStatic.toBurn()
-      // setToBurn(farmToBurn.toString())
-
-      // const farmIsMint = await farmDetails?.callStatic.isMint()
-      // setIsMint(farmIsMint)
 
       const tokenContract = getTokenContract(farmBitgertToken, library, account)
 
@@ -354,9 +338,6 @@ export default function FarmsCreatedDirectory() {
           )}
           {isOwner && (
             <>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              {/* <Flex justifyContent="space-around" margin="3rem">
-              <div className="mb-3 mr-4"> */}
               <Flex alignItems={'center'} justifyContent={'space-around'}>
                 <ButtonContainer>
                   {(parseFloat(allowance) < DepositRewardAmount || parseFloat(allowance) === 0) && (
@@ -379,7 +360,6 @@ export default function FarmsCreatedDirectory() {
                       onMouseLeave={() => setFeeTooltip1(false)}
                     />
                   </Tooltip>
-                  {/* <div className="mt-2"> */}
                   <InputExtended
                     placeholder="Deposit"
                     className="mt-3"
@@ -388,15 +368,11 @@ export default function FarmsCreatedDirectory() {
                     onChange={handleChange('DepositRewardAmount')}
                   />
                 </ButtonContainer>
-                {/* </div> */}
-                {/* </div> */}
-                {/* <div className="mb-3 mr-4"> */}
                 <ButtonContainer>
                   <Button scale="sm" variant="tertiary" onClick={handleEmergencyRewardWithdraw}>
                     Withdraw Reward Tokens
                   </Button>
                   <br />
-                  {/* <div className="mt-2"> */}
                   <InputExtended
                     placeholder="Withdraw"
                     className="mt-3"
@@ -439,7 +415,6 @@ export default function FarmsCreatedDirectory() {
                   <th> Investment </th>
                   <th> Amount </th>
                   <th> Action </th>
-                  {/* {isOwner && ( <th> Owner Actions </th> )} */}
                 </tr>
               </thead>
               <tbody>

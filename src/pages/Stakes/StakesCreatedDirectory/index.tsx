@@ -1,40 +1,23 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
-// import { Link } from 'react-router-dom'
-// import swal from 'sweetalert'
+
 import { Oval } from 'react-loader-spinner'
 
 import './style.css'
 
 import Container from 'components/Container'
-// import StakeUser from 'components/StakeUser'
 import StakeOwner from 'components/StakeOwner'
-// import { Button, CardBody, Input } from '@evofinance9/uikit'
-
-// import { ethers } from 'ethers'
-// import Form from 'react-bootstrap/Form'
-
-// import { BigNumber } from '@ethersproject/bignumber'
-// import { TransactionResponse } from '@ethersproject/providers'
 
 import { useActiveWeb3React } from 'hooks'
 import { useStakeContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
 import { STAKE_ADDRESS } from 'constants/abis/stake'
 
-// import {getAllStakeOwner} from './apicalls'
-// import getAllStakeUser from './apicalls'
 import { TableWrapper, Table, LoaderWrapper, StyledText } from './styleds'
 
 export default function StakesCreatedDirectory() {
   const { account, chainId, library } = useActiveWeb3React()
-  // const [tokenDetails, setTokenDetails] = useState<any>({})
   const [stakes, setStakes] = useState<any[]>([])
-  // const [stakeID, setStakeID] = useState<any>()
-  // const [tokenAddress, setTokenAddress] = useState<any>()
-  // const [txHash, setTxHash] = useState<string>('')
-  // const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  // const [isApproved, setIsApproved] = useState<boolean>(false)
   const [text, setText] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 

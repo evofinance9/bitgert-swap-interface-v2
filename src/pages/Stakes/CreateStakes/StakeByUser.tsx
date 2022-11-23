@@ -5,10 +5,8 @@ import { Button, CardBody, CardHeader } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 
-// import { BigNumber } from '@ethersproject/bignumber'
 import { DateTimePicker, DatePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
-// import { TransactionResponse } from '@ethersproject/providers'
 
 import { FaInfoCircle } from 'react-icons/fa'
 
@@ -16,7 +14,6 @@ import { addStakeUser } from './apicalls'
 
 import { useStakeContract, useDateTimeContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
 
 import './style.css'
 import { Checkbox, useCheckboxState } from 'pretty-checkbox-react'
@@ -156,13 +153,6 @@ export default function Stake() {
 
     setAttemptingTxn(true)
     setIsOpen(true)
-
-    // opens up metamask extension and connects Web2 to Web3
-    // await (window as any).ethereum.send('eth_requestAccounts')
-
-    // //create provider
-    // const provider = new ethers.providers.Web3Provider((window as any).ethereum)
-    // const signer = provider.getSigner()
 
     const signer = library.getSigner()
 

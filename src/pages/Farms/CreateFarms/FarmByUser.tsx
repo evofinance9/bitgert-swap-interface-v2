@@ -130,12 +130,6 @@ export default function Farm() {
     setAttemptingTxn(true)
     setIsOpen(true)
 
-    // // opens up metamask extension and connects Web2 to Web3
-    // await (window as any).ethereum.send('eth_requestAccounts')
-
-    // //create provider
-    // const provider = new ethers.providers.Web3Provider((window as any).ethereum)
-
     const signer = library.getSigner()
 
     let amount = 5

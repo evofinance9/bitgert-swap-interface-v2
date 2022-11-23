@@ -132,7 +132,6 @@ const FarmUser = ({ farm }) => {
   const [feeTooltip5, setFeeTooltip5] = useState<boolean>(false)
   const [feeTooltip6, setFeeTooltip6] = useState<boolean>(false)
   const [feeTooltip7, setFeeTooltip7] = useState<boolean>(false)
-  // const [loading, setLoading] = useState<boolean>(false)
 
   const { data, loading, refetch } = useQuery(PAIR_QUERY)
   const [pairAddress, setPairAddress] = useState('0x77575200f7a35072e0c5e691b32b26286d43a973')
@@ -164,7 +163,6 @@ const FarmUser = ({ farm }) => {
       const totalFarmBalance = await tokenContract?.callStatic.balanceOf(FARM_ADDRESS)
 
       setBalance(ethers.utils.formatEther(accountBalance))
-      // setTotalBalance(ethers.utils.formatEther(totalFarmBalance))
       setTotalBalance(formatTokenAmount(totalFarmBalance.toString(), parseInt(farm.token_decimal)).toString())
 
       const allowanceAmount = await tokenContract?.callStatic.allowance(account, FARM_ADDRESS)
@@ -183,26 +181,9 @@ const FarmUser = ({ farm }) => {
       setDepositAmount(ethers.utils.formatEther(userDeposit.amount.toString()))
 
       const poolInfo = await farmDetails?.callStatic.poolInfo(farm.pool_id - 1)
-      // const accBitgertPerShare = poolInfo.accBitgertPerShare
-      // const allocPoint = poolInfo.allocPoint
       setBitgertPerBlock(poolInfo.bitgertPerBlock.toString())
       setAllocationPoint(poolInfo.allocPoint.toString())
 
-      // const farmBitgertPerBlock = await farmDetails?.callStatic.bitgertPerBlock()
-      // setBitgertPerBlock(farmBitgertPerBlock.toString())
-
-      // APYYY calc
-      // if (totalFarmBalance.toNumber() === 0) {
-      //   setAPY('')
-      // } else {
-      //   const apy = (accBitgertPerShare.toNumber() / totalFarmBalance.toNumber()) * 100
-      //   console.log(apy)
-      //   setAPY(apy.toString())
-      // }
-
-      // APY -
-
-      // pause -
       const pausedOrNot = await farmDetails?.callStatic.isPaused(farm.pool_id - 1)
       setPause(pausedOrNot)
 
@@ -254,11 +235,6 @@ const FarmUser = ({ farm }) => {
   }
   }, [farm.token_address, liquidityRefetch])
 
-  // console.log(liquidityGraphData)
-  // console.log(liquidityGraphData.pairs[0])
-  // console.log(liquidityGraphData.pairs[0].liquidityPositionSnapshots[0].liquidityTokenTotalSupply)
-  // console.log(liquidityGraphData.pairs[0].liquidityPositionSnapshots[0].liquidityTokenTotalSupply)
-
   useEffect(() => {
     if (farm?.token_address) {
       volumeRefetch({
@@ -271,9 +247,6 @@ const FarmUser = ({ farm }) => {
       })
     }
   }, [farm.token_address, volumeRefetch])
-
-  // console.log(volumeGraphData)
-  // console.log(volumeGraphData.pairDayDatas[0].dailyVolumeUSD)
 
   useEffect(() => {
     const fetch = async () => {
@@ -683,7 +656,6 @@ const FarmUser = ({ farm }) => {
           {'  '}
           <Tooltip show={feeTooltip1} placement="top" text={onCopyValue}>
             <FaCopy
-              // className="mx-2"
               color="grey"
               onClick={copyToClipboard}
               onMouseEnter={() => setFeeTooltip1(true)}
@@ -692,24 +664,18 @@ const FarmUser = ({ farm }) => {
           </Tooltip>
         </td>
         <td>
-          {/* <div className="mb-3 mr-4"> */}
           <Link to={`/add/${token0}/${token1}/`}>
             <Button scale="sm" variant="secondary" style={{ marginBottom: '5px' }}>
               Add
             </Button>
           </Link>{' '}
           <span>{balance ? parseFloat(balance).toFixed(4) : ''}</span>
-          {/* <br />
-            <div className="mt-3"> */}
-          {/* </div>
-          </div> */}
         </td>
         <td>
           {APY ? parseFloat(APY).toFixed(2) : 0}
           {'  '}
           <Tooltip show={feeTooltip2} placement="bottom" text="Annual Percentage Yield">
             <FaInfoCircle
-              // className="mx-2"
               color="grey"
               onMouseEnter={() => setFeeTooltip2(true)}
               onMouseLeave={() => setFeeTooltip2(false)}
@@ -725,7 +691,6 @@ const FarmUser = ({ farm }) => {
             text={`Total Investment: ${totalBalance ? parseFloat(totalBalance).toFixed(2) : 0} ${farm.token_symbol}`}
           >
             <FaInfoCircle
-              // className="mx-2"
               color="grey"
               onMouseEnter={() => setFeeTooltip3(true)}
               onMouseLeave={() => setFeeTooltip3(false)}
@@ -753,7 +718,6 @@ const FarmUser = ({ farm }) => {
           ) : (
             <>
               <div className="mb-3">
-                {/* <div className=" d-flex justify-content-between"> */}
                 <Flex>
                   <Button
                     scale="sm"

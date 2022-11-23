@@ -10,8 +10,6 @@ import FarmCard from './FarmCard'
 import getAllFarmUser from './apicalls'
 
 import { StyledCardContainer, LoaderWrapper, StyledText } from './styleds'
-// import { setFlagsFromString } from 'v8'
-// import { setTextRange } from 'typescript'
 
 export default function FarmDirectory() {
   const [farms, setFarms] = useState<any[]>([])

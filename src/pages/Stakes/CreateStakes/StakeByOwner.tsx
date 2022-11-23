@@ -5,8 +5,6 @@ import { Button, CardBody, Input, CardHeader, Flex } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 
-// import { BigNumber } from '@ethersproject/bignumber'
-// import { DateTimePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
 import { TransactionResponse } from '@ethersproject/providers'
 
@@ -67,8 +65,6 @@ export default function Stake() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  // const [allowcationTooltip, setAllowcationTooltip] = useState<boolean>(false)
-  // const [allowcationAmountTooltip, setAllowcationAmountTooltip] = useState<boolean>(false)
   const [feeTooltip, setFeeTooltip] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({

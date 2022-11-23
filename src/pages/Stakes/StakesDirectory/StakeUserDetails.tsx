@@ -1,41 +1,25 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
-// , useCallback, useRef, useMemo
-// import { Card, Badge, Button as BSButton, ProgressBar } from 'react-bootstrap'
 
 import swal from 'sweetalert'
 import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
-// import { Button } from '@evofinance9/uikit'
-// import { DateTimePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
-// import { Checkbox, useCheckboxState } from 'pretty-checkbox-react'
 import '@djthoms/pretty-checkbox'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-// import { TelegramIcon, TwitterIcon, WWWIcon } from '../../../assets/images'
-// import { SocialIcon } from 'react-social-icons'
-
-// import { ethers } from 'ethers'
-// import Form from 'react-bootstrap/Form'
-
-// import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import Container from 'components/Container'
 
 import { useActiveWeb3React } from 'hooks'
 import { useStakeContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
 import { STAKE_ADDRESS } from 'constants/abis/stake'
 import { Oval } from 'react-loader-spinner'
 
 import './style.css'
 
-// import { AppBodyExtended } from 'pages/AppBody'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
-// import { RouteComponentProps } from 'react-router-dom'
 import { getStakeUserById, updateStakeUser } from './apicalls'
-// import { setFlagsFromString } from 'v8'
 import {
   TableWrapper,
   Table,
@@ -104,7 +88,6 @@ export default function StakeUserDetails({
   const [balance, setBalance] = useState(0)
   const [totalSupply, setTotalSupply] = useState(0)
   const [finalTime, setFinalTime] = useState<any>()
-  // const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
   const [startDate, setStartDate] = useState<any>()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)

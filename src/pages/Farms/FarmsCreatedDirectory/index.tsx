@@ -30,8 +30,6 @@ export default function FarmsCreatedDirectory() {
   const { account, chainId, library } = useActiveWeb3React()
   const [tokenDetails, setTokenDetails] = useState<any>({})
   const [farms, setFarms] = useState<any[]>([])
-  // const [farmID, setFarmID] = useState<any>()
-  // const [tokenAddress, setTokenAddress] = useState<any>()
   const [txHash, setTxHash] = useState<string>('')
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
   const [isApproved, setIsApproved] = useState<boolean>(false)
