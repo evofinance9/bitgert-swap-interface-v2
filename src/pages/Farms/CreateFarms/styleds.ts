@@ -18,8 +18,8 @@ export const Heading = styled.h3`
 export const Text = styled.p`
   font-size: 1rem;
   line-height: 1.1;
-  font-weight: 300;
-  color: #000;
+  font-weight: 400;
+  color: #2669f5;
 `
 
 export const InputExtended = styled(Input)`

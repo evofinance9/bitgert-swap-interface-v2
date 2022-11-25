@@ -1,8 +1,9 @@
 import styled from 'styled-components'
+import { Input } from '@evofinance9/uikit'
 
 interface FlexProps {
-  justifyContent: any;
-  margin: any;
+  justifyContent: any
+  margin: any
 }
 
 export const TableHeader = styled.h3`
@@ -15,17 +16,43 @@ export const TableHeader = styled.h3`
 
 export const StyledText = styled.h3`
   font-size: 2rem;
-  color: #fff;
+  color: #2669f5;
   text-align: center;
   margin: auto;
 `
 
-export const Flex = styled.div<FlexProps>`
+// export const Flex = styled.div<FlexProps>`
+//   display: flex;
+//   align-items: center;
+//   justify-content: ${props => props.justifyContent};
+//   margin: ${props => props.margin};
+//   gap: 1rem;
+// `
+
+export const ButtonContainer = styled.div`
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+`
+
+export const Flex = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${props => props.justifyContent};
-  margin: ${props => props.margin};
+  justify-content: center;
   gap: 1rem;
+`
+
+export const InputExtended = styled(Input)`
+  margin: 1rem 0;
+
+  ::placeholder,
+  ::-webkit-input-placeholder {
+    color: #757575;
+  }
+  :-ms-input-placeholder {
+    color: #757575;
+  }
 `
 
 export const TableWrapper = styled.div`
@@ -35,8 +62,6 @@ export const TableWrapper = styled.div`
   overflow-y: scroll;
   margin-bottom: 1.5rem;
   border-radius: 24px;
-
-
 
   ${({ theme }) => theme.mediaQueries.xs} {
     width: 100%;
@@ -65,7 +90,7 @@ export const Table = styled.table`
   height: 100%;
 
   & tr {
-    border-bottom: 1px solid #252525;
+    border-bottom: none;
   }
 
   & tr:last-child {
@@ -80,7 +105,7 @@ export const Table = styled.table`
   th {
     padding: 1rem;
     font-family: 'Poppins', sans-serif !important;
-    color: #a7a7a7;
+    color: #000;
     font-size: 0.9rem;
   }
 
@@ -99,7 +124,5 @@ export const LoaderWrapper = styled.div`
   align-items: center;
   padding: 6rem 0;
 `
-
-
 
 export default {}

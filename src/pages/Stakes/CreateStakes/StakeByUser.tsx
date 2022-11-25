@@ -5,10 +5,8 @@ import { Button, CardBody, CardHeader } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 
-// import { BigNumber } from '@ethersproject/bignumber'
 import { DateTimePicker, DatePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
-// import { TransactionResponse } from '@ethersproject/providers'
 
 import { FaInfoCircle } from 'react-icons/fa'
 
@@ -16,7 +14,6 @@ import { addStakeUser } from './apicalls'
 
 import { useStakeContract, useDateTimeContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
 
 import './style.css'
 import { Checkbox, useCheckboxState } from 'pretty-checkbox-react'
@@ -82,6 +79,10 @@ export default function Stake() {
     token_name: '',
     token_symbol: '',
     token_decimal: '',
+    reward_token_address: '',
+    reward_token_name: '',
+    reward_token_symbol: '',
+    reward_token_decimal: '',
     project_name: '',
     start_date: new Date(),
     email_id: '',
@@ -95,6 +96,10 @@ export default function Stake() {
     token_name,
     token_decimal,
     token_symbol,
+    reward_token_address,
+    reward_token_name,
+    reward_token_decimal,
+    reward_token_symbol,
     project_name,
     start_date,
     email_id,
@@ -104,19 +109,25 @@ export default function Stake() {
 
   useEffect(() => {
     const fetch = async () => {
-      if (!library || !account) return
+      if (!library || !account || !token_address || !reward_token_address) return
 
       const tokenContract = getTokenContract(token_address, library, account)
       const TName = await tokenContract?.callStatic.name()
       const TSymbol = await tokenContract?.callStatic.symbol()
       const TDecimals = await tokenContract?.callStatic.decimals()
-
-      setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals }))
+      
+      const rewardTokenContract = getTokenContract(reward_token_address, library, account)
+      const RTName = await rewardTokenContract?.callStatic.name()
+      const RTSymbol = await rewardTokenContract?.callStatic.symbol()
+      const RTDecimals = await rewardTokenContract?.callStatic.decimals()
+      
+      setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals, reward_token_name: RTName, reward_token_symbol: RTSymbol, reward_token_decimal: RTDecimals }))
+    
     }
     if (account && token_address && library instanceof ethers.providers.Web3Provider) {
       fetch()
     }
-  }, [token_address, account, library])
+  }, [token_address, reward_token_address, account, library])
 
   const handleDismissConfirmation = () => {
     setIsOpen(false)
@@ -143,13 +154,7 @@ export default function Stake() {
     setAttemptingTxn(true)
     setIsOpen(true)
 
-    // opens up metamask extension and connects Web2 to Web3
-    await (window as any).ethereum.send('eth_requestAccounts')
-
-    //create provider
-    const provider = new ethers.providers.Web3Provider((window as any).ethereum)
-
-    const signer = provider.getSigner()
+    const signer = library.getSigner()
 
     let amount = 5
     const etherAmount = ethers.utils.parseUnits(amount.toString(), 'ether')
@@ -178,13 +183,17 @@ export default function Stake() {
             token_name: '',
             token_symbol: '',
             token_decimal: '',
+            reward_token_address: '',
+            reward_token_name: '',
+            reward_token_symbol: '',
+            reward_token_decimal: '',
             project_name: '',
             start_date: new Date(),
             email_id: '',
             telegram_id: '',
             logo_url: '',
           })
-          swal('Congratulations!', 'Stake is added!', 'success')
+          swal('Congratulations!', 'Stake request is created!', 'success')
         }
       })
       .catch((err) => console.log('Error in signup' + err))
@@ -201,7 +210,7 @@ export default function Stake() {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    if (!account || !token_address || !project_name || !email_id || !telegram_id) {
+    if (!account || !token_address || !reward_token_address || !project_name || !email_id || !telegram_id) {
       swal('Are you sure?', 'There are incomplete fields in your submission!', 'warning')
       return
     }
@@ -234,13 +243,13 @@ export default function Stake() {
             <Flex direction="column" alignItems="start">
               <Text>Evo will be approving and making the token eligible for Staking!!</Text>
               <Text>Please log the details below and submit!!</Text>
-              <Text>Kindly expect the response within 1 week.</Text>
+              <Text>Kindly expect the response within 7 to 10 days.</Text>
               <Text>To submit your stake creation request, you must pay 5 BRISE.</Text>
             </Flex>
 
             <Flex>
               <InputExtended
-                placeholder="Token Address"
+                placeholder="Stake Token Address"
                 className="mt-3"
                 scale="lg"
                 value={token_address}
@@ -248,7 +257,7 @@ export default function Stake() {
               />
 
               <InputExtended
-                placeholder="Token Name"
+                placeholder="Stake Token Name"
                 scale="lg"
                 className="mt-3"
                 value={token_name}
@@ -257,7 +266,7 @@ export default function Stake() {
             </Flex>
             <Flex>
               <InputExtended
-                placeholder="Token Symbol"
+                placeholder="Stake Token Symbol"
                 scale="lg"
                 className="mt-3"
                 value={token_symbol}
@@ -265,11 +274,45 @@ export default function Stake() {
               />
 
               <InputExtended
-                placeholder="Token Decimal"
+                placeholder="Stake Token Decimal"
                 className="mt-3"
                 scale="lg"
                 value={token_decimal}
                 onChange={handleChange('token_decimal')}
+              />
+            </Flex>
+            <Flex>
+              <InputExtended
+                placeholder="Reward Token Address"
+                className="mt-3"
+                scale="lg"
+                value={reward_token_address}
+                onChange={handleChange('reward_token_address')}
+              />
+
+              <InputExtended
+                placeholder="Reward Token Name"
+                scale="lg"
+                className="mt-3"
+                value={reward_token_name}
+                onChange={handleChange('reward_token_name')}
+              />
+            </Flex>
+            <Flex>
+              <InputExtended
+                placeholder="Reward Token Symbol"
+                scale="lg"
+                className="mt-3"
+                value={reward_token_symbol}
+                onChange={handleChange('reward_token_symbol')}
+              />
+
+              <InputExtended
+                placeholder="Reward Token Decimal"
+                className="mt-3"
+                scale="lg"
+                value={reward_token_decimal}
+                onChange={handleChange('reward_token_decimal')}
               />
             </Flex>
             <Flex>
@@ -332,7 +375,7 @@ export default function Stake() {
           </CardBody>
         </AppBodyExtended>
 
-        <div style={{ padding: "3rem", margin: "2rem" }} />
+        <div style={{ padding: '3rem', margin: '2rem' }} />
       </Container>
     </>
   )

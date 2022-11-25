@@ -27,7 +27,15 @@ import { FARM_ADDRESS } from 'constants/abis/farm'
 
 import { getAllFarmOwner } from './apicalls'
 // import getAllFarmUser from './apicalls'
-import { TableWrapper, Table, LoaderWrapper, StyledText, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
+import {
+  TableWrapper,
+  Table,
+  LoaderWrapper,
+  StyledText,
+  Flex as FlexExtended,
+  InputExtended,
+  ButtonContainer,
+} from './styleds'
 
 // const InputExtended = styled(Input)`
 //   width: 100px;
@@ -45,22 +53,22 @@ export default function FarmsCreatedDirectory() {
   // const [farmReward, setFarmReward] = useState<boolean>(false)
   const [rewardBalance, setRewardBalance] = useState<string>('')
   const [bitgertToken, setBitgertToken] = useState<string>('')
-  const [multiplier, setBonusMultiplier] = useState<string>('')
-  const [bitgertPerBlock, setBitgertPerBlock] = useState<string>('')
-  const [toBurn, setToBurn] = useState<string>('')
+  // const [multiplier, setBonusMultiplier] = useState<string>('')
+  // const [bitgertPerBlock, setBitgertPerBlock] = useState<string>('')
+  // const [toBurn, setToBurn] = useState<string>('')
   const [tokenDecimals, setTokenDecimals] = useState<string>('')
   const [allowance, setAllowance] = useState<string>('')
   const [feeTooltip1, setFeeTooltip1] = useState<boolean>(false)
   const [feeTooltip2, setFeeTooltip2] = useState<boolean>(false)
-  const [feeTooltip3, setFeeTooltip3] = useState<boolean>(false)
-  const [feeTooltip4, setFeeTooltip4] = useState<boolean>(false)
-  const [feeTooltip5, setFeeTooltip5] = useState<boolean>(false)
+  // const [feeTooltip3, setFeeTooltip3] = useState<boolean>(false)
+  // const [feeTooltip4, setFeeTooltip4] = useState<boolean>(false)
+  // const [feeTooltip5, setFeeTooltip5] = useState<boolean>(false)
   const [txHash, setTxHash] = useState<string>('')
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
   const [isApproved, setIsApproved] = useState<boolean>(false)
   const [text, setText] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  
+
   const [formData, setFormData] = useState({
     chain_id: '32520',
     owner_address: '',
@@ -73,43 +81,29 @@ export default function FarmsCreatedDirectory() {
   })
 
   // destructure
-  const { owner_address, RewardToken, Multiplier, EmissionRate, ChangeToBurn, WithdrawAmount, DepositRewardAmount } = formData
+  const { owner_address, RewardToken, Multiplier, EmissionRate, ChangeToBurn, WithdrawAmount, DepositRewardAmount } =
+    formData
 
   useEffect(() => {
-    
     const fetchFarmList = async () => {
       setLoading(true)
 
       if (!chainId || !library || !account) return
 
-      
       const farmDetails = getFarmContract(chainId, library, account)
-      
-      const pausedOrNot = await farmDetails?.callStatic.isPaused()
-      setPause(pausedOrNot)
-      
-      const farmRewardBalance = await farmDetails?.callStatic.rewardBalance()
-      setRewardBalance(ethers.utils.formatEther(farmRewardBalance))
+
 
       const farmBitgertToken = await farmDetails?.callStatic.bitgert()
       setBitgertToken(farmBitgertToken)
-      
-      const farmBonusMultiplier = await farmDetails?.callStatic.BONUS_MULTIPLIER()
-      setBonusMultiplier(farmBonusMultiplier.toString())
 
-      const farmBitgertPerBlock = await farmDetails?.callStatic.bitgertPerBlock()
-      setBitgertPerBlock(farmBitgertPerBlock.toString())
-
-      const farmToBurn = await farmDetails?.callStatic.toBurn()
-      setToBurn(farmToBurn.toString())
-
-      const farmIsMint = await farmDetails?.callStatic.isMint()
-      setIsMint(farmIsMint)
 
       const tokenContract = getTokenContract(farmBitgertToken, library, account)
 
       const TDecimals = await tokenContract?.callStatic.decimals()
       setTokenDecimals(TDecimals)
+
+      const totalRewardBalance = await tokenContract?.callStatic.balanceOf(FARM_ADDRESS)
+      setRewardBalance(ethers.utils.formatEther(totalRewardBalance))
 
       const totalFarmAllowance = await tokenContract?.callStatic.allowance(account, FARM_ADDRESS)
       setAllowance(ethers.utils.formatEther(totalFarmAllowance))
@@ -127,6 +121,7 @@ export default function FarmsCreatedDirectory() {
 
           let count = 0
           for (let i = 0; i < response.length; i++) {
+            console.log(response)
             if (response[i].is_approved === true) {
               break
             } else {
@@ -134,9 +129,9 @@ export default function FarmsCreatedDirectory() {
             }
           }
           if (response.length === count) {
+            console.log('set to true')
             setText(true)
           }
-
         })
         .catch((err) => {
           setLoading(false)
@@ -146,85 +141,32 @@ export default function FarmsCreatedDirectory() {
     }
 
     fetchFarmList()
-  }, [account, library, chainId, ChangeToBurn, EmissionRate, Multiplier, RewardToken, WithdrawAmount, DepositRewardAmount])
+  }, [
+    account,
+    library,
+    chainId,
+    ChangeToBurn,
+    EmissionRate,
+    Multiplier,
+    RewardToken,
+    WithdrawAmount,
+    DepositRewardAmount,
+  ])
 
   const handleChange = (name) => (event) => {
     const value = event.target.value
     setFormData({ ...formData, [name]: value })
   }
 
-  const handlePause = async () => {
-
-    if (!chainId || !library || !account) return
-
-    const farmDetails = getSigCheckContract(chainId, library, account)
-
-    const payload = [FARM_ADDRESS, 'setPause()']
-
-    const method: (...args: any) => Promise<TransactionResponse> = farmDetails['submitTransaction(address,string)']
-    const args: Array<string[] | string | boolean | number> = payload
-
-    setAttemptingTxn(true)
-    await method(...args)
-      .then((response) => {
-        swal('Congratulations!', `The request to ${pause ? 'Unpause' : 'Pause'} the stake has been generated`, 'success')
-        setAttemptingTxn(false)
-
-        setTxHash(response.hash)
-      })
-      .catch((e) => {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
-          console.error(e)
-          alert(e.message)
-        }
-      })
-  }
-
-  const handleIsMint = async () => {
-
-    if (!chainId || !library || !account) return
-
-    const farmDetails = getSigCheckContract(chainId, library, account)
-
-    const payload = [FARM_ADDRESS, 'updateIsMint()']
-
-    const method: (...args: any) => Promise<TransactionResponse> = farmDetails['submitTransaction(address,string)']
-    const args: Array<string[] | string | boolean | number> = payload
-
-    setAttemptingTxn(true)
-    await method(...args)
-      .then((response) => {
-        swal('Congratulations!', `The request to ${isMint ? 'stop Minting' : 'Start Minting'} in the farm has been generated`, 'success')
-        setAttemptingTxn(false)
-
-        setTxHash(response.hash)
-      })
-      .catch((e) => {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
-          console.error(e)
-          alert(e.message)
-        }
-      })
-  }
-
   const handleBitgertToken = async () => {
-
     if (!chainId || !library || !account || !RewardToken) return
 
     const farmDetails = getSigCheckContract(chainId, library, account)
 
-    const payload = [
-      FARM_ADDRESS, 
-      'updateBitgert(address)',  
-      RewardToken,
-    ]
+    const payload = [FARM_ADDRESS, 'updateBitgert(address)', RewardToken]
 
-
-    const method: (...args: any) => Promise<TransactionResponse> = farmDetails['submitTransaction(address,string,address)']
+    const method: (...args: any) => Promise<TransactionResponse> =
+      farmDetails['submitTransaction(address,string,address)']
     const args: Array<string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
@@ -249,7 +191,7 @@ export default function FarmsCreatedDirectory() {
       .catch((e) => {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
@@ -257,19 +199,18 @@ export default function FarmsCreatedDirectory() {
   }
 
   const handleEmergencyRewardWithdraw = async () => {
-
     if (!chainId || !library || !account || !WithdrawAmount) return
 
     const farmDetails = getSigCheckContract(chainId, library, account)
 
     const payload = [
-      FARM_ADDRESS, 
-      'emergencyWithdrawRewardToken(uint256)',  
+      FARM_ADDRESS,
+      'emergencyWithdrawRewardToken(uint256)',
       ethers.utils.parseUnits(WithdrawAmount.toString(), parseInt(tokenDecimals)).toString(),
     ]
 
-
-    const method: (...args: any) => Promise<TransactionResponse> = farmDetails['submitTransaction(address,string,uint256)']
+    const method: (...args: any) => Promise<TransactionResponse> =
+      farmDetails['submitTransaction(address,string,uint256)']
     const args: Array<string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
@@ -294,141 +235,7 @@ export default function FarmsCreatedDirectory() {
       .catch((e) => {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
-          console.error(e)
-          alert(e.message)
-        }
-      })
-  }
-
-  const handlechangeToBurn = async () => {
-
-    if (!chainId || !library || !account || !ChangeToBurn) return
-
-    const farmDetails = getSigCheckContract(chainId, library, account)
-
-    const payload = [
-      FARM_ADDRESS, 
-      'changeToBurn(uint256)',  
-      ChangeToBurn,
-    ]
-
-
-    const method: (...args: any) => Promise<TransactionResponse> = farmDetails['submitTransaction(address,string,uint256)']
-    const args: Array<string[] | string | boolean | number> = payload
-
-    setAttemptingTxn(true)
-    await method(...args)
-      .then((response) => {
-        setFormData({
-          ...formData,
-          chain_id: '32520',
-          owner_address: '',
-          RewardToken: '',
-          Multiplier: 0,
-          EmissionRate: 0,
-          ChangeToBurn: 0,
-          WithdrawAmount: 0,
-          DepositRewardAmount: 0,
-        })
-        swal('Congratulations!', 'The request to change ToBurn has been made!', 'success')
-        setAttemptingTxn(false)
-
-        setTxHash(response.hash)
-      })
-      .catch((e) => {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
-          console.error(e)
-          alert(e.message)
-        }
-      })
-  }
-
-  const handleEmissionRate = async () => {
-
-    if (!chainId || !library || !account || !EmissionRate) return
-
-    const farmDetails = getSigCheckContract(chainId, library, account)
-
-    const payload = [
-      FARM_ADDRESS, 
-      'updateEmissionRate(uint256)',  
-      EmissionRate,
-    ]
-
-    const method: (...args: any) => Promise<TransactionResponse> = farmDetails['submitTransaction(address,string,uint256)']
-    const args: Array<string[] | string | boolean | number> = payload
-
-    setAttemptingTxn(true)
-    await method(...args)
-      .then((response) => {
-        setFormData({
-          ...formData,
-          chain_id: '32520',
-          owner_address: '',
-          RewardToken: '',
-          Multiplier: 0,
-          EmissionRate: 0,
-          ChangeToBurn: 0,
-          WithdrawAmount: 0,
-          DepositRewardAmount: 0,
-        })
-        swal('Congratulations!', 'The request to change the Bitgert Per Block!', 'success')
-        setAttemptingTxn(false)
-
-        setTxHash(response.hash)
-      })
-      .catch((e) => {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
-          console.error(e)
-          alert(e.message)
-        }
-      })
-  }
-
-  const handleMultiplier = async () => {
-
-    if (!chainId || !library || !account || !Multiplier) return
-
-    const farmDetails = getSigCheckContract(chainId, library, account)
-
-    const payload = [
-      FARM_ADDRESS, 
-      'updateMultiplier(uint256)',  
-      Multiplier,
-    ]
-
-
-    const method: (...args: any) => Promise<TransactionResponse> = farmDetails['submitTransaction(address,string,uint256)']
-    const args: Array<string[] | string | boolean | number> = payload
-
-    setAttemptingTxn(true)
-    await method(...args)
-      .then((response) => {
-        setFormData({
-          ...formData,
-          chain_id: '32520',
-          owner_address: '',
-          RewardToken: '',
-          Multiplier: 0,
-          EmissionRate: 0,
-          ChangeToBurn: 0,
-          WithdrawAmount: 0,
-          DepositRewardAmount: 0,
-        })
-        swal('Congratulations!', 'The request to change the Bonus multiplier has been raised!', 'success')
-        setAttemptingTxn(false)
-
-        setTxHash(response.hash)
-      })
-      .catch((e) => {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
@@ -436,16 +243,13 @@ export default function FarmsCreatedDirectory() {
   }
 
   const handleAllowanceApprove = async () => {
-    if (!chainId || !library || !account ) return
+    if (!chainId || !library || !account) return
     const tokenContract = getTokenContract(bitgertToken, library, account)
 
     const TBalance = await tokenContract?.callStatic.balanceOf(account)
     const TDecimals = await tokenContract?.callStatic.decimals()
 
-    const payload = [
-      FARM_ADDRESS,
-      MaxUint256,
-    ]
+    const payload = [FARM_ADDRESS, MaxUint256]
 
     const method: (...args: any) => Promise<TransactionResponse> = tokenContract!.approve
     const args: Array<string | string[] | string | BigNumber | number> = payload
@@ -464,7 +268,7 @@ export default function FarmsCreatedDirectory() {
         setIsApproved(false)
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
@@ -476,9 +280,7 @@ export default function FarmsCreatedDirectory() {
 
     const farmDetails = getFarmContract(chainId, library, account)
 
-    const payload = [
-      ethers.utils.parseUnits(DepositRewardAmount.toString(), parseInt(tokenDecimals)).toString(),
-    ]
+    const payload = [ethers.utils.parseUnits(DepositRewardAmount.toString(), parseInt(tokenDecimals)).toString()]
 
     const method: (...args: any) => Promise<TransactionResponse> = farmDetails!.depositRewardToken
     const args: Array<string | number | boolean> = payload
@@ -507,7 +309,7 @@ export default function FarmsCreatedDirectory() {
         setIsApproved(false)
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
@@ -534,192 +336,80 @@ export default function FarmsCreatedDirectory() {
               />
             </LoaderWrapper>
           )}
-
           {isOwner && (
             <>
-            {/* <div className="d-flex justify-content-around my-5"> */}
-            {/* <Flex justifyContent="space-around" margin="3rem">
-              <div className="mb-3 mr-4"> */}
-          <Flex alignItems={'center'} justifyContent={'space-around'}>
-
-                { (parseFloat(allowance) < DepositRewardAmount || parseFloat(allowance) === 0) &&
+              <Flex alignItems={'center'} justifyContent={'space-around'}>
                 <ButtonContainer>
-                  <Button scale="sm" variant="tertiary" onClick={handleAllowanceApprove}>
-                    Approve
-                  </Button>
-                </ButtonContainer>
-                }
-
-                <ButtonContainer>
-                  <Button scale="sm" style={{marginRight: "5px"}} variant="tertiary" onClick={handleAllowanceDeposit}>
+                  {(parseFloat(allowance) < DepositRewardAmount || parseFloat(allowance) === 0) && (
+                    <Button
+                      scale="sm"
+                      style={{ marginRight: '5px' }}
+                      variant="tertiary"
+                      onClick={handleAllowanceApprove}
+                    >
+                      Approve
+                    </Button>
+                  )}
+                  <Button scale="sm" style={{ marginRight: '5px' }} variant="tertiary" onClick={handleAllowanceDeposit}>
                     Deposit Reward Tokens
                   </Button>
                   <Tooltip show={feeTooltip1} placement="top" text={`Total Rewards present: ${rewardBalance} `}>
-                  <FaInfoCircle
-                    color='grey'
-                    onMouseEnter={() => setFeeTooltip1(true)}
-                    onMouseLeave={() => setFeeTooltip1(false)}
-                  />
+                    <FaInfoCircle
+                      color="grey"
+                      onMouseEnter={() => setFeeTooltip1(true)}
+                      onMouseLeave={() => setFeeTooltip1(false)}
+                    />
                   </Tooltip>
-                {/* <div className="mt-2"> */}
                   <InputExtended
                     placeholder="Deposit"
                     className="mt-3"
                     scale="sm"
                     value={DepositRewardAmount}
                     onChange={handleChange('DepositRewardAmount')}
-                    />
+                  />
                 </ButtonContainer>
-                {/* </div> */}
-              {/* </div> */}
-              {/* <div className="mb-3 mr-4"> */}
-              <ButtonContainer>
-                <Button scale="sm" variant="tertiary" onClick={handleEmergencyRewardWithdraw}>
-                  Withdraw Reward Tokens
-                </Button>
-                <br />
-                {/* <div className="mt-2"> */}
+                <ButtonContainer>
+                  <Button scale="sm" variant="tertiary" onClick={handleEmergencyRewardWithdraw}>
+                    Withdraw Reward Tokens
+                  </Button>
+                  <br />
                   <InputExtended
                     placeholder="Withdraw"
                     className="mt-3"
                     scale="sm"
                     value={WithdrawAmount}
                     onChange={handleChange('WithdrawAmount')}
-                    />
-              </ButtonContainer>
-                {/* </div>
-              </div> */}
-          </Flex>
-            {/* <div className="d-flex justify-content-around my-5"> */}
-
-            {/* <Flex justifyContent="space-around" margin="3rem"> */}
-          <Flex alignItems={'center'} justifyContent={'space-around'}>
-            {/* <FlexExtended> */}
-              <ButtonContainer>
-              <Button scale="sm" variant="secondary" onClick={handlePause}>
-                {`${pause ? 'Unpause' : 'Pause'} it`}
-              </Button>
-              </ButtonContainer>
-
-              {/* <div className="mb-3 mr-4"> */}
-              <ButtonContainer>
-                <Button scale="sm" variant="secondary" style={{marginRight: "5px"}} onClick={handleBitgertToken}>
-                  {`Change Reward Token`}
-                </Button>
-                <Tooltip show={feeTooltip2} placement="top" text={`Bitgert Reward Token is : ${bitgertToken} `}>
-                  <FaInfoCircle
-                    className="mx-2" color='grey'
-                    onMouseEnter={() => setFeeTooltip2(true)}
-                    onMouseLeave={() => setFeeTooltip2(false)}
                   />
-                </Tooltip>
-                <br />
-                <br />
-                {/* <div className="mt-2"> */}
+                </ButtonContainer>
+
+                <ButtonContainer>
+                  <Button scale="sm" variant="secondary" style={{ marginRight: '5px' }} onClick={handleBitgertToken}>
+                    {`Change Reward Token`}
+                  </Button>
+                  <Tooltip show={feeTooltip2} placement="top" text={`Bitgert Reward Token is : ${bitgertToken} `}>
+                    <FaInfoCircle
+                      color="grey"
+                      onMouseEnter={() => setFeeTooltip2(true)}
+                      onMouseLeave={() => setFeeTooltip2(false)}
+                    />
+                  </Tooltip>
                   <InputExtended
                     placeholder="Update"
                     className="mt-3"
                     scale="sm"
                     value={RewardToken}
                     onChange={handleChange('RewardToken')}
-                    />
-                    </ButtonContainer>
-                {/* </div>
-              </div> */}
-              <ButtonContainer>
-              <Button scale="sm" variant="secondary" onClick={handleIsMint}>
-                {`${isMint ? 'stop Mint' : 'Start Mint'}`}
-              </Button>
-              </ButtonContainer>
-
-          </Flex>
-
-            {/* <Flex justifyContent="space-between" margin="0rem"> */}
-
-              {/* <div className="mb-3 mr-4"> */}
-          <Flex alignItems={'center'} justifyContent={'space-around'}>
-              {/* <FlexExtended> */}
-              <ButtonContainer>  
-                <Button scale="sm" variant="secondary" style={{marginRight: "5px"}} onClick={handleMultiplier}>
-                  Update Multiplier
-                </Button>
-                <Tooltip show={feeTooltip3} placement="top" text={`Current Multiplier is : ${multiplier} `}>
-                <FaInfoCircle
-                  color='grey'
-                  onMouseEnter={() => setFeeTooltip3(true)}
-                  onMouseLeave={() => setFeeTooltip3(false)}
-                />
-                </Tooltip>
-                <br />
-                {/* <div className="mt-2"> */}
-                  <InputExtended
-                    placeholder="Update"
-                    className="mt-3"
-                    scale="sm"
-                    value={Multiplier}
-                    onChange={handleChange('Multiplier')}
-                    />
-                    </ButtonContainer>
-                {/* </div>
-              </div>
-              <div className="mb-3 mr-4">   */}
-              <ButtonContainer>
-                  <Button scale="sm" variant="secondary" style={{marginRight: "5px"}} onClick={handleEmissionRate}>
-                    Update Emission Rate
-                  </Button>
-                  <Tooltip show={feeTooltip4} placement="top" text={`Bitgert per block is : ${bitgertPerBlock} `}>
-                    <FaInfoCircle
-                      className="mx-2" color='grey'
-                      onMouseEnter={() => setFeeTooltip4(true)}
-                      onMouseLeave={() => setFeeTooltip4(false)}
-                    />
-                    </Tooltip>
-                    <br />
-                    {/* <div className="mt-2"> */}
-                      <InputExtended
-                        placeholder="Update"
-                        className="mt-3"
-                        scale="sm"
-                        value={EmissionRate}
-                        onChange={handleChange('EmissionRate')}
-                        />
-                        </ButtonContainer>
-                    {/* </div>
-                </div> */}
-                {/* <div className="mb-3 mr-4">   */}
-
-                <ButtonContainer>
-                    <Button scale="sm" variant="secondary" style={{marginRight: "5px"}} onClick={handlechangeToBurn}>
-                      Update ToBurn
-                    </Button>
-                    <Tooltip show={feeTooltip5} placement="top" text={`to burn value is : ${toBurn} `}>
-                    <FaInfoCircle
-                      className="mx-2" color='grey'
-                      onMouseEnter={() => setFeeTooltip5(true)}
-                      onMouseLeave={() => setFeeTooltip5(false)}
-                    />
-                    </Tooltip>
-                    <br />
-                    {/* <div className="mt-2"> */}
-                      <InputExtended
-                        placeholder="Update"
-                        className="mt-3"
-                        scale="sm"
-                        value={ChangeToBurn}
-                        onChange={handleChange('ChangeToBurn')}
-                        />
-                        </ButtonContainer>
-                    {/* </div>
-                </div> */}
-          </Flex>
-          </>
+                  />
+                </ButtonContainer>
+              </Flex>
+            </>
           )}
 
           {Object.entries(farms).length !== 0 && (
             <Table>
               <thead>
-              <tr>
-                  <th> Token  </th>
+                <tr>
+                  <th> Token </th>
                   <th> Liquidity </th>
                   <th> APY </th>
                   <th> Investment </th>
@@ -729,9 +419,7 @@ export default function FarmsCreatedDirectory() {
               </thead>
               <tbody>
                 {!text &&
-                  farms.map((farm) =>
-                    farm.is_approved === true ? <FarmUser farm={farm} key={farm._id} /> : null
-                  )}
+                  farms.map((farm) => (farm.is_approved === true ? <FarmUser farm={farm} key={farm._id} /> : null))}
               </tbody>
             </Table>
           )}

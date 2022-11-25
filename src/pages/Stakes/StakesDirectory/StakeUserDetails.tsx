@@ -1,41 +1,25 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
-// , useCallback, useRef, useMemo
-// import { Card, Badge, Button as BSButton, ProgressBar } from 'react-bootstrap'
 
 import swal from 'sweetalert'
-// import { Button, CardBody, Input } from '@evofinance9/uikit'
-import { Button } from '@evofinance9/uikit'
-// import { DateTimePicker } from '@material-ui/pickers'
+import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
 import { TextField, withStyles } from '@material-ui/core'
-// import { Checkbox, useCheckboxState } from 'pretty-checkbox-react'
 import '@djthoms/pretty-checkbox'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-// import { TelegramIcon, TwitterIcon, WWWIcon } from '../../../assets/images'
-// import { SocialIcon } from 'react-social-icons'
-
-// import { ethers } from 'ethers'
-// import Form from 'react-bootstrap/Form'
-
-// import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import Container from 'components/Container'
 
 import { useActiveWeb3React } from 'hooks'
 import { useStakeContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
 import { STAKE_ADDRESS } from 'constants/abis/stake'
 import { Oval } from 'react-loader-spinner'
 
 import './style.css'
 
-// import { AppBodyExtended } from 'pages/AppBody'
-// import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
-// import { RouteComponentProps } from 'react-router-dom'
+import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { getStakeUserById, updateStakeUser } from './apicalls'
-// import { setFlagsFromString } from 'v8'
 import {
   TableWrapper,
   Table,
@@ -48,7 +32,9 @@ import {
   TableWrapperExtended,
   IconsWrapper,
   LoaderWrapper,
-  Flex,
+  Flex as FlexExtended,
+  InputExtended,
+  ButtonContainer,
 } from './styleds'
 import { addStakeOwner } from '../CreateStakes/apicalls'
 
@@ -103,6 +89,8 @@ export default function StakeUserDetails({
   const [totalSupply, setTotalSupply] = useState(0)
   const [finalTime, setFinalTime] = useState<any>()
   const [startDate, setStartDate] = useState<any>()
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [tokenAddress, setTokenAddress] = useState<any>()
   const [isDeposited, setIsDeposited] = useState<boolean>(false)
   const [isCreated, setIsCreated] = useState<boolean>(false)
@@ -124,7 +112,12 @@ export default function StakeUserDetails({
   const [formData, setFormData] = useState({
     chain_id: '32520',
     owner_address: '',
+    bonusEndBlock: '',
+    rewardPerBlock: '',
   })
+
+  // destructure
+  const { bonusEndBlock, rewardPerBlock } = formData
 
   // fetch stake info
   useEffect(() => {
@@ -145,7 +138,13 @@ export default function StakeUserDetails({
         })
     }
     fetch()
-  }, [stakeId, ])
+  }, [stakeId])
+
+  const handleDismissConfirmation = () => {
+    setIsOpen(false)
+    setShowConfirm(false)
+    setTxHash('')
+  }
 
   const handleChange = (name) => (event) => {
     const value = event.target.value
@@ -153,31 +152,38 @@ export default function StakeUserDetails({
   }
 
   const createStake = async (formData) => {
-
     if (!chainId || !library || !account) return
 
     const stakeDetails = getSigCheckContract(chainId, library, account)
 
-    const payload = [STAKE_ADDRESS, 'add(address)', stake.token_address]
+    const payload = [STAKE_ADDRESS, 'add(address,address,uint256,uint256)', stake.token_address, stake.reward_token_address, bonusEndBlock, rewardPerBlock]
 
-    const method: (...args: any) => Promise<TransactionResponse> = stakeDetails['submitTransaction(address,string,address)']
+    const method: (...args: any) => Promise<TransactionResponse> =
+      stakeDetails['submitTransaction(address,string,address,address,uint256,uint256)']
     const args: Array<object | string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
+    setIsOpen(true)
+
     await method(...args)
       .then(async (response: any) => {
         const txReceipt = await response.wait()
         const stakeID = txReceipt.events[0].args.txIndex.toNumber()
 
-        setAttemptingTxn(false)
-        setTxHash(response.hash)
 
-        addStakeOwner({ ...formData, owner_address: account, 
-          stakeOwner_id: stakeID, 
+        addStakeOwner({
+          ...formData,
+          owner_address: account,
+          stakeOwner_id: stakeID,
+          stakeCreator_id: stake.owner_address,
           token_address: stake.token_address,
           token_name: stake.token_name,
           token_symbol: stake.token_symbol,
-          token_decimal: stake.token_decimal
+          token_decimal: stake.token_decimal,
+          reward_token_address: stake.reward_token_address,
+          reward_token_name: stake.reward_token_name,
+          reward_token_symbol: stake.reward_token_symbol,
+          reward_token_decimal: stake.reward_token_decimal,
         })
           .then((data) => {
             if (data.error) {
@@ -187,7 +193,12 @@ export default function StakeUserDetails({
                 ...formData,
                 chain_id: '32520',
                 owner_address: '',
+                bonusEndBlock: '',
+                rewardPerBlock: '',
               })
+              setAttemptingTxn(false)
+              setTxHash(response.hash)
+              setIsCreated(true)
               swal('Congratulations!', 'Stake is Created! It will be live soon!', 'success')
             }
           })
@@ -196,18 +207,18 @@ export default function StakeUserDetails({
       .catch((e) => {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
       })
-      updateStakeUser(stakeId, {is_ended: true})
+    updateStakeUser(stakeId, { is_ended: true })
   }
 
   const handleCreate = (e) => {
     e.preventDefault()
 
-    if (!account) {
+    if (!account || !bonusEndBlock || !rewardPerBlock) {
       swal('Are you sure?', 'There are incomplete fields in your submission!', 'warning')
       return
     }
@@ -217,6 +228,14 @@ export default function StakeUserDetails({
 
   return (
     <Container>
+      <TransactionConfirmationModal
+        isOpen={isOpen}
+        onDismiss={handleDismissConfirmation}
+        attemptingTxn={attemptingTxn}
+        hash={txHash}
+        content={() => <></>}
+        pendingText="Please wait..."
+      />
       {loading && (
         <LoaderWrapper>
           <Oval
@@ -262,25 +281,56 @@ export default function StakeUserDetails({
                       </tr>
 
                       <tr>
+                        <td>Reward Token Address</td>
+                        <td>{stake.reward_token_address}</td>
+                      </tr>
+
+                      <tr>
+                        <td>Reward Token details </td>
+                        <td>{stake.reward_token_name} - {stake.reward_token_symbol} - {stake.reward_token_decimal}</td>
+                      </tr>
+
+                      <tr>
                         <td>Start Date</td>
                         <td>{startDate}</td>
                       </tr>
                     </tbody>
                   </Table>
                 </TableWrapperExtended>
-                {/* <div className=" d-flex justify-content-around my-4"> */}
-                <Flex justifyContent="space-around" margin="1.5rem">
-                  <div>
-                    <Button scale="md" variant="secondary" onClick={handleCreate}>
-                      Create
-                    </Button>
-                  </div>
-                  <div >
-                    <Link to={`/stake`}>
-                      <Button scale="md" variant="secondary">Back</Button>
-                    </Link>
-                  </div>
-                </Flex>
+                {!isCreated && (
+                  <>
+                    <FlexExtended>
+                      <InputExtended
+                        placeholder="Bonus End Block"
+                        className="mt-3"
+                        scale="lg"
+                        value={bonusEndBlock}
+                        onChange={handleChange('bonusEndBlock')}
+                      />
+                      <InputExtended
+                        placeholder="Reward Per Block"
+                        className="mt-3"
+                        scale="lg"
+                        value={rewardPerBlock}
+                        onChange={handleChange('rewardPerBlock')}
+                      />
+                    </FlexExtended>
+                    <FlexExtended>
+                      <ButtonContainer>
+                        <Button scale="md" variant="secondary" onClick={handleCreate}>
+                          Create
+                        </Button>
+                      </ButtonContainer>
+                      <ButtonContainer>
+                        <Link to={`/stake`}>
+                          <Button scale="md" variant="secondary">
+                            Back
+                          </Button>
+                        </Link>
+                      </ButtonContainer>
+                    </FlexExtended>
+                  </>
+                )}
               </StakeCardBody>
             </StakeCard>
           </StakeCardWrapper>

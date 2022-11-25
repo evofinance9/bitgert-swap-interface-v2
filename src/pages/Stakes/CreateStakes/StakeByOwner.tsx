@@ -1,12 +1,10 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import swal from 'sweetalert'
-import { Button, CardBody, Input, CardHeader } from '@evofinance9/uikit'
+import { Button, CardBody, Input, CardHeader, Flex } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 
-// import { BigNumber } from '@ethersproject/bignumber'
-// import { DateTimePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
 import { TransactionResponse } from '@ethersproject/providers'
 
@@ -23,7 +21,7 @@ import './style.css'
 import { AppBodyExtended } from 'pages/AppBody'
 
 import { useActiveWeb3React } from 'hooks'
-import { Heading, Flex } from './styleds'
+import { Heading, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
 
 import Container from 'components/Container'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
@@ -67,8 +65,6 @@ export default function Stake() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  // const [allowcationTooltip, setAllowcationTooltip] = useState<boolean>(false)
-  // const [allowcationAmountTooltip, setAllowcationAmountTooltip] = useState<boolean>(false)
   const [feeTooltip, setFeeTooltip] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
@@ -78,19 +74,20 @@ export default function Stake() {
     token_name: '',
     token_symbol: '',
     token_decimal: '',
+    reward_token_address: '',
+    reward_token_name: '',
+    reward_token_symbol: '',
+    reward_token_decimal: '',
+    bonusEndBlock: '',
+    rewardPerBlock: '',
   })
 
   // destructure
-  const {
-    token_address,
-    token_name,
-    token_decimal,
-    token_symbol,
-  } = formData
+  const { token_address, token_name, token_decimal, token_symbol, reward_token_address, reward_token_name, reward_token_decimal, reward_token_symbol, bonusEndBlock, rewardPerBlock } = formData
 
   useEffect(() => {
     const fetch = async () => {
-      if (!library || !account || !chainId || !token_address) return
+      if (!library || !account || !chainId || !token_address || !reward_token_address) return
 
       const sigCheck = getSigCheckContract(chainId, library, account)
 
@@ -101,13 +98,18 @@ export default function Stake() {
       const TName = await tokenContract?.callStatic.name()
       const TSymbol = await tokenContract?.callStatic.symbol()
       const TDecimals = await tokenContract?.callStatic.decimals()
-
-      setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals }))
+      
+      const rewardTokenContract = getTokenContract(reward_token_address, library, account)
+      const RTName = await rewardTokenContract?.callStatic.name()
+      const RTSymbol = await rewardTokenContract?.callStatic.symbol()
+      const RTDecimals = await rewardTokenContract?.callStatic.decimals()
+      
+      setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals, reward_token_name: RTName, reward_token_symbol: RTSymbol, reward_token_decimal: RTDecimals }))
     }
     if (account && library instanceof ethers.providers.Web3Provider) {
       fetch()
     }
-  }, [token_address, account, library])
+  }, [token_address, reward_token_address, account, library])
 
   const handleDismissConfirmation = () => {
     setIsOpen(false)
@@ -129,14 +131,15 @@ export default function Stake() {
 
     const stake = getSigCheckContract(chainId, library, account)
 
-    const payload = [STAKE_ADDRESS, 'add(address)', token_address]
+    const payload = [STAKE_ADDRESS, 'add(address,address,uint256,uint256)', token_address, reward_token_address, bonusEndBlock, rewardPerBlock]
 
-    const method: (...args: any) => Promise<TransactionResponse> = stake['submitTransaction(address,string,address)']
+    const method: (...args: any) => Promise<TransactionResponse> =
+      stake['submitTransaction(address,string,address,address,uint256,uint256)']
     const args: Array<object | string[] | string | boolean | number> = payload
 
     setAttemptingTxn(true)
     setIsOpen(true)
-    
+
     await method(...args)
       .then(async (response: any) => {
         const txReceipt = await response.wait()
@@ -144,9 +147,7 @@ export default function Stake() {
         setAttemptingTxn(false)
         setTxHash(response.hash)
 
-        addStakeOwner({ ...formData, owner_address: account, 
-          stakeOwner_id: stakeID,
-        })
+        addStakeOwner({ ...formData, owner_address: account, stakeOwner_id: stakeID, stakeCreator_id: account })
           .then((data) => {
             if (data.error) {
               swal('Oops', 'Something went wrong!', 'error')
@@ -159,6 +160,12 @@ export default function Stake() {
                 token_name: '',
                 token_symbol: '',
                 token_decimal: '',
+                reward_token_address: '',
+                reward_token_name: '',
+                reward_token_symbol: '',
+                reward_token_decimal: '',
+                bonusEndBlock: '',
+                rewardPerBlock: '',
               })
               swal('Congratulations!', 'Stake is Created! It will be live soon!', 'success')
             }
@@ -168,7 +175,7 @@ export default function Stake() {
       .catch((e) => {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== "ACTION_REJECTED") {
+        if (e?.code !== 'ACTION_REJECTED') {
           console.error(e)
           alert(e.message)
         }
@@ -198,65 +205,103 @@ export default function Stake() {
             content={() => <></>}
             pendingText="Please wait..."
           />
-          {/* <CardHeader className="d-flex justify-content-between"> */}
-          <Heading>
-            Create Stake
-            <Tooltip show={feeTooltip} placement="right" text="Create a token to be eligible for staking">
-              <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
-            </Tooltip>
-          </Heading>
-
+          <CardHeader>
+            <Flex alignItems={'center'} justifyContent={'space-between'}>
+              <Heading>Create Stake</Heading>
+              <Tooltip show={feeTooltip} placement="right" text="Create a token to be eligible for staking">
+                <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
+              </Tooltip>
+            </Flex>
+          </CardHeader>
           <CardBody>
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Address"
-                  className="mt-3"
-                  scale="lg"
-                  value={token_address}
-                  onChange={handleChange('token_address')}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Name"
-                  scale="lg"
-                  className="mt-3"
-                  value={token_name}
-                  onChange={handleChange('token_name')}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Symbol"
-                  scale="lg"
-                  className="mt-3"
-                  value={token_symbol}
-                  onChange={handleChange('token_symbol')}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <Input
-                  placeholder="Token Decimal"
-                  className="mt-3"
-                  scale="lg"
-                  value={token_decimal}
-                  onChange={handleChange('token_decimal')}
-                />
-              </div>
-            </div>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Stake Token Address"
+                className="mt-3"
+                scale="lg"
+                value={token_address}
+                onChange={handleChange('token_address')}
+              />
+              <InputExtended
+                placeholder="Stake Token Name"
+                scale="lg"
+                className="mt-3"
+                value={token_name}
+                onChange={handleChange('token_name')}
+              />
+            </FlexExtended>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Stake Token Symbol"
+                scale="lg"
+                className="mt-3"
+                value={token_symbol}
+                onChange={handleChange('token_symbol')}
+              />
+              <InputExtended
+                placeholder="Stake Token Decimal"
+                className="mt-3"
+                scale="lg"
+                value={token_decimal}
+                onChange={handleChange('token_decimal')}
+              />
+            </FlexExtended>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Reward Token Address"
+                className="mt-3"
+                scale="lg"
+                value={reward_token_address}
+                onChange={handleChange('reward_token_address')}
+              />
+              <InputExtended
+                placeholder="Reward Token Name"
+                scale="lg"
+                className="mt-3"
+                value={reward_token_name}
+                onChange={handleChange('reward_token_name')}
+              />
+            </FlexExtended>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Reward Token Symbol"
+                scale="lg"
+                className="mt-3"
+                value={reward_token_symbol}
+                onChange={handleChange('reward_token_symbol')}
+              />
+              <InputExtended
+                placeholder="Reward Token Decimal"
+                className="mt-3"
+                scale="lg"
+                value={reward_token_decimal}
+                onChange={handleChange('reward_token_decimal')}
+              />
+            </FlexExtended>
+            <FlexExtended>
+              <InputExtended
+                placeholder="Bonus End Block"
+                className="mt-3"
+                scale="lg"
+                value={bonusEndBlock}
+                onChange={handleChange('bonusEndBlock')}
+              />
+              <InputExtended
+                placeholder="Reward Per Block"
+                className="mt-3"
+                scale="lg"
+                value={rewardPerBlock}
+                onChange={handleChange('rewardPerBlock')}
+              />
+            </FlexExtended>
           </CardBody>
 
-          {/* <div className="d-flex justify-content-around  mb-5"> */}
-          <Flex justifyContent="space-around" margin="3rem">
+          <ButtonContainer>
             <Button onClick={handleSubmit}>Submit</Button>
             <Link to={`/create-stakes`}>
               <Button>Back</Button>
             </Link>
-          </Flex>
+          </ButtonContainer>
         </AppBodyExtended>
       </Container>
       <div className="mt-5"> </div>

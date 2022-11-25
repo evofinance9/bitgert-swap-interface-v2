@@ -167,7 +167,6 @@ export default function Farm() {
               <>
                 <Flex direction="column" margin="2rem">
                   <Text>Make a token eligible for farming!</Text>
-
                   <Button>
                     <Link to={`/create-farms/owner`}>Create Farm</Link>
                   </Button>
@@ -211,7 +210,7 @@ export default function Farm() {
                     </Flex>
                   </>
                 )}
-                <Flex direction="column" margin="3rem">
+                <Flex direction="column" margin="2rem">
                   <Text>View all Existing farms!</Text>
 
                   <Link to={`/farmApproved`}>

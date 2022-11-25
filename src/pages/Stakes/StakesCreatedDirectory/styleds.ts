@@ -10,19 +10,18 @@ export const TableHeader = styled.h3`
 
 export const StyledText = styled.h3`
   font-size: 2rem;
-  color: #fff;
+  color: #2669f5;
   text-align: center;
   margin: auto;
 `
 
 export const TableWrapper = styled.div`
-  background-color: white; 
+  background-color: white;
   width: 100%;
   padding: 2rem;
   overflow-y: scroll;
   margin-bottom: 1.5rem;
   border-radius: 24px;
-
 
   ${({ theme }) => theme.mediaQueries.xs} {
     width: 100%;
@@ -84,7 +83,5 @@ export const LoaderWrapper = styled.div`
   align-items: center;
   padding: 6rem 0;
 `
-
-
 
 export default {}

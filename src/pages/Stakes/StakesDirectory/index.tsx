@@ -7,7 +7,7 @@ import Container from 'components/Container'
 
 import './style.css'
 import StakeCard from './StakeCard'
-import {getAllStakeUser} from './apicalls'
+import { getAllStakeUser } from './apicalls'
 
 import { StyledCardContainer, LoaderWrapper, StyledText } from './styleds'
 
@@ -21,7 +21,6 @@ export default function StakeDirectory() {
       setLoading(true)
       getAllStakeUser()
         .then((response) => {
-          
           setLoading(false)
           setStakes(response)
 
@@ -37,7 +36,6 @@ export default function StakeDirectory() {
           if (response.length === count) {
             setText(true)
           }
-          
         })
         .catch((err) => {
           setLoading(false)
@@ -53,8 +51,8 @@ export default function StakeDirectory() {
     <>
       <Container>
         {loading && (
-           <LoaderWrapper>
-              <Oval
+          <LoaderWrapper>
+            <Oval
               height={80}
               width={80}
               color="#f9d849"
@@ -66,23 +64,13 @@ export default function StakeDirectory() {
               strokeWidth={2}
               strokeWidthSecondary={2}
             />
-            </LoaderWrapper>  
-         )}  
-        <StyledCardContainer>
-        {!text && (
-          stakes.map((stake) => (
-            (stake.is_ended === false) ?
-              (<StakeCard data={stake} key={stake._id} />)
-              :
-              null
-              ))) 
-          }
-        </StyledCardContainer>
-        {text && (
-        <StyledText>
-          No more pending stakes!
-        </StyledText>
+          </LoaderWrapper>
         )}
+        <StyledCardContainer>
+          {!text &&
+            stakes.map((stake) => (stake.is_ended === false ? <StakeCard data={stake} key={stake._id} /> : null))}
+        </StyledCardContainer>
+        {text && <StyledText>No more pending stakes!</StyledText>}
       </Container>
       <div className="mt-5" />
     </>

@@ -16,6 +16,30 @@ export const Heading = styled.h3`
   justify-content: space-between;
 `
 
+// export const ButtonContainer = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 1rem;
+//   margin-bottom: 1rem;
+// `
+
+// export const Flex = styled.div<FlexProps>`
+//   display: flex;
+//   align-items: center;
+//   flex-direction: ${(props) => props.direction || 'row'};
+//   justify-content: ${(props) => props.justifyContent};
+//   align-items: ${(props) => props.alignItems};
+//   margin: ${(props) => props.margin};
+//   gap: 1rem;
+// `
+
+// export const InputExtension = styled.label`
+//   margin-left: 1rem;
+//   color: #000;
+//   width: 20px;
+// `
+
 export const InputExtended = styled(Input)`
   margin: 1rem 0;
 
@@ -32,7 +56,7 @@ export const Text = styled.p`
   font-size: 1rem;
   line-height: 1.1;
   font-weight: 300;
-  color: #000;
+  color: #2669f5;
 `
 
 export const ButtonContainer = styled.div`

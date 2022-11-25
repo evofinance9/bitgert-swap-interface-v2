@@ -151,6 +151,10 @@ export const bnDivideByDecimal = (a: BigNumberish) => {
   return new BN(a.toString()).dividedBy(new BN(1e18))
 }
 
+export const bnSub = (a: BigNumberish, b: BigNumberish ) => {
+  return new BN(a.toString()).minus(new BN(b.toString()))
+}
+
 export const bnMultiplyByDecimal = (a: string, decimal: number) => {
   return new BN(a).multipliedBy(new BN(10 ** decimal))
 }

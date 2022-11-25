@@ -130,13 +130,7 @@ export default function Farm() {
     setAttemptingTxn(true)
     setIsOpen(true)
 
-    // opens up metamask extension and connects Web2 to Web3
-    await (window as any).ethereum.send('eth_requestAccounts')
-
-    //create provider
-    const provider = new ethers.providers.Web3Provider((window as any).ethereum)
-
-    const signer = provider.getSigner()
+    const signer = library.getSigner()
 
     let amount = 5
     const etherAmount = ethers.utils.parseUnits(amount.toString(), 'ether')
@@ -171,7 +165,7 @@ export default function Farm() {
             telegram_id: '',
             logo_url: '',
           })
-          swal('Congratulations!', 'Farm is added!', 'success')
+          swal('Congratulations!', 'Farm request is created!', 'success')
         }
       })
       .catch((err) => console.log('Error in signup' + err))
@@ -221,7 +215,7 @@ export default function Farm() {
             <Flex direction="column" alignItems="start">
               <Text>Evo will be creating the pool for investors to stake or Farm!</Text>
               <Text>Please log the details below and submit!!</Text>
-              <Text>Kindly expect the response within 1 week.</Text>
+              <Text>Kindly expect the response within 7 to 10 days.</Text>
               <Text>To submit your stake creation request, you must pay 5 BRISE.</Text>
             </Flex>
 

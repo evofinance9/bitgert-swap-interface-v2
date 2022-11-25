@@ -3,17 +3,14 @@ import React, { useState, useEffect } from 'react'
 import swal from 'sweetalert'
 import { Button, CardBody, Input, CardHeader } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
-// import { ethers } from 'ethers'
-
-// import { BigNumber } from '@ethersproject/bignumber'
-// import { DateTimePicker } from '@material-ui/pickers'
 import { TextField, withStyles } from '@material-ui/core'
 import { TransactionResponse } from '@ethersproject/providers'
+import { ethers } from 'ethers'
 
 import { FaInfoCircle } from 'react-icons/fa'
 
 // import addStake from './apicalls'
-import { Heading, Flex } from './styleds'
+import { Heading, Flex, Text } from './styleds'
 
 import { useStakeContract, useDateTimeContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
@@ -171,40 +168,27 @@ export default function Stake() {
 
           {account && (owner === account || ownerFlag) && (
             <>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
-                <h1>Make a token eligible for staking!</h1>
-              </Flex>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
+                <Flex direction="column" margin="2rem">
+                <Text>Make a token eligible for staking!</Text>
                 <Button>
                   <Link to={`/create-stakes/owner`}>Create Staking Pool</Link>
                 </Button>
               </Flex>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
-                <h1>View all User requests For staking!</h1>
-              </Flex>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
+                <Flex direction="column" margin="0 0 2rem 0">
+                <Text>View all User requests For staking!</Text>
                 <Link to={`/stake`}>
                   <Button>User Stake Requests</Button>
                 </Link>
               </Flex>
               {owner === account && (
                 <>
-                  {/* <div className="d-flex justify-content-around my-5"> */}
-                  <Flex justifyContent="space-around" margin="3rem">
-                    <h1>View all Owner requests For staking!</h1>
-                  </Flex>
-                  {/* <div className="d-flex justify-content-around my-5"> */}
-                  <Flex justifyContent="space-around" margin="3rem">
+                  <Flex direction="column" margin="2rem">
+                    <Text>View all Owner requests For staking!</Text>
                     <Link to={`/stakeCreated`}>
                       <Button>Owner Stake Requests</Button>
                     </Link>
                   </Flex>
-                  {/* <div className="d-flex justify-content-between mb-5"> */}
-                  <Flex justifyContent="space-between" margin="3rem">
+                    <Flex justifyContent="space-between" margin="2rem">
                     <Input
                       placeholder="Allocated Owner"
                       className="mt-3"
@@ -222,19 +206,14 @@ export default function Stake() {
                     </Tooltip>
                   </Flex>
 
-                  {/* <div className="d-flex justify-content-around mb-5"> */}
-                  <Flex justifyContent="space-around" margin="3rem">
+                    <Flex justifyContent="center" margin="0 0 2rem 0">
                     <Button onClick={handleAddOwner}>Add Owners</Button>
                     <Button onClick={handleRemoveOwner}>Remove Owners</Button>
                   </Flex>
                 </>
               )}
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
-                <h1>View all Existing stakes!</h1>
-              </Flex>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
+                <Flex direction="column" margin="2rem">
+                <Text>View all Existing stakes!</Text>
                 <Link to={`/stakeApproved`}>
                   <Button>Existing Stakes</Button>
                 </Link>
@@ -243,22 +222,14 @@ export default function Stake() {
           )}
           {account && owner !== account && !ownerFlag && (
             <>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
-                <h1>Raise a request to create your token eligible for staking!</h1>
-              </Flex>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
+                <Flex direction="column" margin="3rem 0">
+                <Text>Raise a request to create your token eligible for staking!</Text>
                 <Link to={`/create-stakes/user`}>
                   <Button>Create Staking Pool</Button>
                 </Link>
               </Flex>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
-                <h1>View all stakes! Invest to earn more!</h1>
-              </Flex>
-              {/* <div className="d-flex justify-content-around my-5"> */}
-              <Flex justifyContent="space-around" margin="3rem">
+                <Flex direction="column" margin="0 0 3rem 0">
+                <Text>View all stakes! Invest to earn more!</Text>
                 <Link to={`/stakeApproved`}>
                   <Button>Staking Pools</Button>
                 </Link>

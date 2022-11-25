@@ -47,5 +47,8 @@
 
 .custom-font {
   font-family: 'Poppins', sans-serif !important;
+}
 
+.custom-font-extended {
+  color: #3f3d3d !important;
 }
