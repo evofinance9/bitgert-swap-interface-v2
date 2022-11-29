@@ -18,6 +18,8 @@ export const OMNIA = new Token(ChainId.MAINNET, '0x5d4685c2C75581C67b9D6292A065a
 const WETH_ONLY: ChainTokenList = {
   [ChainId.MAINNET]: [WETH[ChainId.MAINNET]],
   [ChainId.TESTNET]: [WETH[ChainId.TESTNET]],
+  [ChainId.BSC_MAINNET]: [WETH[ChainId.BSC_MAINNET]],
+  [ChainId.BSC_TESTNET]: [WETH[ChainId.BSC_TESTNET]],
 }
 
 // used to construct intermediary pairs for trading

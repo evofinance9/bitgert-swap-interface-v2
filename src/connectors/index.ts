@@ -25,7 +25,7 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [32520, 64668],
+  supportedChainIds: [32520, 64668, 97, 56],
 })
 
 export const bscConnector = new BscConnector({ supportedChainIds: [32520] })

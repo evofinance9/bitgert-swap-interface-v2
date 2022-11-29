@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 
+import { BigNumber } from '@ethersproject/bignumber'
+import { ethers } from 'ethers'
+import { TransactionResponse } from '@ethersproject/providers'
 import { Text, CardBody, IconButton, ArrowDownIcon, Button } from '@evofinance9/uikit'
 
 import Container from 'components/Container'
@@ -7,16 +10,83 @@ import PageHeader from 'components/PageHeader'
 import { AutoRow, RowBetween } from 'components/Row'
 import { AutoColumn } from 'components/Column'
 import { Input as NumericalInput } from 'components/NumericalInput'
-import { ArrowWrapper , Wrapper } from 'components/swap/styleds'
+import { ArrowWrapper, Wrapper } from 'components/swap/styleds'
+import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
+
+import { useActiveWeb3React } from 'hooks'
+import { useBridgeContractBSC, useBridgeContractBrise } from 'hooks/useContract'
+
+import { getBriseBridgeContract, getBscBridgeContract } from 'utils'
 
 import AppBody from '../AppBody'
 
 import { InputRow, CurrencySelect, LabelRow, Aligner, InputPanel, Container as ContainerExt } from './styleds'
+import { valuesProps } from './types'
 
 const Bridge = () => {
-  const [value, setValue] = useState<number>(0)
+  const { account, chainId, library } = useActiveWeb3React()
+
+  const [values, setValues] = useState<valuesProps>({
+    input: 0,
+    output: 0,
+  })
+
+  const [txHash, setTxHash] = useState<string>('')
+  const [showConfirm, setShowConfirm] = useState<boolean>(false)
+  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const [isBnb, setIsBnb] = useState<boolean>(false)
+
+  const handleChangeInput = (val: number) => {
+    setValues({ input: val, output: val * (5 / 100) })
+  }
+
+  const handleDismissConfirmation = () => {
+    setIsOpen(false)
+    setShowConfirm(false)
+    setTxHash('')
+  }
+
+  const initiateBrise = async () => {
+    if (!chainId || !library || !account) return
+    if (!values.input || values.input < 100) return;
+
+    const briseBridgeContract = getBriseBridgeContract(library, account)
+
+    const method: (...args: any) => Promise<TransactionResponse> = briseBridgeContract!.initiate
+    const args: Array<string> = []
+    const value: BigNumber = ethers.utils.parseUnits(values.input.toString(), 'ether')
+
+    setAttemptingTxn(true)
+    setIsOpen(true)
+    
+    await method(...args, { value })
+      .then((response) => {
+        setAttemptingTxn(false)
+        setTxHash(response.hash)
+      })
+      .catch((e) => {
+        setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (e?.code !== 4001) {
+          console.error(e)
+          alert(e.message)
+        }
+      })
+  }
+
   return (
     <Container>
+      <TransactionConfirmationModal
+        isOpen={isOpen}
+        onDismiss={handleDismissConfirmation}
+        attemptingTxn={attemptingTxn}
+        hash={txHash}
+        content={() => <></>}
+        pendingText="It may take 5-6 minutes to receive. Please wait..."
+      />
+
       <AppBody>
         <Wrapper id="swap-page">
           <PageHeader title="Bridge" description="Bridge tokens in an instant" showSettings={false} />
@@ -34,15 +104,15 @@ const Bridge = () => {
                   <InputRow selected={false}>
                     <NumericalInput
                       className="token-amount-input-1"
-                      value={value}
+                      value={values.input}
                       onUserInput={(val) => {
-                        setValue(parseFloat(val))
+                        handleChangeInput(parseFloat(val))
                       }}
                     />
                     <CurrencySelect selected={false}>
                       <Aligner>
                         <Text id="pair" color="#000">
-                          BRISE Chain
+                          {isBnb ? 'BNB Chain' : 'BRISE Chain'}
                         </Text>
                       </Aligner>
                     </CurrencySelect>
@@ -52,13 +122,12 @@ const Bridge = () => {
             </AutoColumn>
 
             <AutoColumn justify="space-between">
-              <AutoRow justify="center" style={{ padding: '0 1rem', margin: "1rem 0" }}>
+              <AutoRow justify="center" style={{ padding: '0 1rem', margin: '1rem 0' }}>
                 <ArrowWrapper clickable>
                   <IconButton
                     variant="tertiary"
                     onClick={() => {
-                      // setApprovalSubmitted(false)
-                      // onSwitchTokens()
+                      setIsBnb((prev) => !prev)
                     }}
                     style={{ borderRadius: '50%' }}
                     scale="sm"
@@ -82,15 +151,15 @@ const Bridge = () => {
                   <InputRow selected={false}>
                     <NumericalInput
                       className="token-amount-input-2"
-                      value={value}
+                      value={values.output}
                       onUserInput={(val) => {
-                        setValue(parseFloat(val))
+                        // handleChangeInput(parseFloat(val))
                       }}
                     />
                     <CurrencySelect selected={false}>
                       <Aligner>
                         <Text id="pair" color="#000">
-                          BNB Chain
+                          {isBnb ? 'BRISE Chain' : 'BNB Chain'}
                         </Text>
                       </Aligner>
                     </CurrencySelect>
@@ -99,7 +168,9 @@ const Bridge = () => {
               </InputPanel>
             </AutoColumn>
 
-            <Button style={{ width: "100%", margin: "2rem 0 0 0"}}>Enter</Button>
+            <Button style={{ width: '100%', margin: '2rem 0 0 0' }} onClick={initiateBrise}>
+              Enter
+            </Button>
           </CardBody>
         </Wrapper>
       </AppBody>

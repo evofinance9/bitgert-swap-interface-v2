@@ -16,6 +16,7 @@ import { TOKEN_CREATOR_ABI, TOKEN_CREATOR_ADDRESS } from 'constants/abis/erc20'
 import { LOCK_ABI, LOCK_ADDRESS } from 'constants/abis/lock'
 import ERC20_ABI from 'constants/abis/erc20.json'
 import { ROUTER_ABI, ROUTER_ADDRESS } from '../constants'
+import { BRIDGE_ABI, BRIDGE_ADDRESS, BRIDGE_BSC_ABI, BRIDGE_BSC_ADDRESS } from '../constants/abis/bridge'
 import { TokenAddressMap } from '../state/lists/hooks'
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -28,12 +29,14 @@ export function isAddress(value: any): string | false {
 }
 
 const BSCSCAN_PREFIXES: { [chainId in ChainId]: string } = {
-  32520: '',
-  64668: 'testnet-explorer.',
+  32520: 'https://brisescan.com',
+  64668: 'https://testnet-explorer.brisescan.com',
+  97: 'https://testnet.bscscan.com',
+  56: 'https://bscscan.com',
 }
 
 export function getBscScanLink(chainId: ChainId, data: string, type: 'transaction' | 'token' | 'address'): string {
-  const prefix = `https://${BSCSCAN_PREFIXES[chainId] || BSCSCAN_PREFIXES[ChainId.MAINNET]}brisescan.com`
+  const prefix = `${BSCSCAN_PREFIXES[chainId] || BSCSCAN_PREFIXES[ChainId.MAINNET]}`
 
   switch (type) {
     case 'transaction': {
@@ -136,6 +139,14 @@ export function getBitgertLockContract(_: number, library: Web3Provider, account
 
 export function getTokenContract(tokenAddress: string, library: Web3Provider, account?: string): Contract {
   return getContract(tokenAddress, ERC20_ABI, library, account)
+}
+
+export function getBriseBridgeContract(library: Web3Provider, account?: string): Contract {
+  return getContract(BRIDGE_ADDRESS, BRIDGE_ABI, library, account)
+}
+
+export function getBscBridgeContract(library: Web3Provider, account?: string): Contract {
+  return getContract(BRIDGE_BSC_ADDRESS, BRIDGE_BSC_ABI, library, account)
 }
 
 export function escapeRegExp(string: string): string {

@@ -8,6 +8,7 @@ import { AIRDROP_ABI, AIRDROP_ADDRESS } from '../constants/abis/airdrop'
 import { FARM_ABI, FARM_ADDRESS } from '../constants/abis/farm'
 import { STAKE_ABI, STAKE_ADDRESS } from '../constants/abis/stake'
 import { LOCK_ABI, LOCK_ADDRESS } from '../constants/abis/lock'
+import { BRIDGE_ABI, BRIDGE_ADDRESS, BRIDGE_BSC_ABI, BRIDGE_BSC_ADDRESS } from '../constants/abis/bridge'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
@@ -96,4 +97,12 @@ export function useStakeContract(withSignerIfPossible?: boolean): Contract | nul
 
 export function useBitgertLockContract(withSignerIfPossible?: boolean): Contract | null {
   return useContract(LOCK_ADDRESS, LOCK_ABI, withSignerIfPossible)
+}
+
+export function useBridgeContractBrise(withSignerIfPossible?: boolean): Contract | null {
+  return useContract(BRIDGE_ADDRESS, BRIDGE_ABI, withSignerIfPossible)
+}
+
+export function useBridgeContractBSC(withSignerIfPossible?: boolean): Contract | null {
+  return useContract(BRIDGE_BSC_ADDRESS, BRIDGE_BSC_ABI, withSignerIfPossible)
 }
