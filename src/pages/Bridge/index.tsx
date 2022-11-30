@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ethers } from 'ethers'
 import { TransactionResponse } from '@ethersproject/providers'
+import {JSBI, Token} from "@evofinance9/sdk"
 import { Text, CardBody, IconButton, ArrowDownIcon, Button } from '@evofinance9/uikit'
 
 import Container from 'components/Container'
@@ -14,9 +15,12 @@ import { ArrowWrapper, Wrapper } from 'components/swap/styleds'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 
 import { useActiveWeb3React } from 'hooks'
+import { useToken } from 'hooks/Tokens'
 import { useBridgeContractBSC, useBridgeContractBrise } from 'hooks/useContract'
 
 import { getBriseBridgeContract, getBscBridgeContract } from 'utils'
+
+import ApproveButton from './ApproveButton'
 
 import AppBody from '../AppBody'
 
@@ -25,6 +29,9 @@ import { valuesProps } from './types'
 
 const Bridge = () => {
   const { account, chainId, library } = useActiveWeb3React()
+  const briseERC20 = chainId ? new Token (chainId, '0xB66651FE14178A10017053A2417565A88162eC17', 18) : null
+
+  console.log(JSBI.BigInt(100 * 10 ** 18))
 
   const [values, setValues] = useState<valuesProps>({
     input: 0,
@@ -50,7 +57,7 @@ const Bridge = () => {
 
   const initiateBrise = async () => {
     if (!chainId || !library || !account) return
-    if (!values.input || values.input < 100) return;
+    if (!values.input || values.input < 100) return
 
     const briseBridgeContract = getBriseBridgeContract(library, account)
 
@@ -60,7 +67,7 @@ const Bridge = () => {
 
     setAttemptingTxn(true)
     setIsOpen(true)
-    
+
     await method(...args, { value })
       .then((response) => {
         setAttemptingTxn(false)
@@ -75,6 +82,37 @@ const Bridge = () => {
         }
       })
   }
+
+  
+  const initiateBsc = async () => {
+    if (!chainId || !library || !account) return
+    if (!values.input || values.input < 100) return
+
+    const briseBridgeContract = getBscBridgeContract(library, account)
+
+    const method: (...args: any) => Promise<TransactionResponse> = briseBridgeContract!.initiate
+    const args: Array<string> = [values.input.toString()]
+    const value: BigNumber | null = null
+
+    setAttemptingTxn(true)
+    setIsOpen(true)
+
+    await method(...args, value ? {value} : {})
+      .then((response) => {
+        setAttemptingTxn(false)
+        setTxHash(response.hash)
+      })
+      .catch((e) => {
+        setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (e?.code !== 4001) {
+          console.error(e)
+          alert(e.message)
+        }
+      })
+  }
+
+
 
   return (
     <Container>
@@ -167,6 +205,10 @@ const Bridge = () => {
                 </ContainerExt>
               </InputPanel>
             </AutoColumn>
+
+            {briseERC20 && (
+              <ApproveButton token={briseERC20} amount={JSBI.BigInt(values.input * 10 ** 18)} func={initiateBsc} />
+            )}
 
             <Button style={{ width: '100%', margin: '2rem 0 0 0' }} onClick={initiateBrise}>
               Enter

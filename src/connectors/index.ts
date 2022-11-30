@@ -10,12 +10,19 @@ const NETWORK_URL = process.env.REACT_APP_NETWORK_URL
 
 export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '32520')
 
+const RPCS = {
+  32520: NETWORK_URL,
+  64668: NETWORK_URL,
+  97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+  56: "https://bsc-dataseed.binance.org"
+}
+
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
 }
 
 export const network = new NetworkConnector({
-  urls: { [NETWORK_CHAIN_ID]: NETWORK_URL },
+  urls: { [NETWORK_CHAIN_ID]: RPCS[NETWORK_CHAIN_ID] },
 })
 
 let networkLibrary: Web3Provider | undefined
@@ -28,7 +35,7 @@ export const injected = new InjectedConnector({
   supportedChainIds: [32520, 64668, 97, 56],
 })
 
-export const bscConnector = new BscConnector({ supportedChainIds: [32520] })
+export const bscConnector = new BscConnector({ supportedChainIds: [97, 56] })
 
 // mainnet only
 export const walletconnect = new WalletConnectConnector({

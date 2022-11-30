@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { TokenAmount, Token, BigintIsh, Currency } from '@evofinance9/sdk'
+import { TokenAmount, Token, BigintIsh, Currency, CurrencyAmount } from '@evofinance9/sdk'
 import { Button } from '@evofinance9/uikit'
 
 import { BRIDGE_BSC_ADDRESS} from 'constants/abis/bridge'
@@ -19,7 +19,7 @@ interface ApproveButtonComponentProps {
 const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => {
   console.log(amount.toString())
   console.log(token)
-  const amountToDeposit = new TokenAmount(token, amount)
+  const amountToDeposit = new TokenAmount(token, CurrencyAmount.ether(amount))
   console.log(`Testing: ${amountToDeposit.raw.toString()}`)
 
   // check whether the user has approved the router on the input token
@@ -43,6 +43,7 @@ const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => 
 
   return (
     <>
+    hello
       {approval === ApprovalState.APPROVED ? (
         <Button scale="md" variant="secondary" onClick={() => func()}>
           Enter
