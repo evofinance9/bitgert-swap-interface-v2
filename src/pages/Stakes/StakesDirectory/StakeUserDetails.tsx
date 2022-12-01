@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 
 import swal from 'sweetalert'
 import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
-import { TextField, withStyles } from '@material-ui/core'
 import '@djthoms/pretty-checkbox'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -21,16 +20,11 @@ import './style.css'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { getStakeUserById, updateStakeUser } from './apicalls'
 import {
-  TableWrapper,
   Table,
-  TableHeader,
   StakeCardWrapper,
   StakeCard,
   StakeCardBody,
-  StakeHeader,
-  StakeSubHeader,
   TableWrapperExtended,
-  IconsWrapper,
   LoaderWrapper,
   Flex as FlexExtended,
   InputExtended,
@@ -44,69 +38,21 @@ interface FormComponentProps {
   }
 }
 
-const currentTimeInitialState = async () => {}
-
-const CssTextField = withStyles({
-  root: {
-    '&': {
-      border: 'red',
-      borderRadius: '16px',
-    },
-    '& label.Mui-focused': {
-      color: '#aaa',
-    },
-
-    '& .MuiInputBase-input': {
-      color: '#F4EEFF',
-      backgroundColor: '#18191A',
-      borderRadius: '16px',
-      boxShadow: 'inset 0px 2px 2px -1px rgb(74 74 104 / 10%)',
-      display: 'block',
-      fontSize: '16px',
-      height: '48px',
-      outline: '0',
-      padding: '0 16px',
-    },
-    '& .MuiInputBase-input:focus': {
-      boxShadow: '0px 0px 0px 1px #7645D9,0px 0px 0px 4pxrgba(118,69,217,0.6)',
-    },
-  },
-})(TextField)
-
 export default function StakeUserDetails({
   match: {
     params: { stakeId },
   },
 }: FormComponentProps) {
   const { account, chainId, library } = useActiveWeb3React()
-  const stakeContract = useStakeContract(true)
-  const dateTimeContract = useDateTimeContract()
-  const tokenContract = useTokenContract('0x0eb9036cbE0f052386f36170c6b07eF0a0E3f710', true)
 
   const [stake, setStake] = useState<any>(null)
-  const [totalAmount, setTotalAmount] = useState(0)
-  const [balance, setBalance] = useState(0)
-  const [totalSupply, setTotalSupply] = useState(0)
-  const [finalTime, setFinalTime] = useState<any>()
   const [startDate, setStartDate] = useState<any>()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [tokenAddress, setTokenAddress] = useState<any>()
-  const [isDeposited, setIsDeposited] = useState<boolean>(false)
   const [isCreated, setIsCreated] = useState<boolean>(false)
-  const [currentTime, setCurrentTime] = useState<any>()
-  const [addressAmount, setAddressAmount] = useState<any[]>([])
-  const [stakeID, setStakeID] = useState<any>()
-  const [amounts, setAmounts] = useState<any[]>([])
-  const [userContributionBNB, setUserContributionBNB] = useState<any>()
-  const [userContributionToken, setUserContributionToken] = useState<any>()
-  const [stakeStarted, setStakeStarted] = useState<boolean>(false)
-  const [startTimeFlag, setStartTimeFlag] = useState<boolean>(false)
-  const [started, setStarted] = useState<boolean>(false)
-  const [cancelled, setCancelled] = useState<boolean>(false)
   const [txHash, setTxHash] = useState<string>('')
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  const [isArroved, setIsArroved] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
@@ -156,7 +102,14 @@ export default function StakeUserDetails({
 
     const stakeDetails = getSigCheckContract(chainId, library, account)
 
-    const payload = [STAKE_ADDRESS, 'add(address,address,uint256,uint256)', stake.token_address, stake.reward_token_address, bonusEndBlock, rewardPerBlock]
+    const payload = [
+      STAKE_ADDRESS,
+      'add(address,address,uint256,uint256)',
+      stake.token_address,
+      stake.reward_token_address,
+      bonusEndBlock,
+      rewardPerBlock,
+    ]
 
     const method: (...args: any) => Promise<TransactionResponse> =
       stakeDetails['submitTransaction(address,string,address,address,uint256,uint256)']
@@ -169,7 +122,6 @@ export default function StakeUserDetails({
       .then(async (response: any) => {
         const txReceipt = await response.wait()
         const stakeID = txReceipt.events[0].args.txIndex.toNumber()
-
 
         addStakeOwner({
           ...formData,
@@ -287,7 +239,9 @@ export default function StakeUserDetails({
 
                       <tr>
                         <td>Reward Token details </td>
-                        <td>{stake.reward_token_name} - {stake.reward_token_symbol} - {stake.reward_token_decimal}</td>
+                        <td>
+                          {stake.reward_token_name} - {stake.reward_token_symbol} - {stake.reward_token_decimal}
+                        </td>
                       </tr>
 
                       <tr>

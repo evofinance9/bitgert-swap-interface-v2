@@ -1,38 +1,23 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import swal from 'sweetalert'
+
 import { Oval } from 'react-loader-spinner'
 
 import './style.css'
 
 import Container from 'components/Container'
-import FarmUser from 'components/FarmUser'
 import FarmOwner from 'components/FarmOwner'
-import { Button, CardBody, Input } from '@evofinance9/uikit'
-
-import { ethers } from 'ethers'
-import Form from 'react-bootstrap/Form'
-
-import { BigNumber } from '@ethersproject/bignumber'
-import { TransactionResponse } from '@ethersproject/providers'
 
 import { useActiveWeb3React } from 'hooks'
 import { useFarmContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { getFarmContract, getTokenContract, getSigCheckContract } from 'utils'
 import { FARM_ADDRESS } from 'constants/abis/farm'
 
-import { getAllFarmOwner } from './apicalls'
-import getAllFarmUser from './apicalls'
 import { TableWrapper, Table, LoaderWrapper, StyledText } from './styleds'
 
 export default function FarmsCreatedDirectory() {
   const { account, chainId, library } = useActiveWeb3React()
-  const [tokenDetails, setTokenDetails] = useState<any>({})
   const [farms, setFarms] = useState<any[]>([])
-  const [txHash, setTxHash] = useState<string>('')
-  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  const [isApproved, setIsApproved] = useState<boolean>(false)
   const [text, setText] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -45,7 +30,6 @@ export default function FarmsCreatedDirectory() {
       const farmDetails = getSigCheckContract(chainId, library, account)
 
       const farmsLength = await farmDetails?.callStatic.txLength()
-      console.log('farmsLength: ', farmsLength)
 
       let count = 0
       let arr: number[] = []
@@ -63,14 +47,12 @@ export default function FarmsCreatedDirectory() {
 
       // if all farms are executed, no more pending farms for owner
       if (farmsLength.toNumber() === count) {
-        console.log('no more pending things')
         setText(true)
       }
       setLoading(false)
     }
 
     fetchFarmList()
-
   }, [chainId, library, account])
 
   return (

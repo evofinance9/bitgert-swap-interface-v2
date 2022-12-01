@@ -3,18 +3,14 @@ import React, { useState, useEffect } from 'react'
 import swal from 'sweetalert'
 import { Button, CardBody, Input, CardHeader } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
-import { TextField, withStyles } from '@material-ui/core'
 import { TransactionResponse } from '@ethersproject/providers'
-import { ethers } from 'ethers'
 
 import { FaInfoCircle } from 'react-icons/fa'
 
-// import addStake from './apicalls'
 import { Heading, Flex, Text } from './styleds'
 
 import { useStakeContract, useDateTimeContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
 
 import './style.css'
 import { AppBodyExtended } from 'pages/AppBody'
@@ -168,13 +164,13 @@ export default function Stake() {
 
           {account && (owner === account || ownerFlag) && (
             <>
-                <Flex direction="column" margin="2rem">
+              <Flex direction="column" margin="2rem">
                 <Text>Make a token eligible for staking!</Text>
                 <Button>
                   <Link to={`/create-stakes/owner`}>Create Staking Pool</Link>
                 </Button>
               </Flex>
-                <Flex direction="column" margin="0 0 2rem 0">
+              <Flex direction="column" margin="0 0 2rem 0">
                 <Text>View all User requests For staking!</Text>
                 <Link to={`/stake`}>
                   <Button>User Stake Requests</Button>
@@ -188,7 +184,7 @@ export default function Stake() {
                       <Button>Owner Stake Requests</Button>
                     </Link>
                   </Flex>
-                    <Flex justifyContent="space-between" margin="2rem">
+                  <Flex justifyContent="space-between" margin="2rem">
                     <Input
                       placeholder="Allocated Owner"
                       className="mt-3"
@@ -206,13 +202,13 @@ export default function Stake() {
                     </Tooltip>
                   </Flex>
 
-                    <Flex justifyContent="center" margin="0 0 2rem 0">
+                  <Flex justifyContent="center" margin="0 0 2rem 0">
                     <Button onClick={handleAddOwner}>Add Owners</Button>
                     <Button onClick={handleRemoveOwner}>Remove Owners</Button>
                   </Flex>
                 </>
               )}
-                <Flex direction="column" margin="2rem">
+              <Flex direction="column" margin="2rem">
                 <Text>View all Existing stakes!</Text>
                 <Link to={`/stakeApproved`}>
                   <Button>Existing Stakes</Button>
@@ -222,13 +218,13 @@ export default function Stake() {
           )}
           {account && owner !== account && !ownerFlag && (
             <>
-                <Flex direction="column" margin="3rem 0">
+              <Flex direction="column" margin="3rem 0">
                 <Text>Raise a request to create your token eligible for staking!</Text>
                 <Link to={`/create-stakes/user`}>
                   <Button>Create Staking Pool</Button>
                 </Link>
               </Flex>
-                <Flex direction="column" margin="0 0 3rem 0">
+              <Flex direction="column" margin="0 0 3rem 0">
                 <Text>View all stakes! Invest to earn more!</Text>
                 <Link to={`/stakeApproved`}>
                   <Button>Staking Pools</Button>

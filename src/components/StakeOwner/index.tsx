@@ -4,18 +4,12 @@ import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
 import swal from 'sweetalert'
 
 import { TransactionResponse } from '@ethersproject/providers'
-import styled from 'styled-components'
 
 import { useActiveWeb3React } from 'hooks'
 import { useStakeContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { updateStakeOwner } from 'pages/Stakes/StakesCreatedDirectory/apicalls'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
-
-
-const InputExtended = styled(Input)`
-  width: 100px;
-`
 
 const StakeOwner = ({ stakeID }) => {
   const { account, chainId, library } = useActiveWeb3React()
@@ -59,19 +53,16 @@ const StakeOwner = ({ stakeID }) => {
         if (events2.length === 0) {
           const stakeEvent3 = stakeDetails.filters.SubmitTransactionForUpdate(null, stakeID)
           const events3 = await stakeDetails.queryFilter(stakeEvent3, stakeID)
-          console.log('events3: ', events3[0].args)
           setEventDetails(events3[0].args)
           NameOfFunction = events3[0].args!.funcSig
           param1 = events3[0].args!.arg1.toString()
           param2 = events3[0].args!.arg2.toString()
         } else {
-          console.log('events2: ', events2[0].args)
           setEventDetails(events2[0].args)
           NameOfFunction = events2[0].args!.funcSig
           param1 = events2[0].args!.arg1.toString()
         }
       } else {
-        console.log('events1: ', events1[0].args)
         setEventDetails(events1[0].args)
         NameOfFunction = events1[0].args!.funcSig
         param1 = events1[0].args!.arg1.toString()
@@ -82,7 +73,6 @@ const StakeOwner = ({ stakeID }) => {
 
       const arr = NameOfFunction.split('(')
       const funcName = arr[0]
-      console.log('funcName:', funcName)
       setFunctionName(funcName)
 
       if (funcName === 'add') {
@@ -91,19 +81,10 @@ const StakeOwner = ({ stakeID }) => {
         const rewardTokenContract = getTokenContract(param2, library, account)
         const RTName = await rewardTokenContract?.callStatic.name()
         const FinalText = `ST: ${STName} - RT: ${RTName}  - BEB: ${param3} - RPB: ${param4}`
-        console.log('STName: ', STName)
-        console.log('RTName: ', RTName)
-        console.log('param1: ', param1)
-        console.log('param2: ', param2)
-        console.log('param3: ', param3)
-        console.log('param4: ', param4)
-        console.log('FinalText:', FinalText)
         setTextValue(FinalText)
       } else if (funcName === 'setPause') {
         const stake = getStakeContract(chainId, library, account)
         const pausedOrNot = await stake?.callStatic.isPaused(param1)
-        console.log('param1: ', param1)
-        console.log('pausedOrNot: ', pausedOrNot)
         setTextValue(pausedOrNot ? 'Unpause' : 'Pause')
       } else if (funcName === 'stopReward') {
         setTextValue('Stop')
@@ -193,16 +174,16 @@ const StakeOwner = ({ stakeID }) => {
       <td>{functionName}</td>
       <td>{textValue}</td>
       <td>
-        {!decisionMade && 
-        <Flex justifyContent="space-around">
-          <Button scale="sm" variant="secondary" onClick={() => handleAllowance(true)}>
-            Authorize
-          </Button>
-          <Button scale="sm" variant="tertiary" style={{ marginLeft: '5px' }} onClick={() => handleAllowance(false)}>
-            Reject
-          </Button>
-        </Flex>
-        }
+        {!decisionMade && (
+          <Flex justifyContent="space-around">
+            <Button scale="sm" variant="secondary" onClick={() => handleAllowance(true)}>
+              Authorize
+            </Button>
+            <Button scale="sm" variant="tertiary" style={{ marginLeft: '5px' }} onClick={() => handleAllowance(false)}>
+              Reject
+            </Button>
+          </Flex>
+        )}
       </td>
     </tr>
   )

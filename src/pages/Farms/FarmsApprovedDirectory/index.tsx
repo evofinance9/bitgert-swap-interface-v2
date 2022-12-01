@@ -1,6 +1,5 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
-// import { Link } from 'react-router-dom'
 import swal from 'sweetalert'
 import { Oval } from 'react-loader-spinner'
 
@@ -13,12 +12,10 @@ import { FaCopy, FaInfoCircle } from 'react-icons/fa'
 import Tooltip from 'components/Tooltip'
 
 import { ethers } from 'ethers'
-// import Form from 'react-bootstrap/Form'
 
 import { MaxUint256 } from '@ethersproject/constants'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import styled from 'styled-components'
 
 import { useActiveWeb3React } from 'hooks'
 import { useFarmContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
@@ -26,7 +23,6 @@ import { getFarmContract, getTokenContract, getSigCheckContract } from 'utils'
 import { FARM_ADDRESS } from 'constants/abis/farm'
 
 import { getAllFarmOwner } from './apicalls'
-// import getAllFarmUser from './apicalls'
 import {
   TableWrapper,
   Table,
@@ -37,32 +33,16 @@ import {
   ButtonContainer,
 } from './styleds'
 
-// const InputExtended = styled(Input)`
-//   width: 100px;
-// `
-
 export default function FarmsCreatedDirectory() {
   const { account, chainId, library } = useActiveWeb3React()
-  const [tokenDetails, setTokenDetails] = useState<any>({})
   const [farms, setFarms] = useState<any[]>([])
-  // const [farmID, setFarmID] = useState<any>()
-  // const [tokenAddress, setTokenAddress] = useState<string>('')
   const [isOwner, setIsOwner] = useState<boolean>(false)
-  const [pause, setPause] = useState<boolean>(false)
-  const [isMint, setIsMint] = useState<boolean>(false)
-  // const [farmReward, setFarmReward] = useState<boolean>(false)
   const [rewardBalance, setRewardBalance] = useState<string>('')
   const [bitgertToken, setBitgertToken] = useState<string>('')
-  // const [multiplier, setBonusMultiplier] = useState<string>('')
-  // const [bitgertPerBlock, setBitgertPerBlock] = useState<string>('')
-  // const [toBurn, setToBurn] = useState<string>('')
   const [tokenDecimals, setTokenDecimals] = useState<string>('')
   const [allowance, setAllowance] = useState<string>('')
   const [feeTooltip1, setFeeTooltip1] = useState<boolean>(false)
   const [feeTooltip2, setFeeTooltip2] = useState<boolean>(false)
-  // const [feeTooltip3, setFeeTooltip3] = useState<boolean>(false)
-  // const [feeTooltip4, setFeeTooltip4] = useState<boolean>(false)
-  // const [feeTooltip5, setFeeTooltip5] = useState<boolean>(false)
   const [txHash, setTxHash] = useState<string>('')
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
   const [isApproved, setIsApproved] = useState<boolean>(false)
@@ -92,10 +72,8 @@ export default function FarmsCreatedDirectory() {
 
       const farmDetails = getFarmContract(chainId, library, account)
 
-
       const farmBitgertToken = await farmDetails?.callStatic.bitgert()
       setBitgertToken(farmBitgertToken)
-
 
       const tokenContract = getTokenContract(farmBitgertToken, library, account)
 
@@ -121,7 +99,6 @@ export default function FarmsCreatedDirectory() {
 
           let count = 0
           for (let i = 0; i < response.length; i++) {
-            console.log(response)
             if (response[i].is_approved === true) {
               break
             } else {
@@ -129,7 +106,6 @@ export default function FarmsCreatedDirectory() {
             }
           }
           if (response.length === count) {
-            console.log('set to true')
             setText(true)
           }
         })

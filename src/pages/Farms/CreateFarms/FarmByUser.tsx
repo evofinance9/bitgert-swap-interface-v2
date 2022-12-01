@@ -57,7 +57,6 @@ const CssTextField = withStyles({
 export default function Farm() {
   const { account, chainId, library } = useActiveWeb3React()
   const [txHash, setTxHash] = useState<string>('')
-  const [owner, setOwner] = useState<string>('')
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)

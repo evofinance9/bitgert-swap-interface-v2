@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
 
 import { ethers } from 'ethers'
-import Form from 'react-bootstrap/Form'
 import { Link } from 'react-router-dom'
 
 import { BigNumber } from '@ethersproject/bignumber'
@@ -88,7 +87,12 @@ const LIQUIDITY_QUERY = gql`
 `
 
 const VOLUME_QUERY = gql`
-  query PairDayDatas($where: PairDayData_filter, $orderBy: PairDayData_orderBy, $orderDirection: OrderDirection, $first: Int) {
+  query PairDayDatas(
+    $where: PairDayData_filter
+    $orderBy: PairDayData_orderBy
+    $orderDirection: OrderDirection
+    $first: Int
+  ) {
     pairDayDatas(where: $where, orderBy: $orderBy, orderDirection: $orderDirection, first: $first) {
       id
       token0 {
@@ -134,7 +138,6 @@ const FarmUser = ({ farm }) => {
   const [feeTooltip7, setFeeTooltip7] = useState<boolean>(false)
 
   const { data, loading, refetch } = useQuery(PAIR_QUERY)
-  const [pairAddress, setPairAddress] = useState('0x77575200f7a35072e0c5e691b32b26286d43a973')
   const { data: liquidityGraphData, refetch: liquidityRefetch } = useQuery(LIQUIDITY_QUERY)
   const { data: volumeGraphData, refetch: volumeRefetch } = useQuery(VOLUME_QUERY)
 
@@ -187,7 +190,7 @@ const FarmUser = ({ farm }) => {
       const pausedOrNot = await farmDetails?.callStatic.isPaused(farm.pool_id - 1)
       setPause(pausedOrNot)
 
-      const farmBonusMultiplier = await farmDetails?.callStatic.BONUS_MULTIPLIER(farm.pool_id-1)
+      const farmBonusMultiplier = await farmDetails?.callStatic.BONUS_MULTIPLIER(farm.pool_id - 1)
       setBonusMultiplier(farmBonusMultiplier.toString())
 
       const farmToBurn = await farmDetails?.callStatic.toBurn(farm.pool_id - 1)
@@ -199,7 +202,6 @@ const FarmUser = ({ farm }) => {
       const sigCheckDetails = getSigCheckContract(chainId, library, account)
 
       const isOwnerOrNot = await sigCheckDetails?.callStatic.isOwner(account)
-      console.log(isOwnerOrNot)
       setIsOwner(isOwnerOrNot)
     }
 
@@ -224,15 +226,15 @@ const FarmUser = ({ farm }) => {
 
   useEffect(() => {
     if (farm?.token_address) {
-    liquidityRefetch({
-      where: {
-        id: farm.token_address.toLowerCase(),
-      },
-      orderBy: 'timestamp',
-      orderDirection: 'desc',
-      first: 1,
-    })
-  }
+      liquidityRefetch({
+        where: {
+          id: farm.token_address.toLowerCase(),
+        },
+        orderBy: 'timestamp',
+        orderDirection: 'desc',
+        first: 1,
+      })
+    }
   }, [farm.token_address, liquidityRefetch])
 
   useEffect(() => {
@@ -250,18 +252,19 @@ const FarmUser = ({ farm }) => {
 
   useEffect(() => {
     const fetch = async () => {
-      if (!volumeGraphData || !liquidityGraphData || !Array.isArray(volumeGraphData?.pairDayDatas) || !Array.isArray(liquidityGraphData?.pairs)) {
+      if (
+        !volumeGraphData ||
+        !liquidityGraphData ||
+        !Array.isArray(volumeGraphData?.pairDayDatas) ||
+        !Array.isArray(liquidityGraphData?.pairs)
+      ) {
         return
       }
-      const VolumeUSD365 = await (volumeGraphData.pairDayDatas[0].dailyVolumeUSD) * 365
-      console.log(VolumeUSD365)
-      const volumeUSD = VolumeUSD365 * 0.17 / 100
-      console.log(volumeUSD)
+      const VolumeUSD365 = (await volumeGraphData.pairDayDatas[0].dailyVolumeUSD) * 365
+      const volumeUSD = (VolumeUSD365 * 0.17) / 100
       const LIQ_GRPH = await liquidityGraphData.pairs[0].liquidityPositionSnapshots[0].liquidityTokenTotalSupply
-      console.log(LIQ_GRPH)
       if (LIQ_GRPH !== 0) {
         const APYValue = (volumeUSD / LIQ_GRPH) * 100
-        console.log(APYValue.toString())
         setAPY(APYValue.toString())
       } else {
         setAPY('')
@@ -432,11 +435,7 @@ const FarmUser = ({ farm }) => {
     setAttemptingTxn(true)
     await method(...args)
       .then((response) => {
-        swal(
-          'Congratulations!',
-          `The request to ${pause ? 'Unpause' : 'Pause'} the farm has been generated`,
-          'success'
-        )
+        swal('Congratulations!', `The request to ${pause ? 'Unpause' : 'Pause'} the farm has been generated`, 'success')
         setAttemptingTxn(false)
 
         setTxHash(response.hash)
@@ -793,7 +792,6 @@ const FarmUser = ({ farm }) => {
             </Flex>
           </td>
 
-          
           <td>
             <Flex>
               <ButtonContainer>

@@ -20,7 +20,6 @@ import './style.css'
 import { AppBodyExtended } from 'pages/AppBody'
 
 import { useActiveWeb3React } from 'hooks'
-import styled from 'styled-components'
 import { Heading, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
 
 import Container from 'components/Container'
@@ -56,17 +55,12 @@ const CssTextField = withStyles({
 
 export default function Farm() {
   const { account, chainId, library } = useActiveWeb3React()
-  const farmContract = useFarmContract(true)
-
-  const dateTimeContract = useDateTimeContract()
 
   const [txHash, setTxHash] = useState<string>('')
   const [owner, setOwner] = useState<string>('')
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  const [allowcationTooltip, setAllowcationTooltip] = useState<boolean>(false)
-  const [allowcationAmountTooltip, setAllowcationAmountTooltip] = useState<boolean>(false)
   const [feeTooltip, setFeeTooltip] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
@@ -95,13 +89,11 @@ export default function Farm() {
       setOwner(owner_addr)
 
       const tokenContract = getTokenContract(token_address, library, account)
-      console.log('yes coming')
-      console.log(tokenContract)
+
       const TName = await tokenContract?.callStatic.name()
       const TSymbol = await tokenContract?.callStatic.symbol()
       const TDecimals = await tokenContract?.callStatic.decimals()
 
-      console.log(TName, TSymbol, TDecimals)
       setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals }))
     }
     if (account && token_address && library instanceof ethers.providers.Web3Provider) {
@@ -117,10 +109,6 @@ export default function Farm() {
 
   const handleChange = (name) => (event) => {
     const value = event.target.value
-    setFormData({ ...formData, [name]: value })
-  }
-
-  const handleDateChange = (name, value) => {
     setFormData({ ...formData, [name]: value })
   }
 
@@ -141,10 +129,8 @@ export default function Farm() {
     await method(...args)
       .then(async (response: any) => {
         const txReceipt = await response.wait()
-        console.log('farm details :', txReceipt)
-        console.log('farmID :', txReceipt.events[0])
+
         const farmID = txReceipt.events[0].args.txIndex.toNumber()
-        //       const farmID = txReceipt.events[0].args.pid.toNumber()
         setAttemptingTxn(false)
         setTxHash(response.hash)
 
@@ -178,7 +164,6 @@ export default function Farm() {
         }
       })
   }
-
 
   const handleSubmit = (e) => {
     e.preventDefault()
