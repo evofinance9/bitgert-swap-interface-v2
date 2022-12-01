@@ -21,7 +21,8 @@ export enum ApprovalState {
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
-  spender?: string
+  spender?: string,
+  amount?: string
 ): [ApprovalState, () => Promise<void>] {
   const { account } = useActiveWeb3React()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
@@ -71,16 +72,16 @@ export function useApproveCallback(
       return
     }
 
-    let useExact = false
+    let useExact = true
     const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
       // general fallback for tokens who restrict approval amounts
       useExact = true
       return tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
     })
-    console.log(useExact)
+    console.log(`useExact ${useExact}`)
     // eslint-disable-next-line consistent-return
     return tokenContract
-      .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
+      .approve(spender, useExact ? amount || amountToApprove.raw.toString() : MaxUint256, {
         gasLimit: calculateGasMargin(estimatedGas),
       })
       .then((response: TransactionResponse) => {
@@ -93,7 +94,7 @@ export function useApproveCallback(
         console.error('Failed to approve token', error)
         throw error
       })
-  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction])
+  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction, amount])
 
   return [approvalState, approve]
 }

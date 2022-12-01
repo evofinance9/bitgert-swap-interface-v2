@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ethers } from 'ethers'
 import { TransactionResponse } from '@ethersproject/providers'
-import {JSBI, Token} from "@evofinance9/sdk"
+import { JSBI, Token } from '@evofinance9/sdk'
 import { Text, CardBody, IconButton, ArrowDownIcon, Button } from '@evofinance9/uikit'
 
 import Container from 'components/Container'
@@ -29,9 +29,9 @@ import { valuesProps } from './types'
 
 const Bridge = () => {
   const { account, chainId, library } = useActiveWeb3React()
-  const briseERC20 = chainId ? new Token (chainId, '0xB66651FE14178A10017053A2417565A88162eC17', 18) : null
+  const briseERC20 = chainId ? new Token(chainId, '0xB66651FE14178A10017053A2417565A88162eC17', 18) : null
 
-  console.log(JSBI.BigInt(100 * 10 ** 18))
+  console.log(JSBI.BigInt(100).toString())
 
   const [values, setValues] = useState<valuesProps>({
     input: 0,
@@ -83,7 +83,6 @@ const Bridge = () => {
       })
   }
 
-  
   const initiateBsc = async () => {
     if (!chainId || !library || !account) return
     if (!values.input || values.input < 100) return
@@ -97,7 +96,7 @@ const Bridge = () => {
     setAttemptingTxn(true)
     setIsOpen(true)
 
-    await method(...args, value ? {value} : {})
+    await method(...args, value ? { value } : {})
       .then((response) => {
         setAttemptingTxn(false)
         setTxHash(response.hash)
@@ -111,8 +110,6 @@ const Bridge = () => {
         }
       })
   }
-
-
 
   return (
     <Container>
@@ -158,7 +155,6 @@ const Bridge = () => {
                 </ContainerExt>
               </InputPanel>
             </AutoColumn>
-
             <AutoColumn justify="space-between">
               <AutoRow justify="center" style={{ padding: '0 1rem', margin: '1rem 0' }}>
                 <ArrowWrapper clickable>
@@ -175,7 +171,6 @@ const Bridge = () => {
                 </ArrowWrapper>
               </AutoRow>
             </AutoColumn>
-
             <AutoColumn gap="md">
               <InputPanel id="input_panel_2">
                 <ContainerExt hideInput={false}>
@@ -205,14 +200,14 @@ const Bridge = () => {
                 </ContainerExt>
               </InputPanel>
             </AutoColumn>
-
-            {briseERC20 && (
+            {isBnb && briseERC20 && (
               <ApproveButton token={briseERC20} amount={JSBI.BigInt(values.input * 10 ** 18)} func={initiateBsc} />
             )}
-
-            <Button style={{ width: '100%', margin: '2rem 0 0 0' }} onClick={initiateBrise}>
-              Enter
-            </Button>
+            {!isBnb && (
+              <Button style={{ width: '100%', margin: '2rem 0 0 0' }} onClick={initiateBrise}>
+                Enter
+              </Button>
+            )}
           </CardBody>
         </Wrapper>
       </AppBody>

@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react'
 import { TokenAmount, Token, BigintIsh, Currency, CurrencyAmount } from '@evofinance9/sdk'
 import { Button } from '@evofinance9/uikit'
 
-import { BRIDGE_BSC_ADDRESS} from 'constants/abis/bridge'
+import { BRIDGE_BSC_ADDRESS } from 'constants/abis/bridge'
 
 import { useApproveCallback, ApprovalState } from 'hooks/useApproveCallback'
 
@@ -17,13 +16,10 @@ interface ApproveButtonComponentProps {
 }
 
 const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => {
-  console.log(amount.toString())
-  console.log(token)
-  const amountToDeposit = new TokenAmount(token, CurrencyAmount.ether(amount))
-  console.log(`Testing: ${amountToDeposit.raw.toString()}`)
+  const amountToDeposit = new TokenAmount(token, amount)
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallback(amountToDeposit, BRIDGE_BSC_ADDRESS)
+  const [approval, approveCallback] = useApproveCallback(amountToDeposit, BRIDGE_BSC_ADDRESS, '100000000000000000000')
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -43,13 +39,13 @@ const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => 
 
   return (
     <>
-    hello
       {approval === ApprovalState.APPROVED ? (
-        <Button scale="md" variant="secondary" onClick={() => func()}>
+        <Button style={{ width: '100%', margin: '2rem 0' }} scale="md" variant="primary" onClick={() => func()}>
           Enter
         </Button>
       ) : (
         <Button
+          style={{ width: '100%', margin: '2rem 0' }}
           onClick={approveCallback}
           disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
           variant="primary"
