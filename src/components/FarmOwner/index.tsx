@@ -4,18 +4,12 @@ import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
 import swal from 'sweetalert'
 
 import { TransactionResponse } from '@ethersproject/providers'
-import styled from 'styled-components'
 
 import { useActiveWeb3React } from 'hooks'
 import { useFarmContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { updateFarmOwner } from 'pages/Farms/FarmsCreatedDirectory/apicalls'
 import { getFarmContract, getTokenContract, getSigCheckContract } from 'utils'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
-import { ChainId } from '@evofinance9/sdk'
-
-const InputExtended = styled(Input)`
-  width: 100px;
-`
 
 const FarmOwner = ({ farmID }) => {
   const { account, chainId, library } = useActiveWeb3React()
