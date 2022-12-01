@@ -1,5 +1,6 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
+import { ethers } from 'ethers'
 import { Trade, TokenAmount, CurrencyAmount, ETHER } from '@evofinance9/sdk'
 import { useCallback, useMemo } from 'react'
 import { ROUTER_ADDRESS } from '../constants'
@@ -22,7 +23,7 @@ export enum ApprovalState {
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string,
-  amount?: string
+  amount?: number
 ): [ApprovalState, () => Promise<void>] {
   const { account } = useActiveWeb3React()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
@@ -74,14 +75,14 @@ export function useApproveCallback(
 
     let useExact = true
     const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
-      // general fallback for tokens who restrict approval amounts
+      // general fallback for tokens who restrict approval ajmounts
       useExact = true
       return tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
     })
     console.log(`useExact ${useExact}`)
     // eslint-disable-next-line consistent-return
     return tokenContract
-      .approve(spender, useExact ? amount || amountToApprove.raw.toString() : MaxUint256, {
+      .approve(spender, useExact ? amount ? ethers.utils.parseUnits(amount.toString(), `18`).toString() : false || amountToApprove.raw.toString() : MaxUint256, {
         gasLimit: calculateGasMargin(estimatedGas),
       })
       .then((response: TransactionResponse) => {

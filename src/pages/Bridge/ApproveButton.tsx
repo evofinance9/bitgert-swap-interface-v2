@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react'
-import { TokenAmount, Token, BigintIsh, Currency, CurrencyAmount } from '@evofinance9/sdk'
+import { TokenAmount, Token, BigintIsh, Currency, CurrencyAmount, JSBI } from '@evofinance9/sdk'
 import { Button } from '@evofinance9/uikit'
 
 import { BRIDGE_BSC_ADDRESS } from 'constants/abis/bridge'
 
 import { useApproveCallback, ApprovalState } from 'hooks/useApproveCallback'
+import { bnMultiplyByDecimal } from 'utils'
 
 import Loader from 'components/Loader'
 import { AutoRow } from 'components/Row'
 
 interface ApproveButtonComponentProps {
   token: Token
-  amount: BigintIsh
+  amount: number
   func: () => Promise<void>
 }
 
 const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => {
-  const amountToDeposit = new TokenAmount(token, amount)
+  const amountToDeposit = new TokenAmount(token, JSBI.BigInt(10))
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallback(amountToDeposit, BRIDGE_BSC_ADDRESS, '100000000000000000000')
+  const [approval, approveCallback] = useApproveCallback(amountToDeposit, BRIDGE_BSC_ADDRESS, amount)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)

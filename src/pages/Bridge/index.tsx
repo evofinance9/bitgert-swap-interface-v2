@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { ethers } from 'ethers'
@@ -31,8 +31,6 @@ const Bridge = () => {
   const { account, chainId, library } = useActiveWeb3React()
   const briseERC20 = chainId ? new Token(chainId, '0xB66651FE14178A10017053A2417565A88162eC17', 18) : null
 
-  console.log(JSBI.BigInt(100).toString())
-
   const [values, setValues] = useState<valuesProps>({
     input: 0,
     output: 0,
@@ -42,7 +40,7 @@ const Bridge = () => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
-
+  
   const [isBnb, setIsBnb] = useState<boolean>(false)
 
   const handleChangeInput = (val: number) => {
@@ -110,6 +108,12 @@ const Bridge = () => {
         }
       })
   }
+
+  useEffect(() => {
+    if(chainId === 56 || chainId === 97) {
+      setIsBnb(true)
+    }
+  }, [chainId])
 
   return (
     <Container>
@@ -201,7 +205,7 @@ const Bridge = () => {
               </InputPanel>
             </AutoColumn>
             {isBnb && briseERC20 && (
-              <ApproveButton token={briseERC20} amount={JSBI.BigInt(values.input * 10 ** 18)} func={initiateBsc} />
+              <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />
             )}
             {!isBnb && (
               <Button style={{ width: '100%', margin: '2rem 0 0 0' }} onClick={initiateBrise}>
