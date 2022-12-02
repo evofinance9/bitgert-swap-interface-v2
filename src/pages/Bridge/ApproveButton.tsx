@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { ethers } from 'ethers'
 import { TokenAmount, Token, BigintIsh, Currency, CurrencyAmount, JSBI } from '@evofinance9/sdk'
 import { Button } from '@evofinance9/uikit'
 
@@ -13,7 +14,7 @@ import { AutoRow } from 'components/Row'
 interface ApproveButtonComponentProps {
   token: Token
   amount: number
-  func: () => Promise<void>
+  func: (amount: string) => Promise<void>
 }
 
 const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => {
@@ -41,7 +42,7 @@ const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => 
   return (
     <>
       {approval === ApprovalState.APPROVED ? (
-        <Button style={{ width: '100%', margin: '2rem 0' }} scale="md" variant="primary" onClick={() => func()}>
+        <Button style={{ width: '100%', margin: '2rem 0' }} scale="md" variant="primary" onClick={() => func(ethers.utils.parseUnits(amount.toString(), `18`).toString())}>
           Enter
         </Button>
       ) : (

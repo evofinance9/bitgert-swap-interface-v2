@@ -40,7 +40,7 @@ const Bridge = () => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  
+
   const [isBnb, setIsBnb] = useState<boolean>(false)
 
   const handleChangeInput = (val: number) => {
@@ -55,7 +55,7 @@ const Bridge = () => {
 
   const initiateBrise = async () => {
     if (!chainId || !library || !account) return
-    if (!values.input || values.input < 100) return
+    if (!values.input || values.input < 10) return
 
     const briseBridgeContract = getBriseBridgeContract(library, account)
 
@@ -81,14 +81,14 @@ const Bridge = () => {
       })
   }
 
-  const initiateBsc = async () => {
+  const initiateBsc = async (amount: string) => {
     if (!chainId || !library || !account) return
-    if (!values.input || values.input < 100) return
+    if (parseFloat(amount) < 10) return
 
-    const briseBridgeContract = getBscBridgeContract(library, account)
+    const bscBridgeContract = getBscBridgeContract(library, account)
 
-    const method: (...args: any) => Promise<TransactionResponse> = briseBridgeContract!.initiate
-    const args: Array<string> = [values.input.toString()]
+    const method: (...args: any) => Promise<TransactionResponse> = bscBridgeContract!.initiate
+    const args: Array<string> = [amount]
     const value: BigNumber | null = null
 
     setAttemptingTxn(true)
@@ -110,10 +110,41 @@ const Bridge = () => {
   }
 
   useEffect(() => {
-    if(chainId === 56 || chainId === 97) {
+    if (chainId === 56 || chainId === 97) {
       setIsBnb(true)
     }
   }, [chainId])
+
+  useEffect(() => {
+    async function checkAndSetNetwork() {
+      if (!window.ethereum) return
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ethers.utils.hexlify(97) }],
+        })
+      } catch (err) {
+        // This error code indicates that the chain has not been added to MetaMask
+        if (err) {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainName: 'Binance Smart Chain',
+                chainId: ethers.utils.hexlify(97),
+                nativeCurrency: { name: 'BNB', decimals: 18, symbol: 'BNB' },
+                rpcUrls: ['https://data-seed-prebsc-2-s1.binance.org:8545'],
+              },
+            ],
+          })
+        }
+      }
+    }
+
+    if (isBnb === true) {
+      checkAndSetNetwork()
+    }
+  }, [isBnb])
 
   return (
     <Container>
@@ -204,9 +235,7 @@ const Bridge = () => {
                 </ContainerExt>
               </InputPanel>
             </AutoColumn>
-            {isBnb && briseERC20 && (
-              <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />
-            )}
+            {isBnb && briseERC20 && <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />}
             {!isBnb && (
               <Button style={{ width: '100%', margin: '2rem 0 0 0' }} onClick={initiateBrise}>
                 Enter
