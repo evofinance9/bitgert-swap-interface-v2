@@ -5,7 +5,6 @@ import { Button, CardBody, Input, CardHeader, Flex } from '@evofinance9/uikit'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 
-import { TextField, withStyles } from '@material-ui/core'
 import { TransactionResponse } from '@ethersproject/providers'
 
 import { FaInfoCircle } from 'react-icons/fa'
@@ -15,7 +14,6 @@ import { addStakeOwner } from './apicalls'
 import { useStakeContract, useDateTimeContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
 import { STAKE_ADDRESS } from 'constants/abis/stake'
-// import getUnixTimestamp from 'utils/getUnixTimestamp'
 
 import './style.css'
 import { AppBodyExtended } from 'pages/AppBody'
@@ -27,38 +25,8 @@ import Container from 'components/Container'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import Tooltip from 'components/Tooltip'
 
-const CssTextField = withStyles({
-  root: {
-    '&': {
-      border: 'red',
-      borderRadius: '16px',
-    },
-    '& label.Mui-focused': {
-      color: '#aaa',
-    },
-
-    '& .MuiInputBase-input': {
-      color: '#F4EEFF',
-      backgroundColor: '#18191A',
-      borderRadius: '16px',
-      boxShadow: 'inset 0px 2px 2px -1px rgb(74 74 104 / 10%)',
-      display: 'block',
-      fontSize: '16px',
-      height: '48px',
-      outline: '0',
-      padding: '0 16px',
-    },
-    '& .MuiInputBase-input:focus': {
-      boxShadow: '0px 0px 0px 1px #7645D9,0px 0px 0px 4pxrgba(118,69,217,0.6)',
-    },
-  },
-})(TextField)
-
 export default function Stake() {
   const { account, chainId, library } = useActiveWeb3React()
-  const stakeContract = useStakeContract(true)
-
-  const dateTimeContract = useDateTimeContract()
 
   const [txHash, setTxHash] = useState<string>('')
   const [owner, setOwner] = useState<string>('')
@@ -83,7 +51,18 @@ export default function Stake() {
   })
 
   // destructure
-  const { token_address, token_name, token_decimal, token_symbol, reward_token_address, reward_token_name, reward_token_decimal, reward_token_symbol, bonusEndBlock, rewardPerBlock } = formData
+  const {
+    token_address,
+    token_name,
+    token_decimal,
+    token_symbol,
+    reward_token_address,
+    reward_token_name,
+    reward_token_decimal,
+    reward_token_symbol,
+    bonusEndBlock,
+    rewardPerBlock,
+  } = formData
 
   useEffect(() => {
     const fetch = async () => {
@@ -98,13 +77,21 @@ export default function Stake() {
       const TName = await tokenContract?.callStatic.name()
       const TSymbol = await tokenContract?.callStatic.symbol()
       const TDecimals = await tokenContract?.callStatic.decimals()
-      
+
       const rewardTokenContract = getTokenContract(reward_token_address, library, account)
       const RTName = await rewardTokenContract?.callStatic.name()
       const RTSymbol = await rewardTokenContract?.callStatic.symbol()
       const RTDecimals = await rewardTokenContract?.callStatic.decimals()
-      
-      setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals, reward_token_name: RTName, reward_token_symbol: RTSymbol, reward_token_decimal: RTDecimals }))
+
+      setFormData((prev) => ({
+        ...prev,
+        token_name: TName,
+        token_symbol: TSymbol,
+        token_decimal: TDecimals,
+        reward_token_name: RTName,
+        reward_token_symbol: RTSymbol,
+        reward_token_decimal: RTDecimals,
+      }))
     }
     if (account && library instanceof ethers.providers.Web3Provider) {
       fetch()
@@ -131,7 +118,14 @@ export default function Stake() {
 
     const stake = getSigCheckContract(chainId, library, account)
 
-    const payload = [STAKE_ADDRESS, 'add(address,address,uint256,uint256)', token_address, reward_token_address, bonusEndBlock, rewardPerBlock]
+    const payload = [
+      STAKE_ADDRESS,
+      'add(address,address,uint256,uint256)',
+      token_address,
+      reward_token_address,
+      bonusEndBlock,
+      rewardPerBlock,
+    ]
 
     const method: (...args: any) => Promise<TransactionResponse> =
       stake['submitTransaction(address,string,address,address,uint256,uint256)']

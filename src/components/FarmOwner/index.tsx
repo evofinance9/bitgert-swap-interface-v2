@@ -4,18 +4,12 @@ import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
 import swal from 'sweetalert'
 
 import { TransactionResponse } from '@ethersproject/providers'
-import styled from 'styled-components'
 
 import { useActiveWeb3React } from 'hooks'
 import { useFarmContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { updateFarmOwner } from 'pages/Farms/FarmsCreatedDirectory/apicalls'
 import { getFarmContract, getTokenContract, getSigCheckContract } from 'utils'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
-import { ChainId } from '@evofinance9/sdk'
-
-const InputExtended = styled(Input)`
-  width: 100px;
-`
 
 const FarmOwner = ({ farmID }) => {
   const { account, chainId, library } = useActiveWeb3React()
@@ -65,30 +59,24 @@ const FarmOwner = ({ farmID }) => {
               const farmEvent5 = farmDetails.filters.SubmitTransactionForAddrUpdate(null, farmID)
               const events5 = await farmDetails.queryFilter(farmEvent5, farmID)
               setEventDetails(events5[0].args)
-              console.log('events5: ', events5[0].args)
               NameOfFunction = events5[0].args!.funcSig
               param1 = events5[0].args!.arg1.toString()
             } else {
               setEventDetails(events4[0].args)
-              console.log('events4: ', events4[0].args)
               NameOfFunction = events4[0].args!.funcSig
-              // param1 = events4[0].args!.arg1.toString()
             }
           } else {
-            console.log('events3: ', events3[0].args)
             setEventDetails(events3[0].args)
             NameOfFunction = events3[0].args!.funcSig
             param1 = events3[0].args!.arg1.toString()
             param2 = events3[0].args!.arg2.toString()
           }
         } else {
-          console.log('events2: ', events2[0].args)
           setEventDetails(events2[0].args)
           NameOfFunction = events2[0].args!.funcSig
           param1 = events2[0].args!.arg1.toString()
         }
       } else {
-        console.log('events1: ', events1[0].args)
         setEventDetails(events1[0].args)
         NameOfFunction = events1[0].args!.funcSig
         param1 = events1[0].args!.arg1.toString()
@@ -98,18 +86,12 @@ const FarmOwner = ({ farmID }) => {
 
       const arr = NameOfFunction.split('(')
       const funcName = arr[0]
-      console.log('funcName:', funcName)
       setFunctionName(funcName)
 
       if (funcName === 'add') {
         const tokenContract = getTokenContract(param1, library, account)
         const TName = await tokenContract?.callStatic.name()
         const FinalText = `${TName} - AP: ${param2} - RPB: ${param3}`
-        console.log('TName: ', TName)
-        console.log('param1: ', param1)
-        console.log('param2: ', param2)
-        console.log('param3: ', param3)
-        console.log('FinalText:', FinalText)
         setTextValue(FinalText)
       } else if (funcName === 'updateBitgert') {
         const tokenContract = getTokenContract(param1, library, account)
@@ -118,14 +100,10 @@ const FarmOwner = ({ farmID }) => {
       } else if (funcName === 'updateIsMint') {
         const farm = getFarmContract(chainId, library, account)
         const isMint = await farm?.callStatic.isMint(param1)
-        console.log('param1: ', param1)
-        console.log('isMint: ', isMint)
         setTextValue(isMint ? 'Stop Mint' : 'Start Mint')
       } else if (funcName === 'setPause') {
         const farm = getFarmContract(chainId, library, account)
         const pausedOrNot = await farm?.callStatic.isPaused(param1)
-        console.log('param1: ', param1)
-        console.log('pausedOrNot: ', pausedOrNot)
         setTextValue(pausedOrNot ? 'Unpause' : 'Pause')
       } else if (funcName === 'emergencyWithdrawRewardToken') {
         setTextValue(param1)
@@ -140,7 +118,7 @@ const FarmOwner = ({ farmID }) => {
       } else if (funcName === 'updateMultiplier') {
         setTextValue(param2)
       } else if (funcName === 'massUpdatePools') {
-        setTextValue("update")
+        setTextValue('update')
       }
     }
 
@@ -165,8 +143,6 @@ const FarmOwner = ({ farmID }) => {
 
     const payload = [parseInt(farmID), approve]
 
-    console.log(payload)
-
     const method: (...args: any) => Promise<TransactionResponse> = farmDetails!.executeTransaction
     const args: Array<string | number | boolean> = payload
 
@@ -175,9 +151,7 @@ const FarmOwner = ({ farmID }) => {
 
     await method(...args)
       .then(async (response: any) => {
-        console.log(response)
         const txReceipt = await response.wait()
-        console.log('txReceipt: ', txReceipt)
         const poolID = await farmDetails?.callStatic.addId()
 
         if (poolID !== 0) {
@@ -225,16 +199,16 @@ const FarmOwner = ({ farmID }) => {
       <td>{functionName}</td>
       <td>{textValue}</td>
       <td>
-        { !decisionMade &&
-        <Flex justifyContent="space-around">
-          <Button scale="sm" variant="secondary" onClick={() => handleAllowance(true)}>
-            Authorize
-          </Button>
-          <Button scale="sm" variant="tertiary" style={{ marginLeft: '5px' }} onClick={() => handleAllowance(false)}>
-            Reject
-          </Button>
-        </Flex>
-        }
+        {!decisionMade && (
+          <Flex justifyContent="space-around">
+            <Button scale="sm" variant="secondary" onClick={() => handleAllowance(true)}>
+              Authorize
+            </Button>
+            <Button scale="sm" variant="tertiary" style={{ marginLeft: '5px' }} onClick={() => handleAllowance(false)}>
+              Reject
+            </Button>
+          </Flex>
+        )}
       </td>
     </tr>
   )

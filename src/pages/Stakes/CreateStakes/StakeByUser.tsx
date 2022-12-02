@@ -16,7 +16,6 @@ import { useStakeContract, useDateTimeContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
 
 import './style.css'
-import { Checkbox, useCheckboxState } from 'pretty-checkbox-react'
 import { AppBodyExtended } from 'pages/AppBody'
 
 import { useActiveWeb3React } from 'hooks'
@@ -58,18 +57,11 @@ const CssTextField = withStyles({
 
 export default function Stake() {
   const { account, chainId, library } = useActiveWeb3React()
-  // const stakeContract = useStakeContract(true)
 
-  // const dateTimeContract = useDateTimeContract()
-
-  // const checkbox = useCheckboxState({ state: [] })
   const [txHash, setTxHash] = useState<string>('')
-  // const [owner, setOwner] = useState<string>('')
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  // const [allowcationTooltip, setAllowcationTooltip] = useState<boolean>(false)
-  // const [allowcationAmountTooltip, setAllowcationAmountTooltip] = useState<boolean>(false)
   const [feeTooltip, setFeeTooltip] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
@@ -115,14 +107,21 @@ export default function Stake() {
       const TName = await tokenContract?.callStatic.name()
       const TSymbol = await tokenContract?.callStatic.symbol()
       const TDecimals = await tokenContract?.callStatic.decimals()
-      
+
       const rewardTokenContract = getTokenContract(reward_token_address, library, account)
       const RTName = await rewardTokenContract?.callStatic.name()
       const RTSymbol = await rewardTokenContract?.callStatic.symbol()
       const RTDecimals = await rewardTokenContract?.callStatic.decimals()
-      
-      setFormData((prev) => ({ ...prev, token_name: TName, token_symbol: TSymbol, token_decimal: TDecimals, reward_token_name: RTName, reward_token_symbol: RTSymbol, reward_token_decimal: RTDecimals }))
-    
+
+      setFormData((prev) => ({
+        ...prev,
+        token_name: TName,
+        token_symbol: TSymbol,
+        token_decimal: TDecimals,
+        reward_token_name: RTName,
+        reward_token_symbol: RTSymbol,
+        reward_token_decimal: RTDecimals,
+      }))
     }
     if (account && token_address && library instanceof ethers.providers.Web3Provider) {
       fetch()

@@ -1,6 +1,5 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react'
-// import { Link } from 'react-router-dom'
 import swal from 'sweetalert'
 import { Oval } from 'react-loader-spinner'
 
@@ -8,57 +7,18 @@ import './style.css'
 
 import Container from 'components/Container'
 import StakeUser from 'components/StakeUser'
-import { Button, CardBody, Input, Flex } from '@evofinance9/uikit'
-import { FaCopy, FaInfoCircle } from 'react-icons/fa'
-import Tooltip from 'components/Tooltip'
-
-import { ethers } from 'ethers'
-// import Form from 'react-bootstrap/Form'
-
-import { MaxUint256 } from '@ethersproject/constants'
-
-import { BigNumber } from '@ethersproject/bignumber'
-import { TransactionResponse } from '@ethersproject/providers'
-import styled from 'styled-components'
 
 import { useActiveWeb3React } from 'hooks'
 import { useStakeContract, useDateTimeContract, useTokenContract } from 'hooks/useContract'
 import { getStakeContract, getTokenContract, getSigCheckContract } from 'utils'
-import { STAKE_ADDRESS } from 'constants/abis/stake'
 
 import { getAllStakeOwner } from './apicalls'
-// import getAllStakeUser from './apicalls'
-import {
-  TableWrapper,
-  Table,
-  LoaderWrapper,
-  StyledText,
-  Flex as FlexExtended,
-  InputExtended,
-  ButtonContainer,
-} from './styleds'
-
-// const InputExtended = styled(Input)`
-//   width: 100px;
-// `
+import { TableWrapper, Table, LoaderWrapper, StyledText } from './styleds'
 
 export default function StakesCreatedDirectory() {
   const { account, chainId, library } = useActiveWeb3React()
-  const [tokenDetails, setTokenDetails] = useState<any>({})
   const [stakes, setStakes] = useState<any[]>([])
-  const [tokenAddress, setTokenAddress] = useState<string>('')
   const [isOwner, setIsOwner] = useState<boolean>(false)
-  const [pause, setPause] = useState<boolean>(false)
-  const [stakeReward, setStakeReward] = useState<boolean>(false)
-  const [rewardBalance, setRewardBalance] = useState<string>('')
-  const [tokenDecimals, setTokenDecimals] = useState<string>('')
-  const [totalBalance, setTotalBalance] = useState<string>('')
-  const [feeTooltip1, setFeeTooltip1] = useState<boolean>(false)
-  const [feeTooltip2, setFeeTooltip2] = useState<boolean>(false)
-  const [allowance, setAllowance] = useState<string>('')
-  const [txHash, setTxHash] = useState<string>('')
-  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
-  const [isApproved, setIsApproved] = useState<boolean>(false)
   const [text, setText] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -73,7 +33,6 @@ export default function StakesCreatedDirectory() {
   useEffect(() => {
     const fetchStakeList = async () => {
       setLoading(true)
-
 
       if (!chainId || !library || !account) return
 
@@ -114,7 +73,6 @@ export default function StakesCreatedDirectory() {
     const value = event.target.value
     setFormData({ ...formData, [name]: value })
   }
-
 
   return (
     <>

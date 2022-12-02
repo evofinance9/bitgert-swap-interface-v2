@@ -5,7 +5,7 @@ import { Card } from 'react-bootstrap'
 import { Button, Flex } from '@evofinance9/uikit'
 
 import moment from 'moment'
-import { StyledCard, StyledCardBody, Heading, Flex as FlexExtended, InputExtended, ButtonContainer } from './styleds'
+import { StyledCard, StyledCardBody, Heading, ButtonContainer } from './styleds'
 
 import './style.css'
 
@@ -50,7 +50,7 @@ export default function StakeCard({ data }: StakeCardProps) {
   return (
     <StyledCard>
       <StyledCardBody>
-        <Flex alignItems={'center'} justifyContent={'center'} >
+        <Flex alignItems={'center'} justifyContent={'center'}>
           <div className="presale__logo p-2">
             <img src={logo_url} alt={token_name} className="rounded" />
           </div>
@@ -72,7 +72,9 @@ export default function StakeCard({ data }: StakeCardProps) {
 
         <Flex justifyContent="space-between">
           <Card.Text className="custom-font-extended">Owner:</Card.Text>
-          <Card.Text className="custom-font-extended" style={{marginLeft: '5px'}}>{owner_address} </Card.Text>
+          <Card.Text className="custom-font-extended" style={{ marginLeft: '5px' }}>
+            {owner_address}{' '}
+          </Card.Text>
         </Flex>
 
         <Flex justifyContent="space-between">

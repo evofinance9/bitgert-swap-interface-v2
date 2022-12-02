@@ -100,16 +100,14 @@ const StakeUser = ({ stake }) => {
   })
 
   // destructure
-  const { owner_address, amount, EmissionRate, BonusEndBlock, WithdrawAmount, DepositRewardAmount} = formData
+  const { owner_address, amount, EmissionRate, BonusEndBlock, WithdrawAmount, DepositRewardAmount } = formData
 
   useEffect(() => {
     const fetch = async () => {
-
-      
       if (!chainId || !library || !account) return
-      
+
       // setIsCreator
-      if (stake.stakeCreator_id === account ) {
+      if (stake.stakeCreator_id === account) {
         setIsCreator(true)
       } else {
         setIsCreator(false)
@@ -117,50 +115,54 @@ const StakeUser = ({ stake }) => {
 
       // For sigCheck details
       const sigCheckDetails = getSigCheckContract(chainId, library, account)
-      
+
       const isOwnerOrNot = await sigCheckDetails?.callStatic.isOwner(account)
-      
+
       setIsOwner(isOwnerOrNot)
-      
+
       // For stake details
       const stakeDetails = getStakeContract(chainId, library, account)
-      
+
       const pausedOrNot = await stakeDetails?.callStatic.isPaused(stake.pool_id - 1)
       setPause(pausedOrNot)
-      
+
       const userDeposit = await stakeDetails?.callStatic.userInfo(stake.pool_id - 1, account)
       setDepositAmount(ethers.utils.formatEther(userDeposit.amount.toString()))
-      
+
       const poolInfo = await stakeDetails?.callStatic.poolInfo(stake.pool_id - 1)
       setRewardPerBlock(poolInfo.rewardPerBlock.toString())
       setStakeBonusEndBlock(poolInfo.bonusEndBlock.toString())
       const rewardToken = poolInfo.rewardToken.toString()
       setStakeRewardToken(poolInfo.rewardToken.toString())
-      setStakeRewardBalance(formatTokenAmount(poolInfo.rewardBalance.toString(), parseInt(stake.reward_token_decimal)).toString())
-      setStakedTokenBalance(formatTokenAmount(poolInfo.stakeBalance.toString(), parseInt(stake.token_decimal)).toString())
-      
+      setStakeRewardBalance(
+        formatTokenAmount(poolInfo.rewardBalance.toString(), parseInt(stake.reward_token_decimal)).toString()
+      )
+      setStakedTokenBalance(
+        formatTokenAmount(poolInfo.stakeBalance.toString(), parseInt(stake.token_decimal)).toString()
+      )
+
       const blockNumber = await library.getBlockNumber()
-      
+
       if (blockNumber > poolInfo.bonusEndBlock) {
         setRewardStop(true)
       } else {
         setRewardStop(false)
       }
-      
+
       // For reward token details
       const rewardTokenContract = getTokenContract(rewardToken, library, account)
-      
+
       const totalrewardAllowance = await rewardTokenContract?.callStatic.allowance(account, STAKE_ADDRESS)
       setAllowanceReward(ethers.utils.formatEther(totalrewardAllowance))
 
       const RTokenDecimals = await rewardTokenContract?.callStatic.decimals()
       setRewardTokenDecimals(RTokenDecimals)
-      
+
       // For stake token details
       const tokenContract = getTokenContract(stake.token_address, library, account)
-      
+
       setOnCopyValue(stake.token_address)
-      
+
       const accountBalance = await tokenContract?.callStatic.balanceOf(account)
       setBalance(ethers.utils.formatEther(accountBalance))
 
@@ -172,26 +174,35 @@ const StakeUser = ({ stake }) => {
       } else {
         setIsApproved(false)
       }
-      
     }
 
     fetch()
-  }, [stake, stake.stakeOwner_id, stake.token_address, account, library, amount, chainId, WithdrawAmount, DepositRewardAmount])
+  }, [
+    stake,
+    stake.stakeOwner_id,
+    stake.token_address,
+    account,
+    library,
+    amount,
+    chainId,
+    WithdrawAmount,
+    DepositRewardAmount,
+  ])
 
   useEffect(() => {
     if (stake?.token_address) {
-    priceRefetch({
-      where: {
-        token: stake.token_address.toLowerCase(),
-      },
-      orderBy: 'date',
-      orderDirection: 'desc',
-      first: 1,
-      tokensWhere2: {
-        id: stake.token_address.toLowerCase(),
-      },
-    })
-  }
+      priceRefetch({
+        where: {
+          token: stake.token_address.toLowerCase(),
+        },
+        orderBy: 'date',
+        orderDirection: 'desc',
+        first: 1,
+        tokensWhere2: {
+          id: stake.token_address.toLowerCase(),
+        },
+      })
+    }
   }, [stake.token_address, priceRefetch])
 
   useEffect(() => {
@@ -199,16 +210,12 @@ const StakeUser = ({ stake }) => {
       if (!priceGraphData || !Array.isArray(priceGraphData?.tokens)) {
         return
       }
-      const VolumeUSD365 = await (priceGraphData.tokens[0].tokenDayData[0].dailyVolumeUSD) * 365
-      console.log(VolumeUSD365)
+      const VolumeUSD365 = (await priceGraphData.tokens[0].tokenDayData[0].dailyVolumeUSD) * 365
       // calculate the fee share of liquidity providers in the pool (based on the 0.17% trading fee structure)
-      const volumeUSD = VolumeUSD365 * 0.17 / 100
-      console.log(volumeUSD)
+      const volumeUSD = (VolumeUSD365 * 0.17) / 100
       const LIQ_GRPH = await priceGraphData.tokens[0].tokenDayData[0].totalLiquidityUSD
-      console.log(LIQ_GRPH)
       if (LIQ_GRPH !== 0) {
         const APYValue = (volumeUSD / LIQ_GRPH) * 100
-        console.log(APYValue.toString())
         setAPY(APYValue.toString())
       } else {
         setAPY('')
@@ -235,7 +242,6 @@ const StakeUser = ({ stake }) => {
       setOnCopyValue(stake.token_address)
     }, 1500)
   }
-
 
   const handleEmergencyRewardWithdraw = async (stakeID) => {
     if (!chainId || !library || !account || !WithdrawAmount) return
@@ -282,13 +288,9 @@ const StakeUser = ({ stake }) => {
   }
 
   const handleAllowanceApprove = async () => {
-
     if (!chainId || !library || !account) return
 
     const tokenContract = getTokenContract(stakeRewardToken, library, account)
-
-    const TBalance = await tokenContract?.callStatic.balanceOf(account)
-    const TDecimals = await tokenContract?.callStatic.decimals()
 
     const payload = [STAKE_ADDRESS, MaxUint256]
 
@@ -323,7 +325,7 @@ const StakeUser = ({ stake }) => {
 
     const payload = [
       parseInt(stakeID) - 1,
-      ethers.utils.parseUnits(DepositRewardAmount.toString(), parseInt(rewardTokenDecimals)).toString()
+      ethers.utils.parseUnits(DepositRewardAmount.toString(), parseInt(rewardTokenDecimals)).toString(),
     ]
 
     const method: (...args: any) => Promise<TransactionResponse> = stakeDetails!.depositRewardToken
@@ -678,7 +680,9 @@ const StakeUser = ({ stake }) => {
           <Tooltip
             show={feeTooltip3}
             placement="bottom"
-            text={`Total Investment: ${stakedTokenBalance ? parseFloat(stakedTokenBalance).toFixed(8) : 0} ${stake.token_symbol}`}
+            text={`Total Investment: ${stakedTokenBalance ? parseFloat(stakedTokenBalance).toFixed(8) : 0} ${
+              stake.token_symbol
+            }`}
           >
             <FaInfoCircle
               color="grey"
@@ -737,149 +741,168 @@ const StakeUser = ({ stake }) => {
             content={() => <></>}
             pendingText="Please wait..."
           />
-          { isOwner && (
+          {isOwner && (
             <>
-          <td>
-            <Flex>
-              <ButtonContainer>
-                <Button scale="md" variant="secondary" onClick={() => handlePause(stake.pool_id)}>
-                  {`${pause ? 'Unpause' : 'Pause'}`}
-                </Button>
-              </ButtonContainer>
-            </Flex>
-          </td>
-
-          <td>
-            <Flex>
-              <ButtonContainer>
-                <Flex alignItems="center" justifyContent="space-around" style={{marginBottom: '10px'}}>
-                  <InputExtended
-                    placeholder="Update"
-                    scale="sm"
-                    style={{ marginRight: '5px', flex: '2'  }}
-                    value={EmissionRate}
-                    onChange={handleChange('EmissionRate')}
-                  />{' '}
-                  <Tooltip show={feeTooltip4} placement="top" text={` Reward Per Block: ${rewardPerBlock} `}>
-                    <FaInfoCircle
-                      color="grey"
-                      onMouseEnter={() => setFeeTooltip4(true)}
-                      onMouseLeave={() => setFeeTooltip4(false)}
-                    />
-                  </Tooltip>
+              <td>
+                <Flex>
+                  <ButtonContainer>
+                    <Button scale="md" variant="secondary" onClick={() => handlePause(stake.pool_id)}>
+                      {`${pause ? 'Unpause' : 'Pause'}`}
+                    </Button>
+                  </ButtonContainer>
                 </Flex>
-                <Button scale="md" variant="secondary" onClick={() => handleEmissionRate(stake.pool_id)}>
-                  Update Emission
-                </Button>
-              </ButtonContainer>
-            </Flex>
-          </td>
+              </td>
 
-          <td>
-          <Flex>
-              <ButtonContainer>
-                <Button scale="md" style={{ marginRight: '5px'}} variant="secondary" onClick={() => handleReward(stake.pool_id)}>
-                  {`${rewardStop ? 'Reward Stopped' : 'Stop Reward'}`}
-                </Button>
-             </ButtonContainer>
-          </Flex>
-          </td>
-
-          <td>
-            <Flex>
-              <ButtonContainer>
-                <Flex alignItems="center" justifyContent="space-between" style={{marginBottom: '10px'}}>
-                  <InputExtended
-                    placeholder="Update"
-                    scale="sm"
-                    style={{ marginRight: '5px', flex: '2' }}
-                    value={BonusEndBlock}
-                    onChange={handleChange('BonusEndBlock')}
-                  />{' '}
-                  <Tooltip show={feeTooltip5} placement="top" text={` Bonus End Block: ${stakeBonusEndBlock} `}>
-                    <FaInfoCircle
-                      color="grey"
-                      onMouseEnter={() => setFeeTooltip5(true)}
-                      onMouseLeave={() => setFeeTooltip5(false)}
-                    />
-                  </Tooltip>
+              <td>
+                <Flex>
+                  <ButtonContainer>
+                    <Flex alignItems="center" justifyContent="space-around" style={{ marginBottom: '10px' }}>
+                      <InputExtended
+                        placeholder="Update"
+                        scale="sm"
+                        style={{ marginRight: '5px', flex: '2' }}
+                        value={EmissionRate}
+                        onChange={handleChange('EmissionRate')}
+                      />{' '}
+                      <Tooltip show={feeTooltip4} placement="top" text={` Reward Per Block: ${rewardPerBlock} `}>
+                        <FaInfoCircle
+                          color="grey"
+                          onMouseEnter={() => setFeeTooltip4(true)}
+                          onMouseLeave={() => setFeeTooltip4(false)}
+                        />
+                      </Tooltip>
+                    </Flex>
+                    <Button scale="md" variant="secondary" onClick={() => handleEmissionRate(stake.pool_id)}>
+                      Update Emission
+                    </Button>
+                  </ButtonContainer>
                 </Flex>
+              </td>
 
-                <Flex>  
-                  <Button scale="md" variant="secondary" onClick={() => handleBonusEndBlock(stake.pool_id)}>
-                    Update Bonus End Block
-                  </Button>
+              <td>
+                <Flex>
+                  <ButtonContainer>
+                    <Button
+                      scale="md"
+                      style={{ marginRight: '5px' }}
+                      variant="secondary"
+                      onClick={() => handleReward(stake.pool_id)}
+                    >
+                      {`${rewardStop ? 'Reward Stopped' : 'Stop Reward'}`}
+                    </Button>
+                  </ButtonContainer>
                 </Flex>
-              </ButtonContainer>
-            </Flex>
-          </td>
+              </td>
 
-          <td>
-            <Flex>
-              <ButtonContainer>
-                <Flex alignItems="center" justifyContent="space-between" style={{marginBottom: '10px'}} >
-                  <InputExtended
-                    placeholder="Withdraw"
-                    style={{ marginRight: '5px', flex: '2' }}
-                    scale="sm"
-                    value={WithdrawAmount}
-                    onChange={handleChange('WithdrawAmount')}
-                  />
-                  </Flex>
+              <td>
+                <Flex>
+                  <ButtonContainer>
+                    <Flex alignItems="center" justifyContent="space-between" style={{ marginBottom: '10px' }}>
+                      <InputExtended
+                        placeholder="Update"
+                        scale="sm"
+                        style={{ marginRight: '5px', flex: '2' }}
+                        value={BonusEndBlock}
+                        onChange={handleChange('BonusEndBlock')}
+                      />{' '}
+                      <Tooltip show={feeTooltip5} placement="top" text={` Bonus End Block: ${stakeBonusEndBlock} `}>
+                        <FaInfoCircle
+                          color="grey"
+                          onMouseEnter={() => setFeeTooltip5(true)}
+                          onMouseLeave={() => setFeeTooltip5(false)}
+                        />
+                      </Tooltip>
+                    </Flex>
 
-                  <Flex> 
-                  <Button scale="md" variant="tertiary" onClick={() => handleEmergencyRewardWithdraw(stake.pool_id)}>
-                    Withdraw Reward
-                  </Button>
-                  </Flex>
-                </ButtonContainer>
-            </Flex>
-          </td>
-          </>
+                    <Flex>
+                      <Button scale="md" variant="secondary" onClick={() => handleBonusEndBlock(stake.pool_id)}>
+                        Update Bonus End Block
+                      </Button>
+                    </Flex>
+                  </ButtonContainer>
+                </Flex>
+              </td>
+
+              <td>
+                <Flex>
+                  <ButtonContainer>
+                    <Flex alignItems="center" justifyContent="space-between" style={{ marginBottom: '10px' }}>
+                      <InputExtended
+                        placeholder="Withdraw"
+                        style={{ marginRight: '5px', flex: '2' }}
+                        scale="sm"
+                        value={WithdrawAmount}
+                        onChange={handleChange('WithdrawAmount')}
+                      />
+                    </Flex>
+
+                    <Flex>
+                      <Button
+                        scale="md"
+                        variant="tertiary"
+                        onClick={() => handleEmergencyRewardWithdraw(stake.pool_id)}
+                      >
+                        Withdraw Reward
+                      </Button>
+                    </Flex>
+                  </ButtonContainer>
+                </Flex>
+              </td>
+            </>
           )}
 
           <td>
-          {(isOwner || isCreator) && (
-              <Flex alignItems='center' justifyContent='space-around'>
+            {(isOwner || isCreator) && (
+              <Flex alignItems="center" justifyContent="space-around">
                 <ButtonContainer>
-                <Flex alignItems="center" justifyContent="space-between" style={{marginBottom: '10px'}}>
-                  <InputExtended
-                    placeholder="Deposit"
-                    style={{ marginRight: '5px', flex: '2' }}
-                    scale="sm"
-                    value={DepositRewardAmount}
-                    onChange={handleChange('DepositRewardAmount')}
-                  />{' '}
-                  <Tooltip show={feeTooltip6} placement="top" text={`Total Rewards present: ${stakeRewardBalance ? parseFloat(stakeRewardBalance).toFixed(8) : 0} ${stake.reward_token_symbol}`}>
-                    <FaInfoCircle
-                      className="mx-2"
-                      color="grey"
-                      onMouseEnter={() => setFeeTooltip6(true)}
-                      onMouseLeave={() => setFeeTooltip6(false)}
-                    />
-                  </Tooltip>
+                  <Flex alignItems="center" justifyContent="space-between" style={{ marginBottom: '10px' }}>
+                    <InputExtended
+                      placeholder="Deposit"
+                      style={{ marginRight: '5px', flex: '2' }}
+                      scale="sm"
+                      value={DepositRewardAmount}
+                      onChange={handleChange('DepositRewardAmount')}
+                    />{' '}
+                    <Tooltip
+                      show={feeTooltip6}
+                      placement="top"
+                      text={`Total Rewards present: ${
+                        stakeRewardBalance ? parseFloat(stakeRewardBalance).toFixed(8) : 0
+                      } ${stake.reward_token_symbol}`}
+                    >
+                      <FaInfoCircle
+                        className="mx-2"
+                        color="grey"
+                        onMouseEnter={() => setFeeTooltip6(true)}
+                        onMouseLeave={() => setFeeTooltip6(false)}
+                      />
+                    </Tooltip>
                   </Flex>
                   <Flex>
-                  {(parseFloat(allowanceReward) < DepositRewardAmount || parseFloat(allowanceReward) === 0) && (
+                    {(parseFloat(allowanceReward) < DepositRewardAmount || parseFloat(allowanceReward) === 0) && (
+                      <Button
+                        scale="md"
+                        style={{ marginRight: '5px' }}
+                        variant="tertiary"
+                        onClick={handleAllowanceApprove}
+                      >
+                        Approve
+                      </Button>
+                    )}
                     <Button
                       scale="md"
                       style={{ marginRight: '5px' }}
                       variant="tertiary"
-                      onClick={handleAllowanceApprove}                   
+                      onClick={() => handleAllowanceDeposit(stake.pool_id)}
                     >
-                      Approve
+                      Deposit Reward
                     </Button>
-                  )}
-                   {/*  //  */}
-                  <Button scale="md" style={{ marginRight: '5px' }} variant="tertiary" onClick={() => handleAllowanceDeposit(stake.pool_id)}>
-                    Deposit Reward
-                  </Button>
-                  </Flex>  
+                  </Flex>
                 </ButtonContainer>
               </Flex>
             )}
-            </td>
-          </tr>
+          </td>
+        </tr>
       )}
     </>
   )

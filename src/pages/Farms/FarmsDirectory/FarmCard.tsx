@@ -46,7 +46,7 @@ export default function FarmCard({ data }: FarmCardProps) {
   return (
     <StyledCard>
       <StyledCardBody>
-        <Flex alignItems={'center'} justifyContent={'center'} >
+        <Flex alignItems={'center'} justifyContent={'center'}>
           <div className="farm__logo pb-2">
             <img src={logo_url} alt={token_name} className="rounded" />
           </div>
@@ -64,7 +64,9 @@ export default function FarmCard({ data }: FarmCardProps) {
 
         <Flex justifyContent={'space-between'}>
           <Card.Text className="custom-font-extended">Owner:</Card.Text>
-          <Card.Text style={{marginLeft: '5px'}} className="custom-font-extended">{owner_address} </Card.Text>
+          <Card.Text style={{ marginLeft: '5px' }} className="custom-font-extended">
+            {owner_address}{' '}
+          </Card.Text>
         </Flex>
 
         <Flex justifyContent={'space-between'}>
