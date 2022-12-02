@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ethers } from 'ethers'
 import { TransactionResponse } from '@ethersproject/providers'
-import { JSBI, Token } from '@evofinance9/sdk'
+import { Token } from '@evofinance9/sdk'
 import { Text, CardBody, IconButton, ArrowDownIcon, Button } from '@evofinance9/uikit'
 
 import Container from 'components/Container'
@@ -15,8 +15,6 @@ import { ArrowWrapper, Wrapper } from 'components/swap/styleds'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 
 import { useActiveWeb3React } from 'hooks'
-import { useToken } from 'hooks/Tokens'
-import { useBridgeContractBSC, useBridgeContractBrise } from 'hooks/useContract'
 
 import { getBriseBridgeContract, getBscBridgeContract } from 'utils'
 
