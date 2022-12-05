@@ -6,6 +6,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Token } from '@evofinance9/sdk'
 import { Text, CardBody, IconButton, ArrowDownIcon, Button } from '@evofinance9/uikit'
 
+import Card from 'components/Card'
 import Container from 'components/Container'
 import PageHeader from 'components/PageHeader'
 import { AutoRow, RowBetween } from 'components/Row'
@@ -172,9 +173,10 @@ const Bridge = () => {
                   <InputRow selected={false}>
                     <NumericalInput
                       className="token-amount-input-1"
+                      type="number"
                       value={values.input}
                       onUserInput={(val) => {
-                        handleChangeInput(parseFloat(val))
+                        handleChangeInput(parseFloat(val) || 0)
                       }}
                     />
                     <CurrencySelect selected={false}>
@@ -218,6 +220,7 @@ const Bridge = () => {
                     <NumericalInput
                       className="token-amount-input-2"
                       value={values.output}
+                      type="number"
                       onUserInput={(val) => {
                         // handleChangeInput(parseFloat(val))
                       }}
@@ -233,9 +236,22 @@ const Bridge = () => {
                 </ContainerExt>
               </InputPanel>
             </AutoColumn>
+
+            <Card padding="1rem .75rem 0 .75rem" borderRadius="20px">
+              <AutoColumn gap="4px">
+                <RowBetween align="center">
+                  <Text fontSize="14px" color="#333">
+                    Fee
+                  </Text>
+                  <Text fontSize="14px" color="#333">
+                    5%
+                  </Text>
+                </RowBetween>
+              </AutoColumn>
+            </Card>
             {isBnb && briseERC20 && <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />}
             {!isBnb && (
-              <Button style={{ width: '100%', margin: '2rem 0 0 0' }} onClick={initiateBrise}>
+              <Button style={{ width: '100%', margin: '1rem 0 0 0' }} onClick={initiateBrise} disabled={values.input < 10 || false}>
                 Enter
               </Button>
             )}
