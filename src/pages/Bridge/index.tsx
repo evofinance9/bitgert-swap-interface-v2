@@ -28,7 +28,7 @@ import { valuesProps } from './types'
 
 const Bridge = () => {
   const { account, chainId, library } = useActiveWeb3React()
-  const briseERC20 = chainId ? new Token(chainId, '0xB66651FE14178A10017053A2417565A88162eC17', 18) : null
+  const briseERC20 = chainId ? new Token(chainId, '0x8fff93e810a2edaafc326edee51071da9d398e83', 18) : null
 
   const [values, setValues] = useState<valuesProps>({
     input: 0,
@@ -120,7 +120,7 @@ const Bridge = () => {
       try {
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ethers.utils.hexlify(97) }],
+          params: [{ chainId: ethers.utils.hexlify(56) }],
         })
       } catch (err) {
         // This error code indicates that the chain has not been added to MetaMask
@@ -130,9 +130,9 @@ const Bridge = () => {
             params: [
               {
                 chainName: 'Binance Smart Chain',
-                chainId: ethers.utils.hexlify(97),
+                chainId: ethers.utils.hexlify(56),
                 nativeCurrency: { name: 'BNB', decimals: 18, symbol: 'BNB' },
-                rpcUrls: ['https://data-seed-prebsc-2-s1.binance.org:8545'],
+                rpcUrls: ['https://bsc-dataseed.binance.org/'],
               },
             ],
           })

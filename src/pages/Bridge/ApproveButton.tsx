@@ -42,7 +42,12 @@ const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => 
   return (
     <>
       {approval === ApprovalState.APPROVED ? (
-        <Button style={{ width: '100%', margin: '2rem 0' }} scale="md" variant="primary" onClick={() => func(ethers.utils.parseUnits(amount.toString(), `18`).toString())}>
+        <Button
+          style={{ width: '100%', margin: '2rem 0' }}
+          scale="md"
+          variant="primary"
+          onClick={() => func(ethers.utils.parseUnits(amount.toString(), `18`).toString())}
+        >
           Enter
         </Button>
       ) : (
