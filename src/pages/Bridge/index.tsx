@@ -43,7 +43,7 @@ const Bridge = () => {
   const [isBnb, setIsBnb] = useState<boolean>(false)
 
   const handleChangeInput = (val: number) => {
-    setValues({ input: val, output: val * (5 / 100) })
+    setValues({ input: val, output: val - (val * (5 / 10000)) })
   }
 
   const handleDismissConfirmation = () => {
@@ -244,7 +244,7 @@ const Bridge = () => {
                     Fee
                   </Text>
                   <Text fontSize="14px" color="#333">
-                    5%
+                    0.05%
                   </Text>
                 </RowBetween>
               </AutoColumn>
