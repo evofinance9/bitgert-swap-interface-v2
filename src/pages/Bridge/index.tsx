@@ -28,7 +28,7 @@ import { valuesProps } from './types'
 
 const Bridge = () => {
   const { account, chainId, library } = useActiveWeb3React()
-  const briseERC20 = chainId ? new Token(chainId, '0x8fff93e810a2edaafc326edee51071da9d398e83', 18) : null
+  const briseERC20 = chainId ? new Token(chainId, '0x8FFf93E810a2eDaaFc326eDEE51071DA9d398E83', 9) : null
 
   const [values, setValues] = useState<valuesProps>({
     input: 0,
@@ -43,7 +43,7 @@ const Bridge = () => {
   const [isBnb, setIsBnb] = useState<boolean>(false)
 
   const handleChangeInput = (val: number) => {
-    setValues({ input: val, output: val - (val * (5 / 10000)) })
+    setValues({ input: val, output: val - val * (5 / 10000) })
   }
 
   const handleDismissConfirmation = () => {
@@ -82,7 +82,7 @@ const Bridge = () => {
 
   const initiateBsc = async (amount: string) => {
     if (!chainId || !library || !account) return
-    if (parseFloat(amount) < 10) return
+    if (parseFloat(amount) < 1) return
 
     const bscBridgeContract = getBscBridgeContract(library, account)
 
@@ -153,7 +153,7 @@ const Bridge = () => {
         attemptingTxn={attemptingTxn}
         hash={txHash}
         content={() => <></>}
-        pendingText="It may take 5-6 minutes to receive. Please wait..."
+        pendingText="It may take 5-20 minutes to receive. Please wait..."
       />
 
       <AppBody>
@@ -249,9 +249,15 @@ const Bridge = () => {
                 </RowBetween>
               </AutoColumn>
             </Card>
-            {isBnb && briseERC20 && <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />}
+            {isBnb && briseERC20 && values.input > 10000000 && values.input < 500000000 && (
+              <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />
+            )}
             {!isBnb && (
-              <Button style={{ width: '100%', margin: '1rem 0 0 0' }} onClick={initiateBrise} disabled={values.input < 10 || false}>
+              <Button
+                style={{ width: '100%', margin: '1rem 0 0 0' }}
+                onClick={initiateBrise}
+                disabled={(values.input > 10000000 && values.input < 500000000) || false}
+              >
                 Enter
               </Button>
             )}

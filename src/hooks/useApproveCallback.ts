@@ -23,7 +23,8 @@ export enum ApprovalState {
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string,
-  amount?: number
+  amount?: number,
+  decimalsCus?: number
 ): [ApprovalState, () => Promise<void>] {
   const { account } = useActiveWeb3React()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
@@ -82,7 +83,7 @@ export function useApproveCallback(
     console.log(`useExact ${useExact}`)
     // eslint-disable-next-line consistent-return
     return tokenContract
-      .approve(spender, useExact ? amount ? ethers.utils.parseUnits(amount.toString(), `18`).toString() : false || amountToApprove.raw.toString() : MaxUint256, {
+      .approve(spender, useExact ? amount ? ethers.utils.parseUnits(amount.toString(), decimalsCus || `18`).toString() : false || amountToApprove.raw.toString() : MaxUint256, {
         gasLimit: calculateGasMargin(estimatedGas),
       })
       .then((response: TransactionResponse) => {
@@ -95,7 +96,7 @@ export function useApproveCallback(
         console.error('Failed to approve token', error)
         throw error
       })
-  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction, amount])
+  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction, amount, decimalsCus])
 
   return [approvalState, approve]
 }

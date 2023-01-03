@@ -18,18 +18,24 @@ interface ApproveButtonComponentProps {
 }
 
 const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => {
-  const amountToDeposit = new TokenAmount(token, JSBI.BigInt(10))
+  const amountToDeposit = new TokenAmount(token, JSBI.BigInt(amount))
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallback(amountToDeposit, BRIDGE_BSC_ADDRESS, amount)
+  const [approval, approveCallback] = useApproveCallback(amountToDeposit, BRIDGE_BSC_ADDRESS, amount, 9)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
+    console.log("Triggerd...")
+    if(approval === ApprovalState.UNKNOWN) {
+      setLoading(true)
+    } else if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
+    } else {
+      setLoading(false)
     }
   }, [approval, approvalSubmitted])
 
@@ -39,6 +45,7 @@ const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => 
     approval === ApprovalState.PENDING ||
     (approvalSubmitted && approval === ApprovalState.APPROVED)
 
+
   return (
     <>
       {approval === ApprovalState.APPROVED ? (
@@ -46,7 +53,7 @@ const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => 
           style={{ width: '100%', margin: '2rem 0' }}
           scale="md"
           variant="primary"
-          onClick={() => func(ethers.utils.parseUnits(amount.toString(), `18`).toString())}
+          onClick={() => func(ethers.utils.parseUnits(amount.toString(), `9`).toString())}
         >
           Enter
         </Button>
@@ -62,7 +69,7 @@ const ApproveButton = ({ token, amount, func }: ApproveButtonComponentProps) => 
               Approving <Loader stroke="white" />
             </AutoRow>
           ) : (
-            `Approve`
+            loading ? `Checking allowance...` : `Approve`
           )}
         </Button>
       )}
