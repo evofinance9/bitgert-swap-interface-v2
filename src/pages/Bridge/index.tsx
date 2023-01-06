@@ -54,7 +54,7 @@ const Bridge = () => {
 
   const initiateBrise = async () => {
     if (!chainId || !library || !account) return
-    if (!values.input || values.input < 10) return
+    if (!values.input || values.input < 4) return
 
     const briseBridgeContract = getBriseBridgeContract(library, account)
 
@@ -238,7 +238,26 @@ const Bridge = () => {
             </AutoColumn>
 
             <Card padding="1rem .75rem 0 .75rem" borderRadius="20px">
+              <AutoColumn gap="4px" />
+            </Card>
+            {isBnb && briseERC20 && (values.input >= 4 && values.input <= 500000000) && (
+              <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />
+            )}
+            {!isBnb && (
+              <Button
+                style={{ width: '100%', margin: '1rem 0 0 0' }}
+                onClick={initiateBrise}
+                disabled={!(values.input >= 4 && values.input <= 500000000)}
+              >
+                Enter
+              </Button>
+            )}
+            <Card padding="1rem .75rem 0 .75rem" borderRadius="20px">
               <AutoColumn gap="4px">
+                <Text fontSize="15px" color="#000">
+                  Note
+                </Text>
+
                 <RowBetween align="center">
                   <Text fontSize="14px" color="#333">
                     Fee
@@ -247,20 +266,25 @@ const Bridge = () => {
                     0.05%
                   </Text>
                 </RowBetween>
+                <RowBetween align="center">
+                  <Text fontSize="14px" color="#333">
+                    Minimum amount
+                  </Text>
+                  <Text fontSize="14px" color="#333">
+                    10000000 BRISE
+                  </Text>
+                </RowBetween>
+
+                <RowBetween align="center">
+                  <Text fontSize="14px" color="#333">
+                    Maximum amount
+                  </Text>
+                  <Text fontSize="14px" color="#333">
+                    500000000 BRISE
+                  </Text>
+                </RowBetween>
               </AutoColumn>
             </Card>
-            {isBnb && briseERC20 && values.input > 10000000 && values.input < 500000000 && (
-              <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />
-            )}
-            {!isBnb && (
-              <Button
-                style={{ width: '100%', margin: '1rem 0 0 0' }}
-                onClick={initiateBrise}
-                disabled={(values.input > 10000000 && values.input < 500000000) || false}
-              >
-                Enter
-              </Button>
-            )}
           </CardBody>
         </Wrapper>
       </AppBody>

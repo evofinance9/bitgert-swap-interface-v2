@@ -13,7 +13,7 @@ const config: MenuEntry[] = [
   },
   {
     label: 'Bridge',
-    icon: 'TradeIcon',
+    icon: 'TicketIcon',
     href: '/bridge',
   },
   {
