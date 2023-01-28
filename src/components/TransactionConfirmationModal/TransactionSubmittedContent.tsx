@@ -25,7 +25,7 @@ const TransactionSubmittedContent = ({ onDismiss, chainId, hash }: TransactionSu
         </ConfirmedIcon>
         <AutoColumn gap="8px" justify="center">
           {chainId && hash && (
-            <LinkExternal href={getBscScanLink(chainId, hash, 'transaction')}>View on BriseScan</LinkExternal>
+            <LinkExternal href={getBscScanLink(chainId, hash, 'transaction')}>View Transaction</LinkExternal>
           )}
           <Button onClick={onDismiss} mt="20px">
             Close

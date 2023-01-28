@@ -7,9 +7,10 @@ import RecentTransactionsModal from './RecentTransactionsModal'
 
 interface PageHeaderProps {
   title: ReactNode
-  showSettings?: boolean
   description?: ReactNode
   children?: ReactNode
+  showSettings?: boolean
+  hideSllipage?: boolean
 }
 
 const StyledPageHeader = styled.div`
@@ -21,7 +22,7 @@ const Details = styled.div`
   flex: 1;
 `
 
-const PageHeader = ({ title, description, children, showSettings = true }: PageHeaderProps) => {
+const PageHeader = ({ title, description, children, showSettings = true, hideSllipage = false }: PageHeaderProps) => {
   const TranslateString = useI18n()
   const [onPresentSettings] = useModal(<SettingsModal translateString={TranslateString} />)
   const [onPresentRecentTransactions] = useModal(<RecentTransactionsModal translateString={TranslateString} />)
@@ -40,9 +41,11 @@ const PageHeader = ({ title, description, children, showSettings = true }: PageH
 
         {showSettings && (
           <>
-            <IconButton variant="text" onClick={onPresentSettings} title={TranslateString(1200, 'Settings')}>
-              <TuneIcon width="24px" color="currentColor" />
-            </IconButton>
+            {!hideSllipage && (
+              <IconButton variant="text" onClick={onPresentSettings} title={TranslateString(1200, 'Settings')}>
+                <TuneIcon width="24px" color="currentColor" />
+              </IconButton>
+            )}
             <IconButton
               variant="text"
               onClick={onPresentRecentTransactions}

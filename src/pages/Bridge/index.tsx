@@ -18,17 +18,18 @@ import TransactionConfirmationModal from 'components/TransactionConfirmationModa
 import { useActiveWeb3React } from 'hooks'
 
 import { getBriseBridgeContract, getBscBridgeContract } from 'utils'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 
 import ApproveButton from './ApproveButton'
 
 import AppBody from '../AppBody'
-
 import { InputRow, CurrencySelect, LabelRow, Aligner, InputPanel, Container as ContainerExt } from './styleds'
 import { valuesProps } from './types'
 
 const Bridge = () => {
   const { account, chainId, library } = useActiveWeb3React()
   const briseERC20 = chainId ? new Token(chainId, '0x8FFf93E810a2eDaaFc326eDEE51071DA9d398E83', 9) : null
+  const addTransaction = useTransactionAdder()
 
   const [values, setValues] = useState<valuesProps>({
     input: 0,
@@ -39,6 +40,8 @@ const Bridge = () => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [showSettings] = useState<boolean>(true)
+  const [hideSllipage] = useState<boolean>(true)
 
   const [isBnb, setIsBnb] = useState<boolean>(false)
 
@@ -69,6 +72,9 @@ const Bridge = () => {
       .then((response) => {
         setAttemptingTxn(false)
         setTxHash(response.hash)
+        addTransaction(response, {
+          summary: "Bridged Brise to BSC"
+        })
       })
       .catch((e) => {
         setAttemptingTxn(false)
@@ -97,6 +103,9 @@ const Bridge = () => {
       .then((response) => {
         setAttemptingTxn(false)
         setTxHash(response.hash)
+        addTransaction(response, {
+          summary: "Bridged BSC to Brise"
+        })
       })
       .catch((e) => {
         setAttemptingTxn(false)
@@ -158,7 +167,7 @@ const Bridge = () => {
 
       <AppBody>
         <Wrapper id="swap-page">
-          <PageHeader title="Bridge" description="Bridge tokens in an instant" showSettings={false} />
+          <PageHeader title="Bridge" description="Bridge tokens in an instant" showSettings={showSettings} hideSllipage={hideSllipage} />
           <CardBody>
             <AutoColumn gap="md">
               <InputPanel id="input_panel_1">
