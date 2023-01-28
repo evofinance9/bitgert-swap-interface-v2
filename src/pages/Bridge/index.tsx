@@ -57,7 +57,7 @@ const Bridge = () => {
 
   const initiateBrise = async () => {
     if (!chainId || !library || !account) return
-    if (!values.input || values.input < 4) return
+    if (!values.input || values.input < 10000000 || values.input > 500000000) return
 
     const briseBridgeContract = getBriseBridgeContract(library, account)
 
@@ -88,7 +88,7 @@ const Bridge = () => {
 
   const initiateBsc = async (amount: string) => {
     if (!chainId || !library || !account) return
-    if (parseFloat(amount) < 1) return
+    if (!values.input || parseFloat(amount) < 10000000 || parseFloat(amount) > 500000000) return
 
     const bscBridgeContract = getBscBridgeContract(library, account)
 
@@ -249,14 +249,14 @@ const Bridge = () => {
             <Card padding="1rem .75rem 0 .75rem" borderRadius="20px">
               <AutoColumn gap="4px" />
             </Card>
-            {isBnb && briseERC20 && (values.input >= 4 && values.input <= 500000000) && (
+            {isBnb && briseERC20 && (values.input >= 10000000 && values.input <= 500000000) && (
               <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />
             )}
             {!isBnb && (
               <Button
                 style={{ width: '100%', margin: '1rem 0 0 0' }}
                 onClick={initiateBrise}
-                disabled={!(values.input >= 4 && values.input <= 500000000)}
+                disabled={!(values.input >= 10000000 && values.input <= 500000000)}
               >
                 Enter
               </Button>
