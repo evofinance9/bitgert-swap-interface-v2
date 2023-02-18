@@ -183,7 +183,20 @@ const CreateToken = () => {
                     <ListItem>Symbol: {token_symbol}</ListItem>
                     <ListItem>Decimal: {token_decimal} </ListItem>
                     <ListItem>Total Supply: {total_supply} </ListItem>
-                    <ListItem>Contract Code: </ListItem>
+                    <ListItem>
+                      Contract Code:
+                      <Button
+                        onClick={() => {
+                          navigator.clipboard.writeText(CODE)
+                        }}
+                        scale="xs"
+                        style={{
+                          float: 'right',
+                        }}
+                      >
+                        Copy
+                      </Button>
+                    </ListItem>
                     <TextArea>{CODE}</TextArea>
                   </List>
                 </div>
