@@ -165,7 +165,7 @@ const CreateToken = () => {
           <CardHeader>
             <Flex alignItems={'center'} justifyContent={'space-between'}>
               <Heading>Create BRC20 Token</Heading>
-              <Tooltip show={feeTooltip} placement="right" text="Fee: 200000000 BRISE">
+              <Tooltip show={feeTooltip} placement="right" text="Fee: 100000000 BRISE">
                 <FaInfoCircle onMouseEnter={() => setFeeTooltip(true)} onMouseLeave={() => setFeeTooltip(false)} />
               </Tooltip>
             </Flex>
