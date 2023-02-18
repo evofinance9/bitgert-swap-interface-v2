@@ -35,6 +35,7 @@ export const Flex = styled.div`
   gap: 1rem;
 `
 
+
 export const InputExtension = styled.label`
   margin-left: 1rem;
   color: #000;

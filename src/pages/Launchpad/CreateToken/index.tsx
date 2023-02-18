@@ -15,7 +15,58 @@ import Tooltip from 'components/Tooltip'
 
 import { AppBodyExtended } from 'pages/AppBody'
 
-import { InputExtended, Heading, ButtonContainer, List, ListItem } from './styleds'
+import { InputExtended, Heading, ButtonContainer, List, ListItem, TextArea } from './styleds'
+
+const CODE = `
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.7;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+import "./Token.sol";
+
+contract Master is Ownable {
+    uint256 public fee;
+    address public feeReceiver;
+
+    event DepositFee(address indexed sender, uint value);
+    event TokenCreated(address indexed token);
+
+    constructor() Ownable() {
+        feeReceiver = msg.sender;
+        fee = 0;
+    }
+
+    function createToken(
+        string memory name,
+        string memory symbol,
+        uint8 decimal,
+        uint256 initialSupply
+    ) public payable returns (address) {
+        require(msg.value >= fee, "Not enough fee");
+
+        bool sent = payable(feeReceiver).send(msg.value);
+        require(sent, "Failed to send Fee");
+
+        emit DepositFee(msg.sender, msg.value);
+
+        Token token = new Token(name, symbol, decimal, initialSupply);
+
+        emit TokenCreated(address(token));
+
+        return address(token);
+    }
+
+    function setFeeReceiver(address _feeReceiver) public virtual onlyOwner {
+        feeReceiver = _feeReceiver;
+    }
+
+    function setFee(uint256 _fee) public virtual onlyOwner {
+        fee = _fee;
+    }
+}
+
+`
 
 const CreateToken = () => {
   const { account, chainId, library } = useActiveWeb3React()
@@ -23,6 +74,7 @@ const CreateToken = () => {
   const [txHash, setTxHash] = useState<string>('')
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const [success, setSuccess] = useState<boolean>(false)
   const [currentFee, setCurrentFee] = useState('0')
   const [tokenAddress, setTokenAddress] = useState<string>('')
@@ -63,15 +115,16 @@ const CreateToken = () => {
     const value: BigNumber = ethers.utils.parseEther(`${currentFee}`)
 
     setAttemptingTxn(true)
+    setIsOpen(true)
     await method(...args, {
       value: value,
     })
       .then(async (response) => {
-        setAttemptingTxn(false)
         setTxHash(response.hash)
         const txReceipt: any = await response.wait()
         setTokenAddress(txReceipt?.events[2]?.args?.token)
         setSuccess(true)
+        setAttemptingTxn(false)
       })
       .catch((e) => {
         setAttemptingTxn(false)
@@ -97,20 +150,19 @@ const CreateToken = () => {
   return (
     <>
       <Container>
-        {txHash && (
-          <TransactionConfirmationModal
-            isOpen={true}
-            onDismiss={handleDismissConfirmation}
-            attemptingTxn={false}
-            hash={txHash}
-            content={() => (
-              <>
-                <p>Token Address </p>
-              </>
-            )}
-            pendingText={''}
-          />
-        )}
+        <TransactionConfirmationModal
+          isOpen={isOpen}
+          onDismiss={handleDismissConfirmation}
+          attemptingTxn={attemptingTxn}
+          hash={txHash}
+          content={() => (
+            <>
+              <p>Token Address </p>
+            </>
+          )}
+          pendingText={''}
+        />
+
         <AppBodyExtended>
           <CardHeader>
             <Flex alignItems={'center'} justifyContent={'space-between'}>
@@ -131,6 +183,8 @@ const CreateToken = () => {
                     <ListItem>Symbol: {token_symbol}</ListItem>
                     <ListItem>Decimal: {token_decimal} </ListItem>
                     <ListItem>Total Supply: {total_supply} </ListItem>
+                    <ListItem>Contract Code: </ListItem>
+                    <TextArea>{CODE}</TextArea>
                   </List>
                 </div>
               </div>
