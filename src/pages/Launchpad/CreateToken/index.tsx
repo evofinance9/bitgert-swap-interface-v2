@@ -156,9 +156,7 @@ const CreateToken = () => {
           attemptingTxn={attemptingTxn}
           hash={txHash}
           content={() => (
-            <>
-              <p>Token Address </p>
-            </>
+            <></>
           )}
           pendingText={''}
         />
