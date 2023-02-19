@@ -95,6 +95,7 @@ const CreateToken = () => {
   }
 
   const handleDismissConfirmation = () => {
+    setIsOpen(false)
     setShowConfirm(false)
     setTxHash('')
   }
