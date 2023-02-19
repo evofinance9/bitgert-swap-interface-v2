@@ -124,7 +124,6 @@ const CreateToken = () => {
         setTxHash(response.hash)
         const txReceipt: any = await response.wait()
         setTokenAddress(txReceipt?.events[2]?.args?.token)
-        setSuccess(true)
         setAttemptingTxn(false)
       })
       .catch((e) => {
