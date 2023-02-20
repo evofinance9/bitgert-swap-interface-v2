@@ -104,7 +104,7 @@ const Dashboard = () => {
         </Column>
       </ContainerExtended>
 
-      <TopTradingAssets />
+      {/* <TopTradingAssets /> */}
     </>
   )
 }
