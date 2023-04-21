@@ -9,6 +9,7 @@ import { Text, CardBody, IconButton, ArrowDownIcon, Button } from '@evofinance9/
 import Card from 'components/Card'
 import Container from 'components/Container'
 import PageHeader from 'components/PageHeader'
+import BridgeCardNav from "components/CardNav/BridgeCardNav"
 import { AutoRow, RowBetween } from 'components/Row'
 import { AutoColumn } from 'components/Column'
 import { Input as NumericalInput } from 'components/NumericalInput'
@@ -25,6 +26,7 @@ import ApproveButton from './ApproveButton'
 import AppBody from '../AppBody'
 import { InputRow, CurrencySelect, LabelRow, Aligner, InputPanel, Container as ContainerExt } from './styleds'
 import { valuesProps } from './types'
+
 
 const Bridge = () => {
   const { account, chainId, library } = useActiveWeb3React()
@@ -164,6 +166,7 @@ const Bridge = () => {
         content={() => <></>}
         pendingText="It may take 5-20 minutes to receive. Please wait..."
       />
+    <BridgeCardNav />        
 
       <AppBody>
         <Wrapper id="swap-page">

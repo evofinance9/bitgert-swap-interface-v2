@@ -1,6 +1,6 @@
 export interface valuesProps {
-  input: number
-  output: number
+  briseChainValue: number
+  bscChainValue: number
 }
 
 export default {}
