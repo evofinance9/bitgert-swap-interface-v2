@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import { BigNumber } from '@ethersproject/bignumber'
 import { ethers } from 'ethers'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Token } from '@evofinance9/sdk'
 import { Text, CardBody, IconButton, AddIcon, Button } from '@evofinance9/uikit'
 
 import Card from 'components/Card'
@@ -28,7 +26,7 @@ import { valuesForLiqProps } from './types'
 import { checkAndSetNetworkToBrise, checkAndSetNetworkToBsc } from './helper'
 
 
-const AddLiquidityBridge = () => {
+const RemoveLiquidityBridge = () => {
   const { account, chainId, library } = useActiveWeb3React()
   const addTransaction = useTransactionAdder()
 
@@ -54,32 +52,47 @@ const AddLiquidityBridge = () => {
     setTxHash('')
   }
 
-  const provideLiquidity = async () => {
+  const removeLiquidity = async () => {
     if (!chainId || !library || !account) return
     if (values.briseChainValue < 1 || values.bscChainValue < 1) return
 
     await checkAndSetNetworkToBrise()
+    const briseBridgeContract = getBriseBridgeContract(library, account)
 
-    const signer = library.getSigner();
+    const method1: (...args: any) => Promise<TransactionResponse> = briseBridgeContract!.withdrawETH
+    const args1: Array<string> = [
+        ethers.utils.parseUnits(values.briseChainValue.toString(), `18`).toString()
+    ]
 
-    const transaction = {
-      to: BRIDGE_ADDRESS,
-      value: ethers.utils.parseEther(values.briseChainValue.toString())
-    };
+    setAttemptingTxn(true)
+    setIsOpen(true)
 
-    const signedTransaction = await signer.sendTransaction(transaction);
-    console.log(signedTransaction)
+    await method1(...args1, { })
+      .then((response) => {
+        setAttemptingTxn(false)
+        setTxHash(response.hash)
+        addTransaction(response, {
+          summary: "Withdraw from Brise chain"
+        })
+      })
+      .catch((e) => {
+        setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (e?.code !== 4001) {
+          console.error(e)
+          alert(e.message)
+        }
+      })
 
     await checkAndSetNetworkToBsc()
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
     // Prompt user for account connections
     await provider.send("eth_requestAccounts", []);
 
-    const briseTokenContractInBsc = getTokenContract("0x8FFf93E810a2eDaaFc326eDEE51071DA9d398E83", provider, account)
+    const bscBridgeContract = getBscBridgeContract(provider, account)
 
-    const method: (...args: any) => Promise<TransactionResponse> = briseTokenContractInBsc!.transfer
+    const method: (...args: any) => Promise<TransactionResponse> = bscBridgeContract.withdrawBRISE
     const args: Array<string> = [
-        BRIDGE_BSC_ADDRESS,
         ethers.utils.parseUnits(values.bscChainValue.toString(), `9`).toString()
     ]
 
@@ -91,7 +104,7 @@ const AddLiquidityBridge = () => {
         setAttemptingTxn(false)
         setTxHash(response.hash)
         addTransaction(response, {
-          summary: "Amount sent to BSC"
+          summary: "Withdraw from BSC"
         })
       })
       .catch((e) => {
@@ -115,11 +128,11 @@ const AddLiquidityBridge = () => {
         pendingText="Please wait..."
       />
 
-    <BridgeCardNav activeIndex={1} />        
+    <BridgeCardNav activeIndex={2} />        
 
       <AppBody>
-        <Wrapper id="swap-page">
-          <PageHeader title="Add LiquidityBridge" description="Provide tokens for liquidity" showSettings={showSettings} hideSllipage={hideSllipage} />
+        <Wrapper id="remove-liqd-page">
+          <PageHeader title="Remove Liquidity Bridge" description="Remove liquidity from bridge" showSettings={showSettings} hideSllipage={hideSllipage} />
           <CardBody>
             <AutoColumn gap="md">
               <InputPanel id="input_panel_1">
@@ -205,10 +218,10 @@ const AddLiquidityBridge = () => {
 
           <Button
             style={{ width: '100%', margin: '1rem 0 0 0' }}
-            onClick={provideLiquidity}
+            onClick={removeLiquidity}
             disabled={values.bscChainValue < 1 || values.briseChainValue < 1}
           >
-            Enter
+            Withdraw
           </Button>
           </CardBody>
         </Wrapper>
@@ -217,4 +230,4 @@ const AddLiquidityBridge = () => {
   )
 }
 
-export default AddLiquidityBridge
+export default RemoveLiquidityBridge

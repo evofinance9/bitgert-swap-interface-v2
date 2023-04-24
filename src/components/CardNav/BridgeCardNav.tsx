@@ -14,10 +14,13 @@ function BridgeCardNav({ activeIndex = 0 }: { activeIndex?: number }) {
     <StyledNav>
       <ButtonMenu activeIndex={activeIndex} scale="md" variant="primary">
         <ButtonMenuItem id="swap-nav-link" to="/bridge" as={Link} radius="6px" >
-          {TranslateString(1142, 'Swap')}
+          {TranslateString(1142, 'Bridge')}
         </ButtonMenuItem>
         <ButtonMenuItem id="pool-nav-link" to="/add-bridge" as={Link} radius="6px">
           {TranslateString(262, 'Liquidity')}
+        </ButtonMenuItem>
+        <ButtonMenuItem id="pool-nav-link" to="/remove-bridge" as={Link} radius="6px">
+          {TranslateString(262, 'Withdraw')}
         </ButtonMenuItem>
       </ButtonMenu>
     </StyledNav>
