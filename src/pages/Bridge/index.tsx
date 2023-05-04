@@ -26,6 +26,7 @@ import ApproveButton from './ApproveButton'
 import AppBody from '../AppBody'
 import { InputRow, CurrencySelect, LabelRow, Aligner, InputPanel, Container as ContainerExt } from './styleds'
 import { valuesProps } from './types'
+import { getBridgeLiquidity } from './apicalls'
 
 
 const Bridge = () => {
@@ -36,6 +37,13 @@ const Bridge = () => {
   const [values, setValues] = useState<valuesProps>({
     input: 0,
     output: 0,
+  })
+  const [bridgeLiq, setBridgeLiq] = useState<{
+    bsc: number;
+    brise: number 
+      }>({
+    bsc: 0,
+    brise: 0,
   })
 
   const [txHash, setTxHash] = useState<string>('')
@@ -124,6 +132,19 @@ const Bridge = () => {
       setIsBnb(true)
     }
   }, [chainId])
+
+  useEffect(() => {
+      async function fetch() {
+         const data = await getBridgeLiquidity() 
+         console.log(data)
+         setBridgeLiq({
+             bsc: parseFloat(data?.bsc || '0'),
+             brise: parseFloat(data?.brise || '0'),
+         })
+      }
+
+      fetch()
+  }, [])
 
   useEffect(() => {
     async function checkAndSetNetwork() {
@@ -252,10 +273,10 @@ const Bridge = () => {
             <Card padding="1rem .75rem 0 .75rem" borderRadius="20px">
               <AutoColumn gap="4px" />
             </Card>
-            {isBnb && briseERC20 && (values.input >= 10000000 && values.input <= 500000000) && (
+            {isBnb && briseERC20 && (values.input >= 10000000 && values.input <= 500000000) && bridgeLiq.brise > values.input && (
               <ApproveButton token={briseERC20} amount={values.input} func={initiateBsc} />
             )}
-            {!isBnb && (
+            {!isBnb  && (bridgeLiq.bsc > values.input) && (
               <Button
                 style={{ width: '100%', margin: '1rem 0 0 0' }}
                 onClick={initiateBrise}
@@ -266,6 +287,18 @@ const Bridge = () => {
             )}
             <Card padding="1rem .75rem 0 .75rem" borderRadius="20px">
               <AutoColumn gap="4px">
+              {isBnb && bridgeLiq.bsc <= values.output && (
+                <Text fontSize="15px" color="red">
+                 Liquidity low in brise chain 
+                </Text>
+              )}
+
+              {!isBnb && bridgeLiq.brise <= values.output && (
+                <Text fontSize="15px" color="red">
+                 Liquidity low in bsc chain 
+                </Text>
+              )}
+
                 <Text fontSize="15px" color="#000">
                   Note
                 </Text>
