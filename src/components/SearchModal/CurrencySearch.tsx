@@ -176,7 +176,7 @@ export function CurrencySearch({
         <AutoSizer disableWidth>
           {({ height }) => (
             <CurrencyList
-              height={height}
+              height={height || 0}
               showETH={showETH}
               currencies={filteredSortedTokens}
               onCurrencySelect={handleCurrencySelect}
