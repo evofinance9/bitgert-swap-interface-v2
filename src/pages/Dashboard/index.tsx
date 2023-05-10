@@ -102,8 +102,8 @@ const Dashboard = () => {
             {/* <Chart /> */}
             <iframe id="dextools-widget"
     title="DEXTools Trading Chart"
-    width="500"
-    height="400" src="https://www.dextools.io/widgets/en/bitgert/pe-light/0xadfa02ba357b8f3fa83dd63206fb5d3c999bdc26?theme=light&chartType=2&chartResolution=30&drawingToolbars=false" />
+    width="100%"
+    height="600" src="https://www.dextools.io/widgets/en/bitgert/pe-light/0xadfa02ba357b8f3fa83dd63206fb5d3c999bdc26?theme=light&chartType=2&chartResolution=30&drawingToolbars=false" />
           </ChartContainer>
         </Column>
       </ContainerExtended>
