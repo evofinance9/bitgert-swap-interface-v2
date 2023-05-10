@@ -11,11 +11,11 @@ const config: MenuEntry[] = [
     icon: 'TradeIcon',
     href: '/swap',
   },
-  {
-    label: 'Bridge',
-    icon: 'TicketIcon',
-    href: '/bridge',
-  },
+//  {
+//    label: 'Bridge',
+//    icon: 'TicketIcon',
+//    href: '/bridge',
+//  },
   {
     label: 'Wallet',
     icon: 'WalletIcon',
