@@ -121,6 +121,14 @@
       "chainId": 32520,
       "decimals": 9,
       "logoURI": "https://bitgertswapserver.com/api/images/0x6cd08bE8Aa9B705Ca86B4923B1784C0eE06E5220.jpg"
+    },
+    {
+      "name": "Bhineka",
+      "symbol": "BHIKA",
+      "address": "0x9D42d1500dA40e874daDe5d1F74E66F25ca2F98D",
+      "chainId": 32520,
+      "decimals": 9,
+      "logoURI": "https://bitgertswapserver.com/api/images/0x9D42d1500dA40e874daDe5d1F74E66F25ca2F98D.png"
     }
   ]
 }
