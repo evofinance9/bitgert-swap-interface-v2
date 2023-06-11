@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { Menu as UikitMenu } from '@evofinance9/uikit'
+import VersionBar from 'components/VersionBar'
 import { useWeb3React } from '@web3-react/core'
 import { allLanguages } from 'constants/localisation/languageCodes'
 import { LanguageContext } from 'hooks/LanguageContext'
@@ -18,6 +19,7 @@ const Menu: React.FC = (props) => {
   const profile = useGetLocalProfile()
 
   return (
+    <>
     <UikitMenu
       links={links}
       account={account as string}
@@ -32,6 +34,8 @@ const Menu: React.FC = (props) => {
       profile={profile}
       {...props}
     />
+    <VersionBar />
+    </>
   )
 }
 

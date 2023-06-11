@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text, Button, InfoIcon, Link } from '@evofinance9/uikit'
+import { Text, Button, Link } from '@evofinance9/uikit'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -18,23 +18,24 @@ const Wrapper = styled.div`
   }
 `
 
+const ButtonContainer = styled.div`
+  margin-left: 1rem;
+  display: flex;
+`
+
 const VersionBar = () => {
   return (
     <Wrapper>
-      <Text bold mr="16px">
-        Source:
-      </Text>
-      <Button
-        variant="subtle"
-        as={Link}
-        href="https://github.com/nguyenphu27/pancake-swap-exchange-testnet"
-        endIcon={<InfoIcon color="white" />}
-        scale="sm"
-        ml="16px"
-        target="_blank"
-      >
-        Github
-      </Button>
+      <Text color="#000">Version: </Text>
+
+      <ButtonContainer>
+        <Button as={Link} external href="https://v1.bitgertswap.com/" scale="sm" variant="text">
+          V1
+        </Button>
+        <Button as={Link} href="/" scale="sm" variant="primary">
+          V2
+        </Button>
+      </ButtonContainer>
     </Wrapper>
   )
 }

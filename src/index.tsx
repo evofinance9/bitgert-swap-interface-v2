@@ -8,6 +8,7 @@ import MomentUtils from '@date-io/moment'
 import Home from 'pages/Home'
 import Advertise from 'pages/Advertise'
 import Documentation from 'pages/Documentation'
+import { VersionProvider } from 'context'
 import GlobalStyle from './style/Global'
 import App from './pages/App'
 import ApplicationUpdater from './state/application/updater'
@@ -36,28 +37,30 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <StrictMode>
-    <ApolloProvider client={client}>
-      <MuiPickersUtilsProvider utils={MomentUtils}>
-        <HashRouter>
-          <Switch>
-            <Route exact strict path="/advertise" component={Advertise} />
-            <Route exact strict path="/documentation" component={Documentation} />
-            <Providers>
-              <>
-                <ListsUpdater />
-                <ApplicationUpdater />
-                <TransactionUpdater />
-                <MulticallUpdater />
-                <ToastListener />
-              </>
-              <ResetCSS />
-              <GlobalStyle />
-              <App />
-            </Providers>
-          </Switch>
-        </HashRouter>
-      </MuiPickersUtilsProvider>
-    </ApolloProvider>
+    <VersionProvider>
+      <ApolloProvider client={client}>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <HashRouter>
+            <Switch>
+              <Route exact strict path="/advertise" component={Advertise} />
+              <Route exact strict path="/documentation" component={Documentation} />
+              <Providers>
+                <>
+                  <ListsUpdater />
+                  <ApplicationUpdater />
+                  <TransactionUpdater />
+                  <MulticallUpdater />
+                  <ToastListener />
+                </>
+                <ResetCSS />
+                <GlobalStyle />
+                <App />
+              </Providers>
+            </Switch>
+          </HashRouter>
+        </MuiPickersUtilsProvider>
+      </ApolloProvider>
+    </VersionProvider>
   </StrictMode>,
   document.getElementById('root')
 )
